@@ -2617,7 +2617,7 @@ const MSK_MARK = [
   { m: ['المرفوعه', 'من'], n: 10, party: 1 }, { m: ['المقامه', 'من'], n: 10, party: 1 }, { m: ['مرفوعه', 'من'], n: 10, party: 1 }, { m: ['ضد'], n: 10, party: 1 },
   { m: ['برئاسة'], n: 5 }, { m: ['وبحضور'], n: 5 }, { m: ['السيد'], n: 4 }, { m: ['السيده'], n: 4 }, { m: ['الاستاذ'], n: 4 }, { m: ['الاستاذه'], n: 4 },
   { m: ['المستشار'], n: 4 }, { m: ['المحامي'], n: 4, exact: 1 }, { m: ['المحاميه'], n: 4, exact: 1 }, { m: ['الشاهد'], n: 4 }, { m: ['الشاهده'], n: 4 }, { m: ['شاهد'], n: 4 },
-  { m: ['ويمثلها'], n: 4 }, { m: ['ويمثله'], n: 4 }, { m: ['مديرها'], n: 4 }, { m: ['مديره'], n: 4 }, { m: ['الخبير'], n: 4, colon: 1 },
+  { m: ['ويمثلها'], n: 4, exact: 1 }, { m: ['ويمثله'], n: 4, exact: 1 }, { m: ['مديرها'], n: 4, exact: 1 }, { m: ['مديره'], n: 4, exact: 1 }, { m: ['الخبير'], n: 4, colon: 1 },
   { m: ['المدعي'], n: 8, colon: 1, party: 1 }, { m: ['المدعيه'], n: 8, colon: 1, party: 1 }, { m: ['المدعي', 'عليه'], n: 10, colon: 1, party: 1 }, { m: ['المدعي', 'عليها'], n: 10, colon: 1, party: 1 },
   { m: ['المستانف'], n: 8, colon: 1, party: 1 }, { m: ['المستانفه'], n: 8, colon: 1, party: 1 }, { m: ['المستانف', 'ضده'], n: 10, colon: 1, party: 1 }, { m: ['المستانف', 'ضدها'], n: 10, colon: 1, party: 1 },
   { m: ['المستانف', 'عليه'], n: 10, colon: 1, party: 1 }, { m: ['الطاعن'], n: 8, colon: 1, party: 1 }, { m: ['الطاعنه'], n: 8, colon: 1, party: 1 }, { m: ['المطعون', 'ضده'], n: 10, colon: 1, party: 1 }, { m: ['المطعون', 'ضدها'], n: 10, colon: 1, party: 1 },
@@ -2626,11 +2626,13 @@ const MSK_MARK = [
 // كلمات توقف جمع الاسم (لا تكون جزءًا منه)
 const MSK_STOP = new Set(('القاضي قاضي امين سر الجلسه الرقم رقم المدني مدني الجنسيه الجنسيه العنوان الساكن ويعلن ضد بصفته بصفتها بصفتهم هاتف الهاتف وهاتفه هاتفه ' +
   'بان بانه بانها بانهم وبان وانه وانها لانه لانها كونه كونها ان انه انها الذي التي الذين في علي علي من عن الي الى او قد كان كانت بتاريخ حيث وحيث وقد لدي وكيل وكيله وكيلها المدعي المدعيه المدعيعليه عليه عليها له لها ' +
+  'المستانف المستانفه المستانفين المستانفون المستانفان المستانفتان ضده ضدها ضدهم المدعين المدعيان المطعون الطاعن الطاعنه الطاعنين الشركه العامل العامله صاحب العمل المحكوم الحكم المستانف الاستيناف الاستئناف ' +
   'اقام اقامت اقامه الدعوي الحكم بالحكم المحكمه تقرير المنتدب المنتدبه بجلسه جلسه وحضر حضر وقدم وقدمت قدم شهد وشهد وقرر قرر وافاد افاد واضاف مع و ثم ف').split(' ').map(mskNorm));
 // كلمات عامة لا تُعمَّم على بقية الصفحات وإن عُتّمت في موضعها (أجزاء أسماء الشركات والألقاب)
 const MSK_GENERIC = new Set(('شركه الشركه مؤسسه المؤسسه مكتب معهد مطعم مستشفي مركز مجموعه للتجاره التجاريه العامه والمقاولات للمقاولات للخدمات الخدمات الطبيه ' +
   'ذمم شمك شمكع المحدوده الكويتيه العالميه الدوليه المتحده الوطنيه الحديثه للسيدات للرجال للاستشارات للتسويق للسيارات للنقل للتنظيف للحراسه والتجاره والصناعه ' +
-  'مدير مديرها مديره المدير ويمثلها ويمثله السيد السيده الاستاذ الاستاذه المستشار المحامي المحاميه الشاهد الشاهده بصفته الممثل القانوني لها له عبد ابو بن بنت ال').split(' ').map(mskNorm));
+  'المستانف المستانفه المستانفين المستانفون ضده ضدها المدعي المدعيه المدعين المطعون الطاعن الطاعنه العامل العامله مدير مديرها مديره المدير ويمثلها ويمثله السيد السيده الاستاذ الاستاذه المستشار المحامي المحاميه الشاهد الشاهده بصفته الممثل القانوني لها له عبد ابو بن بنت ال').split(' ').map(mskNorm));
+const MSK_ROLE = new Set(['مستانف', 'مستانفه', 'مستانفين', 'مستانفون', 'مدعي', 'مدعيه', 'مدعين', 'مطعون', 'طاعن', 'طاعنه', 'ضده', 'ضدها', 'عامل', 'عامله', 'صاحب', 'محكوم'].map(mskNorm));
 const MSK_MONEY = new Set(['مبلغ', 'بمبلغ', 'مبلغا', 'قدره', 'وقدره', 'دينار', 'دينارا', 'دنانير', 'دك', 'فلس', 'اجر', 'باجر', 'راتب', 'اجمالي', 'اجماليه'].map(mskNorm));
 const MSK_NOTID = new Set(['المدعي', 'المدعيه', 'المدعو', 'المدين', 'المديني', 'المدينه', 'حسابه', 'حسابها', 'الحسابات'].map(mskNorm));
 const MSK_DATE = /^\D*\d{1,4}\s*[\/\\-]\s*\d{1,2}(\s*[\/\\-]\s*\d{1,4})?\D*$/;
@@ -2657,10 +2659,13 @@ function mskFindNames(pages) {
         let j = i + L;
         const hasColon = /[:：]\s*$/.test(W[i + L - 1].t) || (W[j] && /^[:：]/.test(W[j].t));
         if (mk.colon && !hasColon) continue;
-        let got = 0;
-        while (j < W.length && W[j].ln === W[i].ln && got < mk.n) {
+        let got = 0, ln = W[i].ln;
+        // علامة طرف في آخر السطر (مثل «ضد» وحدها): الاسم في السطر التالي
+        if (mk.party && (j >= W.length || W[j].ln !== ln || W.slice(j).every((w, q) => w.ln !== ln || !N[j + q]))) { let q = j; while (q < W.length && W[q].ln === ln) q++; if (q < W.length) { ln = W[q].ln; j = q; } }
+        while (j < W.length && W[j].ln === ln && got < mk.n) {
           const raw = W[j].t, n = N[j];
           if (!n) { j++; continue; }                                  // رموز مثل : و /
+          if (got === 0 && MSK_ROLE.has(mskStrip(n)) ) break;            // «ضد المستأنفة…» في المتن: ليس سطر اسم
           if (mskNear(n, MSK_STOP) && got > 0) break;
           if (mskNear(n, MSK_STOP)) { j++; continue; }
           if (mskDigits(raw) && !/[ء-ي]/.test(raw)) break;
@@ -2675,10 +2680,11 @@ function mskFindNames(pages) {
   return { names, direct };
 }
 // يطابق كلمة بقائمة الأسماء: تطابق تام، أو بسابقة (و/ب/ال…)، أو التصاق بكلمة تالية، أو خطأ حرف واحد في الأسماء الطويلة
-function mskMatch(n, nameSet) {
+function mskMatch(n, nameSet, common) {
   if (!n || n.length < 3) return null;
   const s = mskStrip(n);
   if (nameSet.has(n)) return n; if (nameSet.has(s)) return s;
+  if (common && (common.has(n) || common.has(s))) return null;   // كلمة شائعة: تطابق تام فقط (V42)
   for (const nm of nameSet) {
     if (nm.length >= 4 && (n.startsWith(nm) || s.startsWith(nm)) && n.length <= nm.length + 6) return nm;   // الهاجريبصفته
     if (nm.length >= 5 && mskLev(s, nm, 1) <= 1) return nm;                                                     // الهاجزي
@@ -2693,6 +2699,7 @@ function mskCompute(pages, opt) {
   const extra = opt.extra || new Set();       // أسماء أضافها المستخدم (بالكتابة أو اللمس)
   const wordOn = opt.wordOn || new Set();     // "pi:wi" كلمات فرض المستخدم تعتيمها
   const wordOff = opt.wordOff || new Set();   // "pi:wi" كلمات ألغى المستخدم تعتيمها
+  if (opt.common) [...found.names.keys()].forEach(n => { if (opt.common.has(n) && !extra.has(n)) found.names.delete(n); });   // لا تُتتبَّع الكلمات الشائعة أسماءً
   const nameSet = new Set([...found.names.keys(), ...extra].filter(n => !off.has(n)));
   const counts = new Map([...nameSet].map(n => [n, 0]));
   const out = pages.map(() => new Map());     // wi -> reason
@@ -2703,7 +2710,7 @@ function mskCompute(pages, opt) {
   pages.forEach((pg, pi) => {
     const W = pg.words, N = W.map(w => mskNorm(w.t));
     W.forEach((w, wi) => {
-      const hit = mskMatch(N[wi], nameSet);
+      const hit = mskMatch(N[wi], nameSet, opt.common);
       if (hit) { out[pi].set(wi, 'name'); counts.set(hit, (counts.get(hit) || 0) + 1); }
       // أرقام طويلة (مدني/هاتف/حساب) دون فاصل تاريخ، وليست مبلغًا
       const dg = mskDigits(w.t);
@@ -2767,9 +2774,16 @@ function mskDraw(pi, preview) {
   });
   if (preview) { cx.fillStyle = 'rgba(43,108,176,.35)'; cx.fillRect(preview.x0, preview.y0, preview.x1 - preview.x0, preview.y1 - preview.y0); }
 }
+// مفردات شائعة (≥30 ورودًا في موجزات المبادئ وأسبابها): لا تُتتبَّع أسماءً ولا تُطابَق بخطأ حرف (V42)
+let MSK_COMMON = null;
+function mskCommon() {
+  if (MSK_COMMON) return MSK_COMMON; const c = new Map();
+  P.forEach(p => (p.summary.join(' ') + ' ' + p.reasoning.join(' ')).split(/\s+/).forEach(w => { const n = mskNorm(w); if (n.length > 2) c.set(n, (c.get(n) || 0) + 1); }));
+  MSK_COMMON = new Set([...c].filter(([, k]) => k >= 30).map(([w]) => w)); return MSK_COMMON;
+}
 function mskRecompute() {
   if (!MSK.pages.length || !MSK.found) return;
-  MSK.res = mskCompute(MSK.pages, { found: MSK.found, off: MSK.off, extra: MSK.extra, wordOn: MSK.wordOn, wordOff: MSK.wordOff, header: $('#msk_hdr').checked });
+  MSK.res = mskCompute(MSK.pages, { found: MSK.found, off: MSK.off, extra: MSK.extra, wordOn: MSK.wordOn, wordOff: MSK.wordOff, header: $('#msk_hdr').checked, common: mskCommon() });
   MSK.pages.forEach((_, i) => mskDraw(i));
   mskChips();
 }
@@ -2941,7 +2955,7 @@ let MSK_DR_COPY = false;             // فحص المسودة: أرسل نسخة
 function mskMaskText(t) {
   const lines = String(t || '').split('\n'), words = [], map = [];
   lines.forEach((ln, li) => { ln.split(/(\s+)/).forEach((tok, k) => { if (tok && !/^\s+$/.test(tok)) { map.push([li, k]); words.push({ t: tok, x0: 0, y0: 0, x1: 0, y1: 0, ln: String(li) }); } }); });
-  const R = mskCompute([{ w: 1, h: 1, words }], { header: false });
+  const R = mskCompute([{ w: 1, h: 1, words }], { header: false, common: typeof P !== 'undefined' ? mskCommon() : null });
   const parts = lines.map(ln => ln.split(/(\s+)/)); let n = 0;
   R.masked[0].forEach((why, wi) => { const [li, k] = map[wi]; const tok = parts[li][k]; const tail = (tok.match(/[،,.؛;:)]+$/) || [''])[0]; parts[li][k] = '■■■' + tail; n++; });
   return { text: parts.map(p => p.join('')).join('\n'), n, names: R.names.map(x => x.label) };
