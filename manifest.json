@@ -1,0 +1,16 @@
+{
+  "name": "عمّالي — مبادئ الدائرة العمالية",
+  "short_name": "عمّالي",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2F4F6",
+  "theme_color": "#0E6B66",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "maskable" }
+  ]
+}
