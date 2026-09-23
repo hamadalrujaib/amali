@@ -254,7 +254,7 @@ body.home .search{visibility:hidden}
 .inbox textarea{width:100%;min-height:260px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);padding:10px;font-size:14px;font-family:var(--ui);line-height:1.7;resize:vertical}
 .inbox .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .thumbs{display:flex;flex-wrap:wrap;gap:6px}
-.thumbs figure{margin:0;width:64px}.thumbs img{width:64px;height:84px;object-fit:cover;border:1px solid var(--line);border-radius:6px}.thumbs figcaption{font-size:10px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thumbs figure{margin:0;width:64px;padding:0;border:0;background:none;border-radius:0}.thumbs img{width:64px;height:84px;object-fit:cover;border:1px solid var(--line);border-radius:6px}.thumbs figcaption{font-size:10px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .inout{display:flex;flex-direction:column;gap:10px;min-width:0}
 .kvs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 12px;margin-top:6px}
 .kv{display:flex;flex-direction:column;font-size:13px;border-bottom:1px dashed var(--line);padding:4px 0}
@@ -491,6 +491,8 @@ main{min-width:0;max-width:100%;overflow:hidden}
   body.pmst .mstgrid{display:block}
   body.pmst .kc,body.pmst .mssum{break-inside:avoid}
 }
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.inlocal{font-size:12.5px;color:var(--ok);background:var(--ok-soft);border-radius:8px;padding:6px 10px;line-height:1.6}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -768,6 +770,7 @@ main{min-width:0;max-width:100%;overflow:hidden}
         <label class="btn" for="in_files">📎 صور الصفحات أو PDF</label><input id="in_files" type="file" accept="image/*,application/pdf" multiple hidden>
         <span class="tag" id="in_fileinfo">لا ملفات</span>
         <button class="btn" id="in_clearfiles" type="button" hidden>إزالة</button>
+        <button class="btn" id="in_ocr" type="button" hidden title="يقرأ الصور على جهازك فقط — لا يُرسل شيئًا">قراءة ضوئية على جهازك</button>
       </div>
       <div class="thumbs" id="in_thumbs"></div>
       <div class="row">
@@ -1674,15 +1677,18 @@ async function inSaveCase() {
 }
 async function inPdfToImages(file) {
   if (!window.pdfjsLib) {
-    await new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    // pdf.js محليًا من مجلد ocr/ (لا اعتماد خارجي)؛ ويبقى الرابط الخارجي احتياطًا فقط إن لم يُرفع الملف بعد
+    const load = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+    const loc = new URL('ocr/', location.href).href, cdn = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+    let base = loc; try { await load(loc + 'pdf.min.js'); } catch (e) { base = cdn; await load(cdn + 'pdf.min.js'); }
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = base + 'pdf.worker.min.js';
   }
   const pdf = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
   const out = []; let text = '';
   for (let i = 1; i <= Math.min(pdf.numPages, 40); i++) {
     const page = await pdf.getPage(i);
     try { const tc = await page.getTextContent(); text += tc.items.map(x => x.str).join(' ') + '\n'; } catch (e) {}
-    const vp = page.getViewport({ scale: 1.6 }); const cv = document.createElement('canvas'); cv.width = vp.width; cv.height = vp.height;
+    const vp = page.getViewport({ scale: window.__pdfScale || 3 }); /* ≈216 نقطة/بوصة: دقة أعلى للقراءة الضوئية العربية */ const cv = document.createElement('canvas'); cv.width = vp.width; cv.height = vp.height;
     await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
     const blob = await new Promise(res => cv.toBlob(res, 'image/jpeg', 0.85)); out.push({ blob, name: file.name + ' – ص' + i });
   }
@@ -1723,10 +1729,10 @@ function inCleanOcr(t) {
   }).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 const IN_OCR_NOTE = '\n\nتنبيه: الأجزاء المسبوقة بعلامة [قراءة ضوئية] ناتجة عن قراءة ضوئية لصور ممسوحة وقد تحوي أخطاء (حروف مشوهة، كلمات ملتصقة أو مقطوعة، أرقام مقلوبة). صحّح الكلمات الواضحة من سياقها القانوني، وتجاهل سطور الترويسة والأختام المشوهة، ولا تستنتج ما لم يُقرأ. أي رقم أو تاريخ أو مبلغ غير مؤكد القراءة ضعه كما قرأته وأضف في flags تنبيهًا نصه «يُراجع على الأصل: …».';
-let inOcrDone = false;
+let inOcrDone = false, inTextOnly = false;
 function inThumbs() {
   $('#in_thumbs').innerHTML = inFiles.map((f, i) => '<figure><img src="' + URL.createObjectURL(f.blob) + '" alt=""><figcaption>' + esc(f.name) + '</figcaption></figure>').join('');
-  $('#in_fileinfo').textContent = inFiles.length ? inFiles.length + ' صورة' : 'لا ملفات'; $('#in_clearfiles').hidden = !inFiles.length;
+  $('#in_fileinfo').textContent = inFiles.length ? inFiles.length + ' صورة' : 'لا ملفات'; $('#in_clearfiles').hidden = !inFiles.length; $('#in_ocr').hidden = !inFiles.length;
 }
 function initIntake() {
   if (inInit) return; inInit = true;
@@ -1737,9 +1743,24 @@ function initIntake() {
       if (f.type === 'application/pdf') { st.textContent = 'جارٍ تحويل PDF إلى صور…'; try { const r = await inPdfToImages(f); inFiles.push(...r.images); if (r.text) $('#in_text').value += (($('#in_text').value ? '\n\n' : '') + '— ' + f.name + ' —\n' + r.text); } catch (err) { toast('تعذّر قراءة PDF'); } st.textContent = ''; }
       else if (f.type.startsWith('image/')) inFiles.push({ blob: f, name: f.name });
     }
-    e.target.value = ''; inOcrDone = false; inThumbs();
+    e.target.value = ''; inOcrDone = false; inTextOnly = false; inThumbs(); if (!SAMPLEX) st.textContent = inFiles.length ? 'في هذه النسخة لا يُرسل شيء: زر «حلّل الملف» يعمل فقط داخل claude.ai. لاختبار القراءة اضغط «قراءة ضوئية على جهازك».' : 'التحليل يعمل عند فتح التطبيق من الرابط داخل claude.ai (مسجَّلًا الدخول).';
   };
-  $('#in_clearfiles').onclick = () => { inFiles = []; inOcrDone = false; inThumbs(); };
+  $('#in_clearfiles').onclick = () => { inFiles = []; inOcrDone = false; inTextOnly = false; inThumbs(); };
+  $('#in_ocr').onclick = async () => {
+    if (!inFiles.length) return;
+    const ctl = new AbortController(); inCtl = ctl; $('#in_ocr').disabled = true; $('#in_stop').disabled = false; $('#in_go').disabled = true;
+    const t0 = Date.now(); let t = '';
+    try { t = await inOcr(inFiles, st, ctl.signal); }
+    catch (e) { st.textContent = 'تعذّرت القراءة الضوئية على هذا الجهاز' + (e && e.message === 'ocr-timeout' ? ' (انتهت المهلة)' : '') + '.'; }
+    finally { $('#in_ocr').disabled = false; $('#in_stop').disabled = true; $('#in_go').disabled = !SAMPLEX; inCtl = null; }
+    if (ctl.signal.aborted) { st.textContent = 'أُوقفت القراءة.'; return; }
+    if (t && t.trim()) {
+      $('#in_text').value = ($('#in_text').value.trim() ? $('#in_text').value.trim() + '\n' : '') + t; inOcrDone = true; inTextOnly = true;
+      st.textContent = 'تمت القراءة على جهازك في ' + Math.round((Date.now() - t0) / 1000) + ' ثانية، ولم يُرسل شيء. قارن النص بالأصل: الأسماء والأرقام والتواريخ والمبالغ.' + (SAMPLEX ? ' عند «حلّل الملف» سيُرسل النص وحده دون الصور.' : '');
+      $('#in_out').innerHTML = '<div class="inlocal"><b>قراءة محلية — لم يُرسل شيء.</b> النص المقروء في المربع. هذه تجربة لدقة القراءة الضوئية على أوراقك؛ صحّح الأخطاء قبل أي استعمال.</div>';
+      $('#in_text').scrollTop = 0;
+    } else st.textContent = 'لم يُستخرج نص من الصور.';
+  };
   const box = document.querySelector('#intakewrap .inbox');
   box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drop'); });
   box.addEventListener('dragleave', () => box.classList.remove('drop'));
@@ -1750,7 +1771,7 @@ function initIntake() {
     const text = $('#in_text').value.trim();
     if (!text && !inFiles.length) { toast('الصق النص أو ارفع الصور أولًا'); return; }
     let lim = null; try { lim = await SAMPLEX.limits(); } catch (e) {}
-    let imgs = inFiles.map(f => f.blob);
+    let imgs = inTextOnly ? [] : inFiles.map(f => f.blob);
     inCtl = new AbortController(); $('#in_go').disabled = true; $('#in_stop').disabled = false;
     if (imgs.length && !(lim && lim.images)) {
       // لا يمكن إرسال الصور من هذه النافذة: قراءة ضوئية داخل المتصفح، ثم يراجع المستخدم النص قبل التحليل
