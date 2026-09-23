@@ -11,7 +11,6 @@
 <meta name="apple-mobile-web-app-title" content="عمالي">
 <meta name="application-name" content="عمالي">
 <meta name="theme-color" content="#0E6B66">
-<link rel="manifest" href="manifest.json">
 <style id="localfonts">
 @font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/plex-400.woff2') format('woff2')}
 @font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:600;font-display:swap;src:url('fonts/plex-600.woff2') format('woff2')}
@@ -455,6 +454,43 @@ main{min-width:0;max-width:100%;overflow:hidden}
   .panel{position:static;transform:none;width:auto;box-shadow:none}
   body{background:#fff;color:#000}
 }
+/* ---------- حاسبة المستحقات */
+.mstgrid{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+.msf{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.msf label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--ink2);min-width:0}
+.msf input,.msf select{width:100%;min-width:0;max-width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-size:14.5px;font-family:var(--ui);color:var(--ink);font-variant-numeric:tabular-nums}
+.msf input[type=date]{min-height:36px}
+.msf .msh{grid-column:1/-1;margin:0;font-size:12px;color:var(--ink3);line-height:1.6}
+.msf .mschk{flex-direction:row;align-items:center;gap:8px;grid-column:1/-1;font-size:13.5px;color:var(--ink)}
+.msf .mschk input{width:auto}
+.mstform h3{border-bottom:1px solid var(--line);padding-bottom:4px}
+.mswarn{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);border-radius:var(--r);padding:9px 12px;font-size:13px;font-weight:600;line-height:1.6}
+.mssum{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.mssum .tt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.mssum .tt b{font-size:13px;color:var(--ink2)}.mssum .tt .big{font-size:24px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.mssum .svc{font-size:13px;color:var(--ink2)}
+.mssum table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+.mssum td{padding:5px 2px;border-top:1px solid var(--line)}.mssum td:last-child{text-align:left;font-weight:600;white-space:nowrap}
+.mssum .owed td{color:var(--warn)}
+#ms_out .intbl td{white-space:normal;overflow-wrap:anywhere;vertical-align:top}#ms_out .intbl td:first-child{width:38%;color:var(--ink2)}#ms_out .intbl td:last-child{text-align:left}
+.msnotes{margin:6px 0 0;padding:0 18px 0 0;font-size:12.5px;color:var(--ink2);line-height:1.7}
+.msprins{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.msp{border:1px solid var(--line2);background:var(--bg);color:var(--ink);border-radius:999px;padding:2px 9px;font-size:11.5px;line-height:1.6;cursor:pointer;font-family:var(--ui);max-width:100%;white-space:normal;text-align:right}
+.msp:hover{border-color:var(--accent);color:var(--accent)}
+.msp.contra{border-style:dashed;color:var(--warn)}
+.msrow{border-top:1px dashed var(--line);padding-top:7px;margin-top:7px}
+.msrow b{display:block;font-size:13px;margin-bottom:2px}
+.msrow p{font-size:13px}
+.mslbl{font-size:11.5px;color:var(--ink3);margin-top:6px}
+@media (max-width:900px){.mstgrid{grid-template-columns:1fr}}
+@media (max-width:520px){.brand small{display:none}.tools #font{max-width:92px}.tools{gap:4px}.msf{grid-template-columns:1fr}.mssum .tt .big{font-size:21px}}
+@media print{
+  body.pmst>*:not(#mstwrap){display:none!important}
+  body.pmst #mstwrap{display:block!important;padding:0}
+  body.pmst #ms_form,body.pmst #mstwrap>.note{display:none!important}
+  body.pmst .mstgrid{display:block}
+  body.pmst .kc,body.pmst .mssum{break-inside:avoid}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -479,7 +515,7 @@ main{min-width:0;max-width:100%;overflow:hidden}
     <button class="ib" id="theme" title="الوضع الليلي/النهاري" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
     <button class="ib" id="bmv" title="المحفوظات" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4Z"/></svg></button>
   </div>
-  <div class="seg" id="seg"><button type="button" data-v="h" title="الرئيسية">⌂</button><button type="button" class="on" data-v="p">المبادئ</button><button type="button" data-v="l">التشريعات</button><button type="button" data-v="m">الخرائط</button><button type="button" data-v="c">التحقق</button><button type="button" data-v="i">تحليل الملف</button><button type="button" data-v="d">فحص المسودة</button><button type="button" data-v="t">الخط الزمني</button><button type="button" data-v="w">تصدير Word</button><button type="button" data-v="f">ملفاتي</button><button type="button" data-v="a">المساعد</button></div>
+  <div class="seg" id="seg"><button type="button" data-v="h" title="الرئيسية">⌂</button><button type="button" class="on" data-v="p">المبادئ</button><button type="button" data-v="l">التشريعات</button><button type="button" data-v="m">الخرائط</button><button type="button" data-v="c">التحقق</button><button type="button" data-v="s">حاسبة المستحقات</button><button type="button" data-v="i">تحليل الملف</button><button type="button" data-v="d">فحص المسودة</button><button type="button" data-v="t">الخط الزمني</button><button type="button" data-v="w">تصدير Word</button><button type="button" data-v="f">ملفاتي</button><button type="button" data-v="a">المساعد</button></div>
 </header>
 
 <div class="wrap">
@@ -763,6 +799,47 @@ main{min-width:0;max-width:100%;overflow:hidden}
     </section>
     <section class="inout" id="dr_out">
       <div class="empty"><b>لا فحص بعد</b>الصق المسودة ثم اضغط «افحص المسودة».</div>
+    </section>
+  </div>
+</div>
+
+<div class="intakewrap" id="mstwrap">
+  <div class="note">حاسبة المستحقات: تحسب مكافأة نهاية الخدمة والمقابل النقدي لرصيد الإجازات وبدل الإنذار وفق القانون 6/2010، وتربط كل بند بمادته ومبادئ التمييز الموسومة في قاعدة التطبيق. الحساب محلي بالكامل. <b>الأرقام مسودة عمل داخلية تخضع لمراجعة المحكمة</b> — لا ترجّح نتيجة، وما لا سند له في القاعدة يُعلَّم ولا يُحسب.</div>
+  <div class="ingrid mstgrid">
+    <section class="inbox mstform" id="ms_form">
+      <h3>الأجر</h3>
+      <div class="msf">
+        <label>طريقة تقاضي الأجر<select id="ms_pay"><option value="m">شهري</option><option value="d">يومي / أسبوعي / بالساعة / بالقطعة</option></select></label>
+        <label>قسمة الأجر اليومي<select id="ms_div"><option value="26">÷ 26 — أيام العمل الفعلية (م67/2)</option><option value="30">÷ 30 — قاسم بديل</option></select></label>
+        <label><span id="ms_total_l">الأجر الشامل الشهري (د.ك)</span><input id="ms_total" type="number" inputmode="decimal" min="0" step="0.001" placeholder="أساس المكافأة والإنذار"></label>
+        <label><span id="ms_basic_l">الأجر الأساسي الشهري (د.ك)</span><input id="ms_basic" type="number" inputmode="decimal" min="0" step="0.001" placeholder="أساس مقابل الإجازات"></label>
+        <p class="msh">الشامل: آخر أجر مع كل ما يُؤدّى بصفة دورية من علاوات وبدلات ومزايا نقدية، <b>دون</b> العلاوة الاجتماعية وعلاوة الأولاد (م55).</p>
+      </div>
+      <h3>مدة الخدمة والعقد</h3>
+      <div class="msf">
+        <label>نوع العقد<select id="ms_contract"><option value="open">غير محدد المدة</option><option value="fixed">محدد المدة</option></select></label>
+        <label>سبب انتهاء العلاقة<select id="ms_reason"></select></label>
+        <label>تاريخ الالتحاق<input id="ms_start" type="date"></label>
+        <label>تاريخ الانتهاء<input id="ms_end" type="date"></label>
+        <label id="ms_notice_w">مهلة الإخطار (م44)<select id="ms_notice"><option value="none">لم تُراعَ</option><option value="partial">رُوعي جزء منها</option><option value="full">رُوعيت كاملة</option><option value="exempt">أُعفي العامل من العمل خلالها (م44/د)</option></select></label>
+        <label id="ms_ndays_w" hidden>أيام الإخطار المراعاة<input id="ms_ndays" type="number" inputmode="numeric" min="0" step="1" placeholder="بالأيام"></label>
+      </div>
+      <h3>الإجازات والخصوم</h3>
+      <div class="msf">
+        <label>أيام الإجازة المستنفدة<input id="ms_used" type="number" inputmode="decimal" min="0" step="0.5" placeholder="0"></label>
+        <label>أو: رصيد مُدخل يدويًا<input id="ms_lman" type="number" inputmode="decimal" min="0" step="0.001" placeholder="يلغي الحساب التلقائي"></label>
+        <label>ديون أو قروض على العامل (م51)<input id="ms_debts" type="number" inputmode="decimal" min="0" step="0.001" placeholder="0"></label>
+        <label class="mschk"><input id="ms_kw" type="checkbox"><span>عامل كويتي مؤمَّن عليه</span></label>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="ms_copy" type="button">نسخ البيان</button>
+        <button class="btn" id="ms_print" type="button">طباعة</button>
+        <button class="btn" id="ms_reset" type="button">مسح</button>
+        <span class="help" id="ms_status"></span>
+      </div>
+    </section>
+    <section class="inout" id="ms_out">
+      <div class="empty"><b>لا حساب بعد</b>أدخل الأجر والتاريخين وسبب الانتهاء.</div>
     </section>
   </div>
 </div>
@@ -1220,6 +1297,7 @@ function setView(v) {
   $('#drwrap').classList.toggle('show', v === 'd');
   $('#tlwrap').classList.toggle('show', v === 't');
   $('#wewrap').classList.toggle('show', v === 'w');
+  $('#mstwrap').classList.toggle('show', v === 's');
   $('#homewrap').classList.toggle('show', v === 'h');
   document.body.classList.toggle('home', v === 'h');
   document.querySelector('.wrap').style.display = v === 'p' ? '' : 'none';
@@ -1233,6 +1311,7 @@ function setView(v) {
   if (v === 'd') initDraft();
   if (v === 't') initTimeline();
   if (v === 'w') initWord();
+  if (v === 's') initMst();
   if (v === 'h') renderHome();
   try { sessionStorage.setItem('tm_view', v); } catch (e) {}
   window.scrollTo(0, 0);
@@ -1244,6 +1323,7 @@ const HOME_TILES = [
   ['l', 'التشريعات', 'قانون العمل 6/2010 بنصه النافذ والأصلي، والمرافعات والإثبات والخبرة والقرارات المنظمة.', () => ARTS.length + ' مادة', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M4 7h16"/><path d="M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></svg>'],
   ['m', 'الخرائط', 'خرائط ذهنية للمكافأة والإجازات والفصل والتقادم وحاسبة المستحقات.', () => 'مرجع سريع', '', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 9V4M12 15v5M9 12H4M15 12h5"/><circle cx="12" cy="4" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/></svg>'],
   ['c', 'التحقق', 'أدخل معطيات القضية فيعيد تشغيل قائمة التحقق: النصاب، التقادم، المكافأة، الفوائد، المصروفات.', () => 'قائمة إلزامية', '', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 16h8"/></svg>'],
+  ['s', 'حاسبة المستحقات', 'المكافأة ورصيد الإجازات وبدل الإنذار خطوة بخطوة، مع مادة كل بند ومبادئه — ومعالجة الخدمة الممتدة من قبل 2010.', () => 'مسودة تُراجع', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h4"/></svg>'],
   ['i', 'تحليل الملف', 'الصق أوراق القضية أو ارفعها فيستخرج بطاقة القضية والطلبات وأوجه النعي ويقترح المبادئ.', () => 'مرحلة 1–2', 'mix', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>', 'Claude'],
   ['d', 'فحص المسودة', 'يتحقق من الإحالات والمواد، ويقترح سند كل قاعدة، ويطابق الأرقام، ويعيد قائمة التحقق والوصلات.', () => 'مرحلة 5–8', 'warn', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M13 7l3 3M3 21h18"/></svg>', 'محلي + Claude'],
   ['t', 'الخط الزمني', 'تتبّع قاعدة عبر السنين: أحكامك المتصلة بها مرتبة زمنيًا مع رصد الاستقرار والتطور.', () => 'استقرار المبدأ', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>', 'محلي + Claude'],
@@ -2153,6 +2233,277 @@ function initAsk() {
     } finally { $('#asksend').disabled = false; $('#askstop').disabled = true; askCtl = null; }
   };
 }
+
+// ---- حاسبة المستحقات: محرك الحساب (دالة نقية بلا DOM) — V38
+// كل بند يحمل: مواده (وسوم بصيغة التطبيق) + أرقام المبادئ (id في قاعدة التطبيق). لا يُرجّح نتيجة؛ ما لا سند له يُعلَّم ولا يُحسب.
+const MST_CUT = '2010-02-21';   // تاريخ العمل بالقانون 6/2010 (اليوم التالي لنشره) — مبادئ 27، 258
+const MST_A70 = '2017-07-09';   // نشر القانون 85/2017 المعدِّل للمادة 70 (6 أشهر بدل 9 للسنة الأولى)
+function mstParse(s) { if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null; const [y, m, d] = s.split('-').map(Number); const t = Date.UTC(y, m - 1, d); const o = new Date(t); return o.getUTCMonth() === m - 1 ? { y, m, d, t } : null; }
+function mstDim(y, m) { return new Date(Date.UTC(y, m, 0)).getUTCDate(); } // m: 1..12
+// الفرق التقويمي (سنوات/أشهر/أيام) من تاريخ البداية إلى تاريخ النهاية — على طريقة الطعن 2394/2017
+function mstAddM(a, n) { const mm = a.m - 1 + n, y = a.y + Math.floor(mm / 12), m = (mm % 12 + 12) % 12 + 1, d = Math.min(a.d, mstDim(y, m)); return { y, m, d, t: Date.UTC(y, m - 1, d) }; }
+function mstDiff(a, b) {
+  // أكبر عدد أشهر كاملة من تاريخ البداية لا يجاوز النهاية، ثم الأيام الباقية
+  let tm = (b.y - a.y) * 12 + (b.m - a.m);
+  while (tm > 0 && mstAddM(a, tm).t > b.t) tm--;
+  const d = Math.round((b.t - mstAddM(a, tm).t) / 86400000), y = Math.floor(tm / 12), m = tm % 12;
+  return { y, m, d, f: y + m / 12 + d / 365 };
+}
+function mstRound3(n) { return Math.round(n * 1000) / 1000; }
+function mstPer(x) { const p = []; if (x.y) p.push(x.y + ' سنة'); if (x.m) p.push(x.m + (x.m <= 10 && x.m > 2 ? ' أشهر' : ' شهر')); if (x.d) p.push(x.d + ' يومًا'); return p.length ? p.join(' و') : 'صفر'; }
+
+const MST_REASONS = {
+  resign:  { t: 'استقالة العامل', open: true, fixed: true },
+  emp:     { t: 'فصل / إنهاء من صاحب العمل', open: true, fixed: true },
+  expiry:  { t: 'انتهاء مدة العقد دون تجديد', open: false, fixed: true },
+  a41:     { t: 'فصل وفق المادة 41 (أ)', open: true, fixed: true, more: 1 },
+  b41:     { t: 'فصل وفق المادة 41 (ب)', open: true, fixed: true, more: 1 },
+  w48:     { t: 'إنهاء العامل لإخلال صاحب العمل — م48', open: true, fixed: true, more: 1 },
+  abandon: { t: 'انقطاع — استقالة حكمية م42', open: true, fixed: false, more: 1 },
+  death:   { t: 'وفاة أو عجز أو استنفاد الإجازة المرضية — م49', open: true, fixed: true, more: 1 },
+  closure: { t: 'إفلاس أو إغلاق المنشأة نهائيًا — م50', open: true, fixed: true, more: 1 },
+  marriage:{ t: 'إنهاء العاملة بسبب زواجها خلال سنة — م52/د', open: true, fixed: true, more: 1 },
+};
+
+function mstCalc(inp) {
+  const R = { ok: false, errors: [], items: [], notes: [], total: 0, owed: 0 };
+  const s = mstParse(inp.start), e = mstParse(inp.end);
+  const pay = inp.pay === 'd' ? 'd' : 'm', div = +inp.div === 30 ? 30 : 26, contract = inp.contract === 'fixed' ? 'fixed' : 'open';
+  const basic = +inp.basic || 0, total = +inp.total || 0, reason = inp.reason;
+  if (!s || !e) R.errors.push('أدخل تاريخي الالتحاق والانتهاء.');
+  else if (e.t <= s.t) R.errors.push('تاريخ الانتهاء يجب أن يكون لاحقًا لتاريخ الالتحاق.');
+  if (!(total > 0)) R.errors.push('أدخل الأجر الشامل (أساس المكافأة وبدل الإنذار).');
+  if (!(basic > 0)) R.errors.push('أدخل الأجر الأساسي (أساس المقابل النقدي للإجازات).');
+  if (basic > 0 && total > 0 && basic > total) R.errors.push('الأجر الأساسي أكبر من الشامل — راجع الرقمين.');
+  const rs = MST_REASONS[reason];
+  if (!rs) R.errors.push('اختر سبب انتهاء العلاقة.');
+  else if (!rs[contract]) R.errors.push('سبب الانتهاء المختار لا يتفق مع نوع العقد (' + (contract === 'open' ? 'غير محدد المدة' : 'محدد المدة') + ').');
+  if (R.errors.length) return R;
+
+  const svc = mstDiff(s, e); R.svc = svc;
+  const cut = mstParse(MST_CUT);
+  // يوم العمل والشهر وفق طبيعة الأجر (الإدخال للأجر غير الشهري يكون يوميًا)
+  const dayT = pay === 'm' ? total / div : total, dayB = pay === 'm' ? basic / div : basic;
+  const monthT = pay === 'm' ? total : total * div;
+  R.meta = { pay, div, contract, dayT, dayB, monthT };
+
+  // ---- مرحلة 2010
+  let era = 'new';
+  if (e.t < cut.t) era = 'old'; else if (s.t < cut.t) era = 'mixed';
+  R.era = era;
+  if (era === 'old') {
+    R.errors.push('انتهت الخدمة كلها قبل 21/2/2010 فيحكمها القانون 38/1964 (الطعن 355/2012). نصوص المواد اللازمة للحساب من ذلك القانون (54، 56، 38) غير موجودة في قاعدة التطبيق، فلا تحسب الأداة هذه الحالة — لا يوجد سند في قاعدة التطبيق.');
+    return R;
+  }
+  if (era === 'mixed') {
+    const pre = mstDiff(s, cut), post = mstDiff(cut, e);
+    R.split = { pre, post };
+    R.notes.push({ cls: 'info', title: 'خدمة بدأت قبل القانون 6/2010 وانتهت بعده', body: 'المدة السابقة على 21/2/2010: ' + mstPer(pre) + '؛ واللاحقة: ' + mstPer(post) + '. تاريخ العمل بالقانون الجديد 21/2/2010 (اليوم التالي لنشره).',
+      rows: [
+        ['المقابل النقدي للإجازات', 'يُحسب رصيد المدة كلها وفق المادة 70 من القانون 6/2010 — الاتجاه الغالب في قاعدة التطبيق: التفرقة بين الفترتين خطأ في تطبيق القانون لتعلق أحكامه بالنظام العام وانتهاء العلاقة في ظله.', [241, 489, 612, 231], 'وخالف ذلك حكم واحد في القاعدة قسّم الرصيد (14 ثم 21 يومًا حتى 21/2/2010، ثم 30 يومًا):', [397]],
+        ['بدل الإنذار', 'يخضع حسابه للقانون الذي انتهت الخدمة في ظله.', [263]],
+        ['مكافأة نهاية الخدمة', 'لا يوجد في قاعدة التطبيق مبدأ يقرر تجزئة المكافأة بين القانونين. طبّقت الأداة القانون الذي انتهت الخدمة في ظله على كامل المدة، على نهج مبادئ الإجازات وبدل الإنذار أعلاه — وهذا اختيار حسابي يخضع لتقدير المحكمة. وللعامل بالأجر الشهري نسب المادة 54/ب من القانون القديم — كما اقتبسها الحكم أدناه — مطابقة لنسب المادة 51/ب فلا يتغير الناتج:', [418]],
+      ].concat(reason === 'resign' || reason === 'abandon' ? [['تنبيه — الاستقالة', 'كان القانون القديم لا يمنح المستقيل نصف المكافأة إلا إذا تجاوزت خدمته خمس سنوات متتالية، بخلاف المادة 53 الجديدة (ثلاث سنوات). لا يوجد في القاعدة مبدأ يحسم أيهما يحكم المدة السابقة على 2010 في الاستقالة الواقعة بعده.', [76]]] : []),
+      refs: 'م150 عمل 6/2010,م149 عمل 6/2010', prins: [27, 258] });
+  }
+
+  // ---- أساس الأجر والقاسم
+  R.notes.push({ cls: 'info', title: 'أساس الأجر', body: 'المكافأة وبدل الإنذار على <b>الأجر الشامل</b> (آخر أجر، ويدخل فيه كل ما يُعطى مقابل العمل بصفة دورية، دون العلاوة الاجتماعية وعلاوة الأولاد)؛ والمقابل النقدي للإجازات على <b>الأجر الأساسي</b>. أجر اليوم = ' + (pay === 'm' ? 'الأجر الشهري ÷ ' + div + (div === 26 ? ' (أيام العمل الفعلية دون أيام الراحة — م67/2)' : ' (قاسم بديل اختاره المستخدم)') : 'الأجر اليومي المدخل') + '.',
+    refs: 'م55 عمل 6/2010,م67 عمل 6/2010', prins: [281, 636, 22, 637, 496].concat(div === 26 ? [325, 815, 816] : []) });
+
+  // ---- 1) مكافأة نهاية الخدمة
+  const F = svc.f;
+  const r1 = pay === 'm' ? 15 : 10, r2 = pay === 'm' ? 30 : 15, capMonths = pay === 'm' ? 18 : 12;
+  const first = Math.min(F, 5), rest = Math.max(0, F - 5);
+  const days1 = first * r1, days2 = rest * r2, gross0 = (days1 + days2) * dayT, cap = capMonths * monthT;
+  const capped = gross0 > cap, gross = capped ? cap : gross0;
+  let ratio = 1, why = '', ecls = 'ok', eprins = [], erefs = 'م51 عمل 6/2010';
+  switch (reason) {
+    case 'resign': case 'abandon':
+      if (contract === 'fixed') { why = 'كاملة: العامل أنهى عقدًا محدد المدة، والاستحقاق الجزئي قاصر على إنهاء العقد غير محدد المدة (م53).'; eprins = [576]; erefs += ',م52 عمل 6/2010,م53 عمل 6/2010,م47 عمل 6/2010'; }
+      else {
+        if (F < 3) { ratio = 0; why = 'لا مكافأة: مدة الخدمة أقل من ثلاث سنوات (م53).'; ecls = 'bad'; }
+        else if (F < 5) { ratio = 1 / 2; why = 'النصف: من ثلاث سنوات إلى أقل من خمس (م53).'; ecls = 'warn'; }
+        else if (F < 10) { ratio = 2 / 3; why = 'الثلثان: من خمس سنوات إلى أقل من عشر (م53).'; ecls = 'warn'; }
+        else why = 'كاملة: عشر سنوات فأكثر (م53).';
+        eprins = [512, 453, 39]; erefs += ',م53 عمل 6/2010';
+        if (reason === 'abandon') { eprins = [552].concat(eprins); erefs += ',م42 عمل 6/2010'; }
+      }
+      break;
+    case 'emp': why = contract === 'fixed' ? 'كاملة: إنهاء من صاحب العمل (م52/أ).' : 'كاملة: انتهى العقد من جانب صاحب العمل (م52/أ).'; erefs += ',م52 عمل 6/2010'; break;
+    case 'expiry': why = 'كاملة: انتهت مدة العقد المحدد دون تجديد (م52/ب).'; erefs += ',م52 عمل 6/2010'; break;
+    case 'a41': ratio = 0; ecls = 'bad'; why = 'لا مكافأة: فصل لأحد أفعال المادة 41 (أ) — بشرط ثبوت الفعل وسبق التحقيق الكتابي وسماع الأقوال (م37)، وإلا افتقد قرار الفصل مقوماته.'; eprins = [212, 341, 171]; erefs += ',م41 عمل 6/2010,م37 عمل 6/2010'; break;
+    case 'b41': why = 'كاملة: الفصل للمادة 41 (ب) لا يحرم من المكافأة بصريح النص.'; eprins = [181, 469, 833]; erefs += ',م41 عمل 6/2010'; break;
+    case 'w48': why = 'كاملة: إنهاء العامل للعقد لإخلال صاحب العمل (م48، م52/ج).'; eprins = [229]; erefs += ',م48 عمل 6/2010,م52 عمل 6/2010'; break;
+    case 'death': why = 'كاملة: انتهاء العقد وفق المادة 49 (م52/ج).'; erefs += ',م49 عمل 6/2010,م52 عمل 6/2010'; break;
+    case 'closure': why = 'كاملة: انتهاء العقد وفق المادة 50 (م52/ج).'; erefs += ',م50 عمل 6/2010,م52 عمل 6/2010'; break;
+    case 'marriage': why = 'كاملة: إنهاء العاملة العقد بسبب زواجها خلال سنة من تاريخه (م52/د).'; erefs += ',م52 عمل 6/2010'; break;
+  }
+  const debts = Math.max(0, +inp.debts || 0);
+  const afterRatio = gross * ratio, eos = Math.max(0, afterRatio - debts);
+  const eL = [
+    ['مدة الخدمة', mstPer(svc) + ' = ' + mstRound3(F) + ' سنة (الأشهر ÷ 12، والأيام ÷ 365)'],
+    ['أجر اليوم (شامل)', mstRound3(dayT)],
+    ['السنوات الخمس الأولى', mstRound3(first) + ' × ' + r1 + ' يومًا = ' + mstRound3(days1) + ' يومًا'],
+    ['ما زاد على خمس سنوات', mstRound3(rest) + ' × ' + r2 + ' يومًا = ' + mstRound3(days2) + ' يومًا'],
+    ['المكافأة الكاملة قبل السقف', mstRound3(days1 + days2) + ' يومًا × ' + mstRound3(dayT) + ' = ' + mstRound3(gross0)],
+  ];
+  if (capped) eL.push(['الحد الأقصى — ' + (pay === 'm' ? 'أجر سنة ونصف' : 'أجر سنة'), capMonths + ' × ' + mstRound3(monthT) + ' = ' + mstRound3(cap) + ' ← طُبّق']);
+  if (ratio !== 1) eL.push(['النسبة المستحقة', (ratio === 0 ? '0' : ratio === 0.5 ? '½' : '⅔') + ' × ' + mstRound3(gross) + ' = ' + mstRound3(afterRatio)]);
+  if (debts) eL.push(['خصم ديون/قروض العامل (م51)', '− ' + mstRound3(debts)]);
+  const eNotes = [];
+  if (pay === 'd') eNotes.push('للأجر غير الشهري: «أجر سنة» حُسب ' + capMonths + ' × (' + div + ' × الأجر اليومي) — تقدير حسابي يُراجع.');
+  if (contract === 'fixed' && (reason === 'resign')) eNotes.push({ t: 'إن ثبت أن العقد أصبح غير محدد المدة (كالتجديد المتكرر دون تحديد عدد مراته)، تُطبق المادة 53. وقد يلتزم العامل بتعويض صاحب العمل وفق المادة 47 — لا تحسبه الأداة.', p: [275] });
+  if (eos === 0 && ratio !== 0 && debts) eNotes.push('الديون المخصومة استغرقت المكافأة.');
+  R.items.push({ k: 'eos', title: 'مكافأة نهاية الخدمة', amount: mstRound3(eos), cls: ecls, why, lines: eL, refs: erefs, prins: eprins.concat(capped ? [281] : []).concat(pay === 'm' ? [249] : []), notes: eNotes });
+
+  // ---- 2) المقابل النقدي لرصيد الإجازات (م70، م73) — كامل المدة
+  const thrM = e.t >= mstParse(MST_A70).t ? 6 : 9;
+  const accrued = 30 * F, used = Math.max(0, +inp.used || 0);
+  const manual = inp.leaveManual !== '' && inp.leaveManual != null && !isNaN(+inp.leaveManual) && +inp.leaveManual >= 0 ? +inp.leaveManual : null;
+  const bal = manual != null ? manual : Math.max(0, accrued - used);
+  const leave = bal * dayB;
+  const lL = manual != null
+    ? [['الرصيد (مُدخل يدويًا)', mstRound3(bal) + ' يومًا'], ['أجر اليوم (أساسي)', mstRound3(dayB)], ['المقابل', mstRound3(bal) + ' × ' + mstRound3(dayB) + ' = ' + mstRound3(leave)]]
+    : [['الاستحقاق عن كامل المدة', '30 يومًا × ' + mstRound3(F) + ' سنة = ' + mstRound3(accrued) + ' يومًا'], ['المستنفد', '− ' + mstRound3(used) + ' يومًا'], ['الرصيد', mstRound3(bal) + ' يومًا'], ['أجر اليوم (أساسي)', mstRound3(dayB)], ['المقابل', mstRound3(bal) + ' × ' + mstRound3(dayB) + ' = ' + mstRound3(leave)]];
+  const lNotes = [];
+  if (F * 12 < thrM) lNotes.push('مدة الخدمة أقل من ' + thrM + ' أشهر: المادة 70 تشترط للإجازة عن السنة الأولى قضاء ' + thrM + ' أشهر' + (thrM === 6 ? ' (بعد تعديلها بالقانون 85/2017)' : ' (بنصها قبل تعديل 2017)') + '، مع استحقاق الإجازة عن كسور السنة — راجع الاستحقاق.');
+  if (!manual && used > accrued) lNotes.push('المستنفد يجاوز المستحق عن المدة — الرصيد صفر.');
+  if (bal > 60) lNotes.push({ t: 'الرصيد يجاوز ستين يومًا: يُصرف المقابل النقدي للرصيد كله عند انتهاء العقد.', p: [183] });
+  lNotes.push('عبء إثبات حصول العامل على إجازاته أو مقابلها على صاحب العمل.');
+  R.items.push({ k: 'leave', title: 'المقابل النقدي لرصيد الإجازات', amount: mstRound3(leave), cls: 'ok', why: 'رصيد الإجازات السنوية عن كامل مدة الخدمة، على الأجر الأساسي' + (div === 26 ? ' مقسومًا على 26' : '') + '.', lines: lL, refs: 'م70 عمل 6/2010,م73 عمل 6/2010,م72 عمل 6/2010,م74 عمل 6/2010', prins: [241, 403, 574, 637, 496], notes: lNotes });
+
+  // ---- 3) بدل الإنذار (م44)
+  const nm = pay === 'm' ? 3 : 1, nDays = nm * 30, nFull = nm * monthT;
+  const given = Math.min(nDays, Math.max(0, +inp.noticeDays || 0));
+  const nMode = inp.notice || 'none';
+  let nAmt = null, nCls = 'info', nWhy = '', nL = [], nPr = [], nRefs = 'م44 عمل 6/2010', owedByWorker = 0, nNotes = [];
+  const remFrac = nMode === 'partial' ? (nDays - given) / nDays : 1;
+  if (contract === 'fixed') {
+    nWhy = 'لا بدل إنذار في العقد محدد المدة؛ التعويض عن إنهائه قبل مدته بغير حق تحكمه المادة 47 (بما لا يجاوز أجر المدة المتبقية) وهو تقديري لا تحسبه الأداة.'; nPr = [505, 528]; nRefs += ',م47 عمل 6/2010';
+  } else if (['emp', 'closure'].includes(reason)) {
+    if (nMode === 'full') { nAmt = 0; nWhy = 'رُوعيت مهلة الإخطار كاملة.'; }
+    else if (nMode === 'exempt') { nAmt = 0; nWhy = 'أُعفي العامل من العمل خلال المهلة: يستحق أجرها وتُحسب خدمته ممتدة حتى نهايتها (م44/د). إن لم يُصرف أجر المهلة فهو أجر مستحق لا بدل.'; }
+    else { nAmt = nFull * remFrac; nCls = 'ok'; nWhy = 'أنهى صاحب العمل العقد غير محدد المدة دون مراعاة مهلة الإخطار (' + (nm === 3 ? 'ثلاثة أشهر للأجر الشهري' : 'شهر لغير الأجر الشهري') + ')' + (nMode === 'partial' ? '، رُوعي منها ' + given + ' يومًا' : '') + '.';
+      nL = [['مدة الإخطار', nm + (nm === 3 ? ' أشهر' : ' شهر') + ' = ' + nDays + ' يومًا'], ['أجر المدة (شامل)', nm + ' × ' + mstRound3(monthT) + ' = ' + mstRound3(nFull)]];
+      if (nMode === 'partial') nL.push(['الجزء غير المراعى', (nDays - given) + ' ÷ ' + nDays + ' × ' + mstRound3(nFull) + ' = ' + mstRound3(nAmt)]); }
+    nPr = [100, 505, 455].concat(reason === 'closure' ? [899] : []); if (reason === 'closure') nRefs += ',م50 عمل 6/2010';
+  } else if (reason === 'resign') {
+    nWhy = 'لا يستحق العامل المستقيل بدل الإنذار: البدل للطرف الذي بوغت بالإنهاء.'; nCls = 'bad'; nAmt = 0; nPr = [228];
+    if (nMode === 'none' || nMode === 'partial') { owedByWorker = nFull * remFrac; nNotes.push('وإذا لم يراعِ العامل المهلة فقد يلتزم هو لصاحب العمل بما يساوي ' + mstRound3(owedByWorker) + ' (' + (nMode === 'partial' ? 'الجزء غير المراعى من ' : '') + 'أجر ' + nm + (nm === 3 ? ' أشهر' : ' شهر') + ') — مبلغ لصاحب العمل لا يدخل في مجموع مستحقات العامل.'); }
+  } else if (reason === 'a41' || reason === 'b41') { nAmt = 0; nCls = 'bad'; nWhy = 'لا بدل إنذار: الفصل وفق المادة 41 ' + (reason === 'a41' ? '(أ) يحرم من البدل والتعويض والمكافأة.' : '(ب) يحرم من بدل الإخطار والتعويض دون المكافأة.'); nPr = reason === 'a41' ? [212, 171] : [290, 469, 833]; nRefs += ',م41 عمل 6/2010'; }
+  else if (reason === 'abandon') { nAmt = 0; nCls = 'bad'; nWhy = 'لا بدل إنذار للعامل المعتبر مستقيلًا حكمًا بالانقطاع.'; nPr = [552]; nRefs += ',م42 عمل 6/2010'; }
+  else if (reason === 'w48') { nAmt = 0; nWhy = 'للعامل إنهاء العقد دون إخطار في أحوال المادة 48؛ ولا تحسب الأداة بدلًا له — لا يوجد سند في قاعدة التطبيق لاستحقاقه.'; nRefs += ',م48 عمل 6/2010'; }
+  else { nWhy = 'لا تحسب الأداة بدل إنذار لهذا السبب — لا يوجد سند في قاعدة التطبيق.'; }
+  R.items.push({ k: 'notice', title: 'بدل الإنذار (مهلة الإخطار)', amount: nAmt == null ? null : mstRound3(nAmt), cls: nCls, why: nWhy, lines: nL, refs: nRefs, prins: nPr, notes: nNotes });
+  R.owed = mstRound3(owedByWorker);
+
+  // ---- تنبيهات عامة
+  if (inp.kuwaiti) R.notes.push({ cls: 'warn', title: 'عامل كويتي مؤمَّن عليه', body: 'يُراعى التقابل بين المكافأة ونظام التأمينات الاجتماعية (م51 وتعديلاتها، م82 تأمينات): في قاعدة التطبيق مبادئ تحسب المكافأة المستحقة مباشرة على ما جاوز السقف التأميني من الأجر. <b>لا تطبق الأداة هذا الأثر</b> — المبلغ المعروض محسوب على كامل الأجر ويجب تعديله بعد مراجعة المبادئ.', refs: 'م51 عمل 6/2010', prins: [255, 389, 111] });
+
+  R.total = mstRound3(R.items.reduce((a, x) => a + (x.amount || 0), 0));
+  R.ok = true;
+  return R;
+}
+
+// ---- حاسبة المستحقات: الواجهة
+let mstInit = false, mstLast = null;
+function mstFmt(n) { return (+n).toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }); }
+function mstPrin(id, contra) {
+  const p = P.find(x => x.id === id); if (!p) return '';
+  const c = (p.cite_std || p.appeal || '').replace(/^\(|\)$/g, '');
+  return '<button type="button" class="msp' + (contra ? ' contra' : '') + '" data-pid="' + id + '" title="فتح المبدأ">' + esc(c) + '</button>';
+}
+function mstPrins(ids, contra) { const h = (ids || []).map(i => mstPrin(i, contra)).join(''); return h ? '<div class="msprins">' + h + '</div>' : ''; }
+function mstNoteLi(n) { return typeof n === 'string' ? '<li>' + esc(n) + '</li>' : '<li>' + esc(n.t) + mstPrins(n.p) + '</li>'; }
+function initMst() {
+  if (mstInit) return; mstInit = true;
+  const g = id => $('#' + id);
+  const REASON_MAIN = ['resign', 'emp', 'expiry'];
+  function fillReasons() {
+    const c = g('ms_contract').value, cur = g('ms_reason').value, sel = g('ms_reason');
+    const ok = k => MST_REASONS[k][c];
+    let h = '<option value="">— اختر —</option>' + REASON_MAIN.filter(ok).map(k => '<option value="' + k + '">' + MST_REASONS[k].t + '</option>').join('');
+    h += '<optgroup label="أسباب أخرى">' + Object.keys(MST_REASONS).filter(k => MST_REASONS[k].more && ok(k)).map(k => '<option value="' + k + '">' + MST_REASONS[k].t + '</option>').join('') + '</optgroup>';
+    sel.innerHTML = h; if (cur && ok(cur)) sel.value = cur;
+  }
+  function syncUi() {
+    const d = g('ms_pay').value === 'd';
+    g('ms_total_l').textContent = d ? 'الأجر الشامل اليومي (د.ك)' : 'الأجر الشامل الشهري (د.ك)';
+    g('ms_basic_l').textContent = d ? 'الأجر الأساسي اليومي (د.ك)' : 'الأجر الأساسي الشهري (د.ك)';
+    const open = g('ms_contract').value === 'open';
+    g('ms_notice_w').hidden = !open;
+    g('ms_ndays_w').hidden = !open || g('ms_notice').value !== 'partial';
+  }
+  function read() {
+    return { pay: g('ms_pay').value, div: +g('ms_div').value, contract: g('ms_contract').value, reason: g('ms_reason').value, start: g('ms_start').value, end: g('ms_end').value,
+      total: g('ms_total').value, basic: g('ms_basic').value, notice: g('ms_notice').value, noticeDays: g('ms_ndays').value, used: g('ms_used').value, leaveManual: g('ms_lman').value.trim(), debts: g('ms_debts').value, kuwaiti: g('ms_kw').checked };
+  }
+  function card(it) {
+    const amt = it.amount == null ? '—' : mstFmt(it.amount) + ' د.ك';
+    let h = '<div class="kc ' + it.cls + '"><h4><span>' + esc(it.title) + '</span><span class="v">' + amt + '</span></h4>';
+    if (it.why) h += '<p>' + esc(it.why) + '</p>';
+    if (it.lines && it.lines.length) h += '<table class="intbl" style="margin-top:6px">' + it.lines.map(l => '<tr><td>' + esc(l[0]) + '</td><td>' + esc(String(l[1])) + '</td></tr>').join('') + '</table>';
+    if (it.notes && it.notes.length) h += '<ul class="msnotes">' + it.notes.map(mstNoteLi).join('') + '</ul>';
+    if (it.prins && it.prins.length) h += '<div class="mslbl">المبادئ الموسومة في قاعدة التطبيق:</div>' + mstPrins([...new Set(it.prins)]);
+    if (it.refs) h += '<div class="refs" data-refs="' + esc(it.refs) + '"></div>';
+    return h + '</div>';
+  }
+  function note(n) {
+    let h = '<div class="kc ' + n.cls + '"><h4><span>' + esc(n.title) + '</span></h4><p>' + n.body + '</p>';
+    (n.rows || []).forEach(r => { h += '<div class="msrow"><b>' + esc(r[0]) + '</b><p>' + esc(r[1]) + '</p>' + mstPrins(r[2]) + (r[3] ? '<div class="mslbl">' + esc(r[3]) + '</div>' + mstPrins(r[4], true) : '') + '</div>'; });
+    if (n.prins && n.prins.length) h += '<div class="mslbl">المبادئ:</div>' + mstPrins(n.prins);
+    if (n.refs) h += '<div class="refs" data-refs="' + esc(n.refs) + '"></div>';
+    return h + '</div>';
+  }
+  function run() {
+    syncUi();
+    const inp = read(), out = g('ms_out');
+    const started = inp.start || inp.end || inp.total || inp.basic || inp.reason;
+    if (!started) { out.innerHTML = '<div class="empty"><b>لا حساب بعد</b>أدخل الأجر والتاريخين وسبب الانتهاء.</div>'; mstLast = null; return; }
+    const R = mstCalc(inp); mstLast = { inp, R };
+    if (!R.ok) { out.innerHTML = '<div class="mswarn">مسودة حسابية — تخضع لمراجعة المحكمة</div>' + R.errors.map(e => '<div class="kc warn"><p>' + esc(e) + '</p></div>').join(''); return; }
+    const name = { eos: 'مكافأة نهاية الخدمة', leave: 'مقابل رصيد الإجازات', notice: 'بدل الإنذار' };
+    let h = '<div class="mswarn">مسودة حسابية داخلية — تخضع لمراجعة المحكمة، وليست ترجيحًا لنتيجة الدعوى.</div>';
+    h += '<div class="mssum"><div class="tt"><b>مجموع المستحقات المحسوبة للعامل</b><span class="big">' + mstFmt(R.total) + ' د.ك</span></div>'
+      + '<div class="svc">مدة الخدمة: ' + esc(mstPer(R.svc)) + ' · أجر اليوم الشامل ' + mstFmt(R.meta.dayT) + ' · الأساسي ' + mstFmt(R.meta.dayB) + '</div><table>'
+      + R.items.map(it => '<tr><td>' + name[it.k] + '</td><td>' + (it.amount == null ? 'لا يُحسب' : mstFmt(it.amount)) + '</td></tr>').join('')
+      + (R.owed ? '<tr class="owed"><td>قد يلتزم به العامل لصاحب العمل (بدل إنذار — خارج المجموع)</td><td>' + mstFmt(R.owed) + '</td></tr>' : '') + '</table></div>';
+    h += R.items.map(card).join('') + R.notes.map(note).join('');
+    out.innerHTML = h;
+    out.querySelectorAll('.msp[data-pid]').forEach(b => b.onclick = () => { const p = P.find(x => x.id === +b.dataset.pid); if (p) openPanel(p); });
+    refChips();
+  }
+  function text() {
+    if (!mstLast || !mstLast.R.ok) return '';
+    const { inp, R } = mstLast, L = [];
+    const cite = id => { const p = P.find(x => x.id === id); return p ? (p.cite_std || p.appeal) : ''; };
+    L.push('بيان حسابي للمستحقات — مسودة عمل داخلية تخضع لمراجعة المحكمة', '');
+    L.push('الأجر الشامل: ' + mstFmt(+inp.total) + ' · الأساسي: ' + mstFmt(+inp.basic) + ' (' + (inp.pay === 'm' ? 'شهري' : 'يومي') + '، القسمة على ' + inp.div + ')');
+    L.push('الخدمة: من ' + inp.start + ' إلى ' + inp.end + ' = ' + mstPer(R.svc) + ' · العقد: ' + (inp.contract === 'open' ? 'غير محدد المدة' : 'محدد المدة') + ' · السبب: ' + MST_REASONS[inp.reason].t, '');
+    R.items.forEach(it => {
+      L.push('■ ' + it.title + ': ' + (it.amount == null ? 'لا يُحسب' : mstFmt(it.amount) + ' د.ك'));
+      if (it.why) L.push('  ' + it.why);
+      (it.lines || []).forEach(l => L.push('  - ' + l[0] + ': ' + l[1]));
+      (it.notes || []).forEach(n => L.push('  ※ ' + (typeof n === 'string' ? n : n.t + ' ' + n.p.map(cite).join('؛ '))));
+      L.push('  المواد: ' + it.refs.split(',').join('، '));
+      if (it.prins && it.prins.length) L.push('  المبادئ: ' + [...new Set(it.prins)].map(cite).join('؛ '));
+      L.push('');
+    });
+    L.push('المجموع: ' + mstFmt(R.total) + ' د.ك');
+    if (R.owed) L.push('بدل إنذار قد يلتزم به العامل لصاحب العمل (خارج المجموع): ' + mstFmt(R.owed) + ' د.ك');
+    R.notes.filter(n => n.cls === 'warn' || n.rows).forEach(n => { L.push('', '◆ ' + n.title + ': ' + n.body.replace(/<[^>]+>/g, '')); (n.rows || []).forEach(r => L.push('  - ' + r[0] + ': ' + r[1] + ' [' + r[2].map(cite).join('؛ ') + ']' + (r[3] ? ' ' + r[3] + ' [' + r[4].map(cite).join('؛ ') + ']' : ''))); });
+    return L.join('\n');
+  }
+  fillReasons();
+  g('ms_contract').addEventListener('change', () => { fillReasons(); run(); });
+  g('ms_form').addEventListener('input', run); g('ms_form').addEventListener('change', run);
+  g('ms_copy').onclick = () => { const t = text(); if (!t) { toast('لا بيان مكتمل للنسخ'); return; } const done = () => toast('نُسخ البيان'); if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, () => mstFallbackCopy(t, done)); else mstFallbackCopy(t, done); };
+  g('ms_print').onclick = () => { if (!mstLast || !mstLast.R.ok) { toast('لا بيان مكتمل للطباعة'); return; } document.body.classList.add('pmst'); setTimeout(() => { window.print(); document.body.classList.remove('pmst'); }, 50); };
+  g('ms_reset').onclick = () => { g('ms_form').querySelectorAll('input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); g('ms_pay').value = 'm'; g('ms_div').value = '26'; g('ms_contract').value = 'open'; g('ms_notice').value = 'none'; fillReasons(); g('ms_reason').value = ''; run(); };
+  run();
+}
+function mstFallbackCopy(t, done) { const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('تعذّر النسخ'); } a.remove(); }
 
 // ---- boot
 const pid = loadHash();
