@@ -493,6 +493,26 @@ main{min-width:0;max-width:100%;overflow:hidden}
 }
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .inlocal{font-size:12.5px;color:var(--ok);background:var(--ok-soft);border-radius:8px;padding:6px 10px;line-height:1.6}
+/* ---------- إخفاء الهوية */
+.mskbar{margin-bottom:10px}
+.mskbar input[type=text]{flex:1 1 200px;min-width:0;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-size:14px;font-family:var(--ui);color:var(--ink)}
+.mskseg{width:auto!important;height:auto!important}
+.mskopt{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2)}
+.mskstat{font-size:13px;color:var(--ink2);margin-bottom:6px}
+.mskchips{display:flex;flex-wrap:wrap;gap:6px}
+.mskc{border:1px solid var(--bad);background:var(--bad-soft);color:var(--bad);border-radius:999px;padding:3px 10px;font-size:13px;font-family:var(--ui)}
+.mskc.u{border-color:#2b6cb0;color:#2b6cb0;background:var(--panel)}
+.mskc.off{border-color:var(--line2);background:var(--panel);color:var(--ink3);text-decoration:line-through}
+.mskc small{opacity:.75}
+.msklegend{font-size:12.5px;color:var(--ink3);display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+.msklegend span{display:inline-block;width:14px;height:10px;border:2px solid;background:rgba(0,0,0,.7)}
+.msklegend .r{border-color:#c53030}.msklegend .b{border-color:#2b6cb0}.msklegend .g{border-color:#888}
+#msk_pages{display:flex;flex-direction:column;gap:14px}
+.mskpage{margin:0 auto;width:100%;max-width:900px;padding:6px!important;background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.mskpage canvas{display:block;width:100%;height:auto;touch-action:pan-y pinch-zoom;cursor:pointer;background:#fff}
+.mskpage canvas.draw{touch-action:none;cursor:crosshair}
+.mskpage figcaption{font-size:12px;color:var(--ink3);margin-top:4px}
+@media (max-width:900px){.intakewrap{padding-bottom:120px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -517,7 +537,7 @@ main{min-width:0;max-width:100%;overflow:hidden}
     <button class="ib" id="theme" title="الوضع الليلي/النهاري" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
     <button class="ib" id="bmv" title="المحفوظات" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4Z"/></svg></button>
   </div>
-  <div class="seg" id="seg"><button type="button" data-v="h" title="الرئيسية">⌂</button><button type="button" class="on" data-v="p">المبادئ</button><button type="button" data-v="l">التشريعات</button><button type="button" data-v="m">الخرائط</button><button type="button" data-v="c">التحقق</button><button type="button" data-v="s">حاسبة المستحقات</button><button type="button" data-v="i">تحليل الملف</button><button type="button" data-v="d">فحص المسودة</button><button type="button" data-v="t">الخط الزمني</button><button type="button" data-v="w">تصدير Word</button><button type="button" data-v="f">ملفاتي</button><button type="button" data-v="a">المساعد</button></div>
+  <div class="seg" id="seg"><button type="button" data-v="h" title="الرئيسية">⌂</button><button type="button" class="on" data-v="p">المبادئ</button><button type="button" data-v="l">التشريعات</button><button type="button" data-v="m">الخرائط</button><button type="button" data-v="c">التحقق</button><button type="button" data-v="s">حاسبة المستحقات</button><button type="button" data-v="x">إخفاء الهوية</button><button type="button" data-v="i">تحليل الملف</button><button type="button" data-v="d">فحص المسودة</button><button type="button" data-v="t">الخط الزمني</button><button type="button" data-v="w">تصدير Word</button><button type="button" data-v="f">ملفاتي</button><button type="button" data-v="a">المساعد</button></div>
 </header>
 
 <div class="wrap">
@@ -845,6 +865,36 @@ main{min-width:0;max-width:100%;overflow:hidden}
       <div class="empty"><b>لا حساب بعد</b>أدخل الأجر والتاريخين وسبب الانتهاء.</div>
     </section>
   </div>
+</div>
+
+<div class="intakewrap" id="mskwrap">
+  <div class="note">إخفاء الهوية: ارفع أوراق الدعوى (PDF أو صور)، فيقرأها التطبيق <b>على جهازك</b> ويحدد مواضع أسماء الأطراف والقاضي وأمين السر والشهود والوكلاء والأرقام المدنية والهواتف، ويغطيها بمستطيلات سوداء على صورة الصفحة نفسها. الناتج صور فقط بلا طبقة نص: تنزّلها PDF لترفعها في محادثاتك، أو ترسلها إلى «تحليل الملف». <b>لا يُرسل شيء أثناء الكشف.</b> الكشف الآلي قد يفوته اسم — <b>مراجعتك لكل صفحة قبل الإرسال إلزامية</b>.</div>
+  <section class="inbox mskbar">
+    <div class="row">
+      <label class="btn" for="msk_files">📎 اختر PDF أو صور</label><input id="msk_files" type="file" accept="image/*,application/pdf" multiple hidden>
+      <span class="tag" id="msk_info">لا ملفات</span>
+      <button class="btn primary" id="msk_go" type="button">اكشف وعتّم</button>
+      <button class="btn" id="msk_stop" type="button" disabled>إيقاف</button>
+      <button class="btn" id="msk_clear" type="button">مسح الكل</button>
+    </div>
+    <div class="row">
+      <div class="seg mskseg" id="msk_mode"><button type="button" class="on" data-m="tap">لمس الكلمات</button><button type="button" data-m="draw">رسم مستطيل</button></div>
+      <label class="mskopt"><input type="checkbox" id="msk_hdr" checked> تعتيم ترويسة الصفحة الأولى</label>
+      <label class="mskopt"><input type="checkbox" id="msk_final"> معاينة نهائية (أسود كامل)</label>
+    </div>
+    <div class="row">
+      <input id="msk_addq" type="text" placeholder="أضف اسمًا فاته الكشف (اختياري)" autocomplete="off">
+      <button class="btn" id="msk_add" type="button">أضف</button>
+    </div>
+    <div id="msk_names"></div>
+    <span class="help" id="msk_status"></span>
+    <div class="row">
+      <button class="btn primary" id="msk_pdf" type="button" disabled>تنزيل PDF معتّم</button>
+      <button class="btn" id="msk_send" type="button" disabled>أرسل إلى «تحليل الملف»</button>
+    </div>
+  </section>
+  <p class="msklegend"><span class="r"></span> كشف آلي <span class="b"></span> بلمسك أو رسمك <span class="g"></span> ترويسة — المس مستطيلًا لإلغائه.</p>
+  <div id="msk_pages"></div>
 </div>
 
 <div class="intakewrap" id="tlwrap">
@@ -1301,6 +1351,7 @@ function setView(v) {
   $('#tlwrap').classList.toggle('show', v === 't');
   $('#wewrap').classList.toggle('show', v === 'w');
   $('#mstwrap').classList.toggle('show', v === 's');
+  $('#mskwrap').classList.toggle('show', v === 'x');
   $('#homewrap').classList.toggle('show', v === 'h');
   document.body.classList.toggle('home', v === 'h');
   document.querySelector('.wrap').style.display = v === 'p' ? '' : 'none';
@@ -1315,6 +1366,7 @@ function setView(v) {
   if (v === 't') initTimeline();
   if (v === 'w') initWord();
   if (v === 's') initMst();
+  if (v === 'x') initMask();
   if (v === 'h') renderHome();
   try { sessionStorage.setItem('tm_view', v); } catch (e) {}
   window.scrollTo(0, 0);
@@ -1327,6 +1379,7 @@ const HOME_TILES = [
   ['m', 'الخرائط', 'خرائط ذهنية للمكافأة والإجازات والفصل والتقادم وحاسبة المستحقات.', () => 'مرجع سريع', '', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 9V4M12 15v5M9 12H4M15 12h5"/><circle cx="12" cy="4" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/></svg>'],
   ['c', 'التحقق', 'أدخل معطيات القضية فيعيد تشغيل قائمة التحقق: النصاب، التقادم، المكافأة، الفوائد، المصروفات.', () => 'قائمة إلزامية', '', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 16h8"/></svg>'],
   ['s', 'حاسبة المستحقات', 'المكافأة ورصيد الإجازات وبدل الإنذار خطوة بخطوة، مع مادة كل بند ومبادئه — ومعالجة الخدمة الممتدة من قبل 2010.', () => 'مسودة تُراجع', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h4"/></svg>'],
+  ['x', 'إخفاء الهوية', 'عتّم أسماء المتقاضين والأرقام المدنية على صور الأوراق داخل جهازك، ثم نزّلها PDF أو أرسلها للتحليل.', () => 'محلي بالكامل', 'mix', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><rect x="7" y="12" width="7" height="2.6" fill="currentColor"/><rect x="7" y="16" width="4" height="2.6" fill="currentColor"/></svg>'],
   ['i', 'تحليل الملف', 'الصق أوراق القضية أو ارفعها فيستخرج بطاقة القضية والطلبات وأوجه النعي ويقترح المبادئ.', () => 'مرحلة 1–2', 'mix', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>', 'Claude'],
   ['d', 'فحص المسودة', 'يتحقق من الإحالات والمواد، ويقترح سند كل قاعدة، ويطابق الأرقام، ويعيد قائمة التحقق والوصلات.', () => 'مرحلة 5–8', 'warn', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M13 7l3 3M3 21h18"/></svg>', 'محلي + Claude'],
   ['t', 'الخط الزمني', 'تتبّع قاعدة عبر السنين: أحكامك المتصلة بها مرتبة زمنيًا مع رصد الاستقرار والتطور.', () => 'استقرار المبدأ', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>', 'محلي + Claude'],
@@ -1709,7 +1762,7 @@ async function inOcr(files, st, signal) {
     logger: m => { if (m.status === 'recognizing text') st.textContent = 'قراءة ضوئية… ' + Math.round(m.progress * 100) + '%'; else if (m.status) st.textContent = 'تهيئة القراءة الضوئية: ' + m.status; },
     errorHandler: e => { console.error('tesseract', e); }
   }), new Promise((_, rej) => setTimeout(() => rej(new Error('ocr-timeout')), 120000))]);
-  try { await worker.setParameters({ tessedit_pageseg_mode: '4', preserve_interword_spaces: '1' }); } catch (e) {}   // وضع الأعمدة/الأسطر يعطي نتائج أدق على صفحات الأحكام
+  try { await worker.setParameters({ tessedit_pageseg_mode: '4', preserve_interword_spaces: '0' }); } catch (e) {}   /* القيمة 1 كانت تلصق آخر كلمتين في كل سطر مضبوط (قياس V40) */
   let out = '';
   try {
     for (let i = 0; i < files.length; i++) {
@@ -2525,6 +2578,347 @@ function initMst() {
   run();
 }
 function mstFallbackCopy(t, done) { const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('تعذّر النسخ'); } a.remove(); }
+
+// ---- إخفاء الهوية: محرك الكشف (دالة نقية بلا DOM) — V40
+// المدخل: صفحات بكلمات وصناديقها من القراءة الضوئية المحلية. المخرج: الكلمات الواجب تعتيمها وأسبابها.
+// المبدأ: التعتيم الزائد أهون من التسريب؛ والمراجعة البشرية إلزامية قبل أي إرسال.
+const MSK_TASH = /[ً-ٰٟـ]/g;
+function mskNorm(s) {
+  return String(s || '').replace(/[‎‏‪-‮⁦-⁩]/g, '').replace(MSK_TASH, '')
+    .replace(/[إأآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي')
+    .replace(/[^ء-ي0-9٠-٩۰-۹A-Za-z]/g, '');
+}
+function mskDigits(s) { return (String(s).match(/[0-9٠-٩۰-۹]/g) || []).length; }
+function mskLev(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i]; let best = i;
+    for (let j = 1; j <= b.length; j++) { cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); best = Math.min(best, cur[j]); }
+    if (best > max) return max + 1; prev = cur;
+  }
+  return prev[b.length];
+}
+// علامات تسبق الأسماء. strong: تكفي وحدها. colon: تشترط نقطتين بعدها (لأنها ترد كثيرًا في المتن بلا اسم).
+const MSK_MARK = [
+  { m: ['المرفوعه', 'من'], n: 10, party: 1 }, { m: ['المقامه', 'من'], n: 10, party: 1 }, { m: ['مرفوعه', 'من'], n: 10, party: 1 }, { m: ['ضد'], n: 10, party: 1 },
+  { m: ['برئاسة'], n: 5 }, { m: ['وبحضور'], n: 5 }, { m: ['السيد'], n: 4 }, { m: ['السيده'], n: 4 }, { m: ['الاستاذ'], n: 4 }, { m: ['الاستاذه'], n: 4 },
+  { m: ['المستشار'], n: 4 }, { m: ['المحامي'], n: 4, exact: 1 }, { m: ['المحاميه'], n: 4, exact: 1 }, { m: ['الشاهد'], n: 4 }, { m: ['الشاهده'], n: 4 }, { m: ['شاهد'], n: 4 },
+  { m: ['ويمثلها'], n: 4 }, { m: ['ويمثله'], n: 4 }, { m: ['مديرها'], n: 4 }, { m: ['مديره'], n: 4 }, { m: ['الخبير'], n: 4, colon: 1 },
+  { m: ['المدعي'], n: 8, colon: 1, party: 1 }, { m: ['المدعيه'], n: 8, colon: 1, party: 1 }, { m: ['المدعي', 'عليه'], n: 10, colon: 1, party: 1 }, { m: ['المدعي', 'عليها'], n: 10, colon: 1, party: 1 },
+  { m: ['المستانف'], n: 8, colon: 1, party: 1 }, { m: ['المستانفه'], n: 8, colon: 1, party: 1 }, { m: ['المستانف', 'ضده'], n: 10, colon: 1, party: 1 }, { m: ['المستانف', 'ضدها'], n: 10, colon: 1, party: 1 },
+  { m: ['المستانف', 'عليه'], n: 10, colon: 1, party: 1 }, { m: ['الطاعن'], n: 8, colon: 1, party: 1 }, { m: ['الطاعنه'], n: 8, colon: 1, party: 1 }, { m: ['المطعون', 'ضده'], n: 10, colon: 1, party: 1 }, { m: ['المطعون', 'ضدها'], n: 10, colon: 1, party: 1 },
+  { m: ['اسم', 'العامل'], n: 6 }, { m: ['اسم', 'صاحب', 'العمل'], n: 8 }, { m: ['العامل'], n: 6, colon: 1 }, { m: ['صاحب', 'العمل'], n: 8, colon: 1 },
+].map(x => ({ ...x, m: x.m.map(mskNorm) }));
+// كلمات توقف جمع الاسم (لا تكون جزءًا منه)
+const MSK_STOP = new Set(('القاضي قاضي امين سر الجلسه الرقم رقم المدني مدني الجنسيه الجنسيه العنوان الساكن ويعلن ضد بصفته بصفتها بصفتهم هاتف الهاتف وهاتفه هاتفه ' +
+  'بان ان انه انها الذي التي الذين في علي علي من عن الي الى او قد كان كانت بتاريخ حيث وحيث وقد لدي وكيل وكيله وكيلها المدعي المدعيه المدعيعليه عليه عليها له لها ' +
+  'اقام اقامت اقامه الدعوي الحكم بالحكم المحكمه تقرير المنتدب المنتدبه بجلسه جلسه وحضر حضر وقدم وقدمت قدم شهد وشهد وقرر قرر وافاد افاد واضاف مع و ثم ف').split(' ').map(mskNorm));
+// كلمات عامة لا تُعمَّم على بقية الصفحات وإن عُتّمت في موضعها (أجزاء أسماء الشركات والألقاب)
+const MSK_GENERIC = new Set(('شركه الشركه مؤسسه المؤسسه مكتب معهد مطعم مستشفي مركز مجموعه للتجاره التجاريه العامه والمقاولات للمقاولات للخدمات الخدمات الطبيه ' +
+  'ذمم شمك شمكع المحدوده الكويتيه العالميه الدوليه المتحده الوطنيه الحديثه للسيدات للرجال للاستشارات للتسويق للسيارات للنقل للتنظيف للحراسه والتجاره والصناعه ' +
+  'مدير مديرها مديره المدير ويمثلها ويمثله السيد السيده الاستاذ الاستاذه المستشار المحامي المحاميه الشاهد الشاهده بصفته الممثل القانوني لها له عبد ابو بن بنت ال').split(' ').map(mskNorm));
+const MSK_MONEY = new Set(['مبلغ', 'بمبلغ', 'مبلغا', 'قدره', 'وقدره', 'دينار', 'دينارا', 'دنانير', 'دك', 'فلس', 'اجر', 'باجر', 'راتب', 'اجمالي', 'اجماليه'].map(mskNorm));
+const MSK_NOTID = new Set(['المدعي', 'المدعيه', 'المدعو', 'المدين', 'المديني', 'المدينه', 'حسابه', 'حسابها', 'الحسابات'].map(mskNorm));
+const MSK_DATE = /^\D*\d{1,4}\s*[\/\\-]\s*\d{1,2}(\s*[\/\\-]\s*\d{1,4})?\D*$/;
+function mskAscii(s) { return String(s).replace(/[\u0660-\u0669]/g, d => d.charCodeAt(0) - 0x660).replace(/[\u06F0-\u06F9]/g, d => d.charCodeAt(0) - 0x6F0); }
+const MSK_IDNUM = [['المدني'], ['مدني'], ['هاتف'], ['وهاتفه'], ['هاتفه'], ['الهاتف'], ['نقال'], ['جوال'], ['بطاقه'], ['البطاقه'], ['حساب'], ['الحساب'], ['الايبان'], ['ايبان'], ['جواز'], ['الجواز'], ['الاقامه'], ['اقامه'], ['الالي']];
+
+function mskNear(n, set) { if (set.has(n)) return true; if (n.length < 5) return false; for (const w of set) if (w.length >= 5 && mskLev(n, w, 1) <= 1) return true; return false; }
+function mskEq(a, b) { return a === b || (b.length >= 5 && mskLev(a, b, 1) <= 1); }
+function mskIsNameTok(n) { const s = mskStrip(n); return n.length >= 3 && !mskNear(n, MSK_STOP) && !mskNear(n, MSK_GENERIC) && !mskNear(s, MSK_GENERIC) && !mskDigits(n); }
+function mskStrip(n) { return n.replace(/^(وال|بال|لل|فال|كال|ال|و|ب|ل|ف)(?=.{3,})/, ''); }
+
+// يكتشف الأسماء المرشحة من العلامات، ويعيد مجموعة الأسماء (مطبَّعة) مع أمثلة العرض
+function mskFindNames(pages) {
+  const names = new Map();   // norm -> {label, n}
+  const direct = [];         // [pi, wi, reason] كلمات مجمَّعة بعد العلامات (تُعتَّم في موضعها حتى لو كانت عامة)
+  pages.forEach((pg, pi) => {
+    const W = pg.words, N = W.map(w => mskNorm(w.t));
+    for (let i = 0; i < W.length; i++) {
+      for (const mk of MSK_MARK) {
+        const L = mk.m.length; if (i + L > W.length) continue;
+        let ok = true; for (let k = 0; k < L; k++) if (mk.exact ? N[i + k] !== mk.m[k] : !mskEq(N[i + k], mk.m[k])) { ok = false; break; }
+        if (!ok) continue;
+        if (W[i + L - 1].ln !== W[i].ln) continue;
+        let j = i + L;
+        const hasColon = /[:：]\s*$/.test(W[i + L - 1].t) || (W[j] && /^[:：]/.test(W[j].t));
+        if (mk.colon && !hasColon) continue;
+        let got = 0;
+        while (j < W.length && W[j].ln === W[i].ln && got < mk.n) {
+          const raw = W[j].t, n = N[j];
+          if (!n) { j++; continue; }                                  // رموز مثل : و /
+          if (mskNear(n, MSK_STOP) && got > 0) break;
+          if (mskNear(n, MSK_STOP)) { j++; continue; }
+          if (mskDigits(raw) && !/[ء-ي]/.test(raw)) break;
+          direct.push([pi, j, mk.party ? 'party' : 'person']); got++;
+          if (mskIsNameTok(n)) { const s = mskStrip(n); if (!names.has(s)) names.set(s, { label: raw.replace(/[،,.؛;:]+$/, ''), n: 0 }); }
+          if (/[،,.؛;]$/.test(raw)) break;
+          j++;
+        }
+      }
+    }
+  });
+  return { names, direct };
+}
+// يطابق كلمة بقائمة الأسماء: تطابق تام، أو بسابقة (و/ب/ال…)، أو التصاق بكلمة تالية، أو خطأ حرف واحد في الأسماء الطويلة
+function mskMatch(n, nameSet) {
+  if (!n || n.length < 3) return null;
+  const s = mskStrip(n);
+  if (nameSet.has(n)) return n; if (nameSet.has(s)) return s;
+  for (const nm of nameSet) {
+    if (nm.length >= 4 && (n.startsWith(nm) || s.startsWith(nm)) && n.length <= nm.length + 6) return nm;   // الهاجريبصفته
+    if (nm.length >= 5 && mskLev(s, nm, 1) <= 1) return nm;                                                     // الهاجزي
+  }
+  return null;
+}
+// الحساب الكامل: يعيد لكل صفحة مجموعة فهارس الكلمات المعتَّمة مع السبب
+function mskCompute(pages, opt) {
+  opt = opt || {};
+  const found = opt.found || mskFindNames(pages);
+  const off = opt.off || new Set();           // أسماء ألغاها المستخدم
+  const extra = opt.extra || new Set();       // أسماء أضافها المستخدم (بالكتابة أو اللمس)
+  const wordOn = opt.wordOn || new Set();     // "pi:wi" كلمات فرض المستخدم تعتيمها
+  const wordOff = opt.wordOff || new Set();   // "pi:wi" كلمات ألغى المستخدم تعتيمها
+  const nameSet = new Set([...found.names.keys(), ...extra].filter(n => !off.has(n)));
+  const counts = new Map([...nameSet].map(n => [n, 0]));
+  const out = pages.map(() => new Map());     // wi -> reason
+  found.direct.forEach(([pi, wi, why]) => {
+    const n = mskStrip(mskNorm(pages[pi].words[wi].t));
+    if (off.has(n)) return; out[pi].set(wi, why);
+  });
+  pages.forEach((pg, pi) => {
+    const W = pg.words, N = W.map(w => mskNorm(w.t));
+    W.forEach((w, wi) => {
+      const hit = mskMatch(N[wi], nameSet);
+      if (hit) { out[pi].set(wi, 'name'); counts.set(hit, (counts.get(hit) || 0) + 1); }
+      // أرقام طويلة (مدني/هاتف/حساب) دون فاصل تاريخ، وليست مبلغًا
+      const dg = mskDigits(w.t);
+      if (dg >= 7 && !/[\/\\]/.test(w.t) && !/\d[.,\u066B\u066C]\d{3}\b/.test(mskAscii(w.t))) {
+        const near = [W[wi - 2], W[wi - 1], W[wi + 1], W[wi + 2]].filter(x => x && x.ln === w.ln).map(x => mskNorm(x.t));
+        if (!near.some(x => mskNear(x, MSK_MONEY) || MSK_MONEY.has(mskStrip(x)) || mskLev(x, 'مبلغ', 1) <= 1 || mskLev(mskStrip(x), 'مبلغ', 1) <= 1)) out[pi].set(wi, 'num');
+      }
+    });
+    // ما يلي علامات الأرقام الشخصية على السطر نفسه
+    for (let i = 0; i < W.length; i++) {
+      for (const mk of MSK_IDNUM) {
+        if (MSK_NOTID.has(N[i]) || !mskEq(N[i], mskNorm(mk[0]))) continue;
+        let j = i + 1, got = 0;
+        while (j < W.length && W[j].ln === W[i].ln && got < 4 && j - i <= 6) {
+          if (mskDigits(W[j].t)) { out[pi].set(j, 'num'); got++; }
+          else if (N[j] && got) break;
+          j++;
+        }
+      }
+    }
+    // الترويسة: شريط أعلى الصفحة الأولى
+    if (opt.header && pi === 0) W.forEach((w, wi) => { if (w.y1 <= pg.h * (opt.headerFrac || 0.12)) out[pi].set(wi, 'hdr'); });
+  });
+  wordOn.forEach(k => { const [pi, wi] = k.split(':').map(Number); if (out[pi]) out[pi].set(wi, 'user'); });
+  wordOff.forEach(k => { const [pi, wi] = k.split(':').map(Number); if (out[pi]) out[pi].delete(wi); });
+  return { masked: out, names: [...nameSet].map(n => ({ n, label: (found.names.get(n) || {}).label || n, count: counts.get(n) || 0, user: extra.has(n) })) , found };
+}
+
+// ---- إخفاء الهوية: الواجهة (كل شيء داخل الجهاز؛ لا إرسال)
+let mskInit = false;
+const MSK = { pages: [], found: null, off: new Set(), extra: new Set(), wordOn: new Set(), wordOff: new Set(), res: null, mode: 'tap', final: false, ctl: null };
+async function ocrWorker(st) {
+  const base = new URL('ocr/', location.href).href;
+  if (!window.Tesseract) await new Promise((res, rej) => { const s = document.createElement('script'); s.src = base + 'tesseract.min.js'; s.onload = res; s.onerror = () => rej(new Error('load')); document.head.appendChild(s); });
+  st.textContent = 'تحميل بيانات اللغة العربية…';
+  const langBuf = new Uint8Array(await (await fetch(base + 'ara.wasm')).arrayBuffer());
+  st.textContent = 'تهيئة محرك القراءة الضوئية…';
+  const worker = await Promise.race([Tesseract.createWorker([{ code: 'ara', data: langBuf }], 1, {
+    workerPath: base + 'worker.min.js', corePath: base, cacheMethod: 'none',
+    logger: m => { if (m.status === 'recognizing text' && st.dataset.pg) st.textContent = st.dataset.pg + ' ' + Math.round(m.progress * 100) + '%'; },
+    errorHandler: e => { console.error('tesseract', e); }
+  }), new Promise((_, rej) => setTimeout(() => rej(new Error('ocr-timeout')), 120000))]);
+  // preserve_interword_spaces=0: إبقاؤه 1 يلصق آخر كلمتين في كل سطر مضبوط (قياس V40)
+  try { await worker.setParameters({ tessedit_pageseg_mode: '4', preserve_interword_spaces: '0' }); } catch (e) {}
+  return worker;
+}
+function mskLoadImg(blob) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = URL.createObjectURL(blob); }); }
+function mskBoxes(pi) {
+  const pg = MSK.pages[pi], M = MSK.res ? MSK.res.masked[pi] : new Map(), out = [];
+  M.forEach((why, wi) => { const w = pg.words[wi]; if (!w) return; const p = Math.max(4, (w.y1 - w.y0) * 0.18); out.push({ x0: w.x0 - p, y0: w.y0 - p, x1: w.x1 + p, y1: w.y1 + p, why }); });
+  pg.manual.forEach(r => out.push({ ...r, why: 'draw' }));
+  return out;
+}
+function mskDraw(pi, preview) {
+  const pg = MSK.pages[pi], cv = pg.cv, cx = cv.getContext('2d');
+  cx.drawImage(pg.img, 0, 0);
+  mskBoxes(pi).forEach(b => {
+    if (MSK.final) { cx.fillStyle = '#000'; cx.fillRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0); return; }
+    cx.fillStyle = 'rgba(0,0,0,.72)'; cx.fillRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
+    cx.lineWidth = 3; cx.strokeStyle = b.why === 'draw' || b.why === 'user' ? '#2b6cb0' : b.why === 'hdr' ? '#888' : '#c53030'; cx.strokeRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
+  });
+  if (preview) { cx.fillStyle = 'rgba(43,108,176,.35)'; cx.fillRect(preview.x0, preview.y0, preview.x1 - preview.x0, preview.y1 - preview.y0); }
+}
+function mskRecompute() {
+  if (!MSK.pages.length || !MSK.found) return;
+  MSK.res = mskCompute(MSK.pages, { found: MSK.found, off: MSK.off, extra: MSK.extra, wordOn: MSK.wordOn, wordOff: MSK.wordOff, header: $('#msk_hdr').checked });
+  MSK.pages.forEach((_, i) => mskDraw(i));
+  mskChips();
+}
+function mskChips() {
+  const box = $('#msk_names'); if (!MSK.res) { box.innerHTML = ''; return; }
+  const on = MSK.res.names.slice().sort((a, b) => b.count - a.count);
+  const offs = [...MSK.off].map(n => ({ n, label: (MSK.found.names.get(n) || {}).label || n, off: 1 }));
+  let total = 0; MSK.res.masked.forEach(m => total += m.size); MSK.pages.forEach(p => total += p.manual.length);
+  box.innerHTML = '<div class="mskstat">المعتَّم: <b>' + total + '</b> موضعًا في ' + MSK.pages.length + ' صفحة · الأسماء المتتبَّعة: <b>' + on.length + '</b></div>'
+    + (on.length || offs.length ? '<div class="mskchips">' + on.map(x => '<button type="button" class="mskc' + (x.user ? ' u' : '') + '" data-n="' + esc(x.n) + '" title="اضغط لإلغاء تتبّع هذا الاسم">' + esc(x.label) + ' <small>×' + x.count + '</small></button>').join('')
+      + offs.map(x => '<button type="button" class="mskc off" data-n="' + esc(x.n) + '" title="اضغط لإعادة التتبّع">' + esc(x.label) + '</button>').join('') + '</div>' : '<p class="help">لم تُكتشف أسماء تلقائيًا — المس الأسماء على الصفحات أو أضفها بالكتابة.</p>');
+  box.querySelectorAll('.mskc').forEach(b => b.onclick = () => {
+    const n = b.dataset.n;
+    if (b.classList.contains('off')) MSK.off.delete(n);
+    else if (MSK.extra.has(n)) MSK.extra.delete(n); else MSK.off.add(n);
+    mskRecompute();
+  });
+}
+function mskPt(pi, e) { const cv = MSK.pages[pi].cv, r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height }; }
+function mskTap(pi, p) {
+  const pg = MSK.pages[pi];
+  const mi = pg.manual.findIndex(r => p.x >= r.x0 && p.x <= r.x1 && p.y >= r.y0 && p.y <= r.y1);
+  if (mi >= 0) { pg.manual.splice(mi, 1); mskRecompute(); return; }
+  let best = -1, bd = 1e9;
+  pg.words.forEach((w, i) => { const tol = 8; if (p.x >= w.x0 - tol && p.x <= w.x1 + tol && p.y >= w.y0 - tol && p.y <= w.y1 + tol) { const d = Math.abs((w.x0 + w.x1) / 2 - p.x) + Math.abs((w.y0 + w.y1) / 2 - p.y); if (d < bd) { bd = d; best = i; } } });
+  if (best < 0) { toast('لا كلمة مقروءة هنا — استعمل «رسم مستطيل»'); return; }
+  const key = pi + ':' + best, isM = MSK.res && MSK.res.masked[pi].has(best);
+  if (isM) { MSK.wordOn.delete(key); MSK.wordOff.add(key); }
+  else {
+    MSK.wordOff.delete(key);
+    const n = mskStrip(mskNorm(pg.words[best].t));
+    if (mskIsNameTok(mskNorm(pg.words[best].t)) && n.length >= 3) { MSK.extra.add(n); MSK.off.delete(n); toast('عُتّم «' + pg.words[best].t + '» وكل تكراراته'); }
+    else MSK.wordOn.add(key);
+  }
+  mskRecompute();
+}
+function mskBind(pi) {
+  const cv = MSK.pages[pi].cv; let st = null;
+  cv.addEventListener('pointerdown', e => { st = { p: mskPt(pi, e), id: e.pointerId, moved: false }; if (MSK.mode === 'draw') { cv.setPointerCapture(e.pointerId); e.preventDefault(); } });
+  cv.addEventListener('pointermove', e => {
+    if (!st || e.pointerId !== st.id) return; const p = mskPt(pi, e);
+    if (Math.hypot(p.x - st.p.x, p.y - st.p.y) > 12) st.moved = true;
+    if (MSK.mode === 'draw' && st.moved) { mskDraw(pi, { x0: Math.min(p.x, st.p.x), y0: Math.min(p.y, st.p.y), x1: Math.max(p.x, st.p.x), y1: Math.max(p.y, st.p.y) }); e.preventDefault(); }
+  });
+  cv.addEventListener('pointerup', e => {
+    if (!st || e.pointerId !== st.id) return; const p = mskPt(pi, e), s0 = st; st = null;
+    if (MSK.mode === 'draw' && s0.moved) { const r = { x0: Math.min(p.x, s0.p.x), y0: Math.min(p.y, s0.p.y), x1: Math.max(p.x, s0.p.x), y1: Math.max(p.y, s0.p.y) }; if (r.x1 - r.x0 > 10 && r.y1 - r.y0 > 10) MSK.pages[pi].manual.push(r); mskRecompute(); return; }
+    if (!s0.moved) mskTap(pi, p);
+  });
+  cv.addEventListener('pointercancel', () => { st = null; mskDraw(pi); });
+}
+function mskRenderPages() {
+  const box = $('#msk_pages'); box.innerHTML = '';
+  MSK.pages.forEach((pg, i) => {
+    const f = document.createElement('figure'); f.className = 'mskpage';
+    const cv = document.createElement('canvas'); cv.width = pg.img.naturalWidth; cv.height = pg.img.naturalHeight; pg.cv = cv;
+    cv.className = MSK.mode === 'draw' ? 'draw' : '';
+    f.appendChild(cv); const cap = document.createElement('figcaption'); cap.textContent = 'صفحة ' + (i + 1) + ' — ' + pg.name; f.appendChild(cap);
+    box.appendChild(f); mskBind(i); mskDraw(i);
+  });
+}
+// ملف PDF من صور JPEG فقط (لا طبقة نص) — مكتوب يدويًا بلا مكتبات
+function mskPdf(imgs) {
+  const enc = new TextEncoder(), parts = [], offs = []; let len = 0;
+  const push = x => { const b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; };
+  push('%PDF-1.4\n%\xFF\xFF\n');
+  const n = imgs.length, kids = [];
+  for (let i = 0; i < n; i++) kids.push((3 + i * 3) + ' 0 R');
+  offs[1] = len; push('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+  offs[2] = len; push('2 0 obj\n<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + n + ' >>\nendobj\n');
+  imgs.forEach((im, i) => {
+    const pw = 595.28, ph = +(pw * im.h / im.w).toFixed(2), po = 3 + i * 3, co = po + 1, io = po + 2;
+    const cs = 'q ' + pw + ' 0 0 ' + ph + ' 0 0 cm /Im' + i + ' Do Q';
+    offs[po] = len; push(po + ' 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pw + ' ' + ph + '] /Resources << /XObject << /Im' + i + ' ' + io + ' 0 R >> >> /Contents ' + co + ' 0 R >>\nendobj\n');
+    offs[co] = len; push(co + ' 0 obj\n<< /Length ' + cs.length + ' >>\nstream\n' + cs + '\nendstream\nendobj\n');
+    offs[io] = len; push(io + ' 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + im.bytes.length + ' >>\nstream\n'); push(im.bytes); push('\nendstream\nendobj\n');
+  });
+  const total = 3 + n * 3, xref = len;
+  let x = 'xref\n0 ' + total + '\n0000000000 65535 f \n'; for (let i = 1; i < total; i++) x += String(offs[i]).padStart(10, '0') + ' 00000 n \n';
+  push(x + 'trailer\n<< /Size ' + total + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF');
+  const out = new Uint8Array(len); let o = 0; parts.forEach(p => { out.set(p, o); o += p.length; }); return out;
+}
+async function mskFinalBlobs() {
+  const keep = MSK.final; MSK.final = true;
+  const out = [];
+  for (let i = 0; i < MSK.pages.length; i++) {
+    const pg = MSK.pages[i], cv = document.createElement('canvas'); cv.width = pg.img.naturalWidth; cv.height = pg.img.naturalHeight;
+    const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(pg.img, 0, 0);
+    cx.fillStyle = '#000'; mskBoxes(i).forEach(b => cx.fillRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0));
+    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.85));
+    out.push({ blob, w: cv.width, h: cv.height, name: 'صفحة معتّمة ' + (i + 1) });
+  }
+  MSK.final = keep; return out;
+}
+function initMask() {
+  if (mskInit) return; mskInit = true;
+  const st = $('#msk_status');
+  const setBusy = b => { $('#msk_go').disabled = b; $('#msk_stop').disabled = !b; $('#msk_pdf').disabled = b || !MSK.res; $('#msk_send').disabled = b || !MSK.res; };
+  const reset = () => { MSK.pages.forEach(p => { try { URL.revokeObjectURL(p.img.src); } catch (e) {} }); Object.assign(MSK, { pages: [], found: null, res: null }); MSK.off.clear(); MSK.extra.clear(); MSK.wordOn.clear(); MSK.wordOff.clear(); $('#msk_pages').innerHTML = ''; $('#msk_names').innerHTML = ''; $('#msk_info').textContent = 'لا ملفات'; setBusy(false); $('#msk_pdf').disabled = $('#msk_send').disabled = true; };
+  $('#msk_files').onchange = async e => {
+    const fs = [...e.target.files]; e.target.value = ''; if (!fs.length) return;
+    for (const f of fs) {
+      try {
+        if (f.type === 'application/pdf') { st.textContent = 'تحويل PDF إلى صور…'; const r = await inPdfToImages(f); for (const x of r.images) MSK.pages.push({ blob: x.blob, name: x.name, img: await mskLoadImg(x.blob), words: [], manual: [], w: 0, h: 0 }); }
+        else if (f.type.startsWith('image/')) MSK.pages.push({ blob: f, name: f.name, img: await mskLoadImg(f), words: [], manual: [] });
+      } catch (err) { toast('تعذّر قراءة ' + f.name); }
+    }
+    MSK.found = null; MSK.res = null;
+    $('#msk_info').textContent = MSK.pages.length + ' صفحة'; st.textContent = 'اضغط «اكشف وعتّم» — القراءة تجري على جهازك.';
+    mskRenderPages(); mskChips(); $('#msk_pdf').disabled = $('#msk_send').disabled = true;
+  };
+  $('#msk_go').onclick = async () => {
+    if (!MSK.pages.length) { toast('اختر الملف أولًا'); return; }
+    const ctl = new AbortController(); MSK.ctl = ctl; setBusy(true); const t0 = Date.now();
+    let worker = null;
+    try {
+      worker = await ocrWorker(st);
+      for (let i = 0; i < MSK.pages.length; i++) {
+        if (ctl.signal.aborted) break;
+        const pg = MSK.pages[i]; st.dataset.pg = 'قراءة الصفحة ' + (i + 1) + ' من ' + MSK.pages.length + '…'; st.textContent = st.dataset.pg;
+        const { data } = await worker.recognize(pg.blob, {}, { blocks: true, text: false });
+        const W = [];
+        (data.blocks || []).forEach((b, bi) => (b.paragraphs || []).forEach((p, pi2) => (p.lines || []).forEach((l, li) => (l.words || []).forEach(w => { if (w.text && w.text.trim()) W.push({ t: w.text, x0: w.bbox.x0, y0: w.bbox.y0, x1: w.bbox.x1, y1: w.bbox.y1, ln: bi + '.' + pi2 + '.' + li }); }))));
+        pg.words = W; pg.w = pg.img.naturalWidth; pg.h = pg.img.naturalHeight;
+      }
+    } catch (e) { st.textContent = 'تعذّرت القراءة الضوئية على هذا الجهاز' + (e && e.message === 'ocr-timeout' ? ' (انتهت المهلة)' : '') + '.'; }
+    finally { if (worker) { try { await worker.terminate(); } catch (e) {} } delete st.dataset.pg; MSK.ctl = null; setBusy(false); }
+    if (ctl.signal.aborted) { st.textContent = 'أُوقف.'; return; }
+    MSK.found = mskFindNames(MSK.pages); mskRecompute();
+    st.textContent = 'انتهى الكشف في ' + Math.round((Date.now() - t0) / 1000) + ' ثانية على جهازك. راجع كل صفحة: المس كلمة لتعتيمها أو إلغاء تعتيمها، أو ارسم مستطيلًا.';
+    $('#msk_pdf').disabled = $('#msk_send').disabled = false;
+  };
+  $('#msk_stop').onclick = () => MSK.ctl && MSK.ctl.abort();
+  window.__mskDebug = () => ({ pages: MSK.pages.length, words: MSK.pages.map(p => p.words.length), manual: MSK.pages.map(p => p.manual.length), on: MSK.wordOn.size, offW: MSK.wordOff.size, extra: MSK.extra.size, mode: MSK.mode });
+  $('#msk_clear').onclick = () => { reset(); st.textContent = 'مُسح كل شيء من الذاكرة.'; };
+  $('#msk_hdr').onchange = mskRecompute;
+  $('#msk_final').onchange = e => { MSK.final = e.target.checked; MSK.pages.forEach((_, i) => mskDraw(i)); };
+  document.querySelectorAll('#msk_mode button').forEach(b => b.onclick = () => {
+    MSK.mode = b.dataset.m; document.querySelectorAll('#msk_mode button').forEach(x => x.classList.toggle('on', x === b));
+    MSK.pages.forEach(p => p.cv && (p.cv.className = MSK.mode === 'draw' ? 'draw' : ''));
+  });
+  $('#msk_add').onclick = () => {
+    const v = $('#msk_addq').value.trim(); if (!v) return;
+    let k = 0; v.split(/\s+/).forEach(t => { const n = mskStrip(mskNorm(t)); if (n.length >= 3) { MSK.extra.add(n); MSK.off.delete(n); k++; } });
+    $('#msk_addq').value = ''; if (!MSK.found) { toast('أُضيف؛ سيُطبَّق بعد الكشف'); return; } mskRecompute(); toast(k ? 'أُضيف للتتبّع' : 'الاسم قصير جدًا');
+  };
+  $('#msk_pdf').onclick = async () => {
+    if (!MSK.res) return; st.textContent = 'تجهيز ملف PDF المعتّم…';
+    const bl = await mskFinalBlobs(); const imgs = [];
+    for (const b of bl) imgs.push({ bytes: new Uint8Array(await b.blob.arrayBuffer()), w: b.w, h: b.h });
+    const blob = new Blob([mskPdf(imgs)], { type: 'application/pdf' }), fname = 'مستند معتّم.pdf';
+    if (DLX) { try { await DLX.save({ filename: fname, data: blob }); st.textContent = 'أُنشئ الملف؛ أكّد الحفظ.'; } catch (e) { st.textContent = 'تعذّر الحفظ: ' + ((e && e.code) || 'خطأ'); } }
+    else { try { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = fname; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); st.textContent = 'نُزّل «' + fname + '» — صور فقط بلا طبقة نص.'; } catch (e) { st.textContent = 'تعذّر التنزيل.'; } }
+  };
+  $('#msk_send').onclick = async () => {
+    if (!MSK.res) return; const bl = await mskFinalBlobs();
+    inFiles = bl.map(b => ({ blob: b.blob, name: b.name })); inOcrDone = false; inTextOnly = false;
+    setView('i'); inThumbs();
+    $('#in_status').textContent = SAMPLEX ? 'أُضيفت ' + bl.length + ' صفحة معتّمة. راجعها ثم اضغط «حلّل الملف».' : 'أُضيفت الصفحات المعتّمة. التحليل يعمل داخل claude.ai فقط.';
+  };
+  reset();
+}
 
 // ---- boot
 const pid = loadHash();
