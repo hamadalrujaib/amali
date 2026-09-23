@@ -494,6 +494,7 @@ main{min-width:0;max-width:100%;overflow:hidden}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .inlocal{font-size:12.5px;color:var(--ok);background:var(--ok-soft);border-radius:8px;padding:6px 10px;line-height:1.6}
 /* ---------- إخفاء الهوية */
+.mskguard p{margin:0 0 6px}.mskguard .btn{margin-inline-start:6px}
 .mskbar{margin-bottom:10px}
 .mskbar input[type=text]{flex:1 1 200px;min-width:0;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-size:14px;font-family:var(--ui);color:var(--ink)}
 .mskseg{width:auto!important;height:auto!important}
@@ -1011,15 +1012,22 @@ function synExpand(tok) { const set = new Set(SYN[tok] || []); const st = stem(t
 const OUT = {'تمييز الحكم':'نقض','تمييز جزئي':'جزئي','رفض النعي':'رفض','مختلط':'مختلط'};
 
 // ---- index
+// فهارس النص الكامل (الموجز والأسباب) تُحسب عند أول استعمال لا عند فتح التطبيق — تسريع ظهور الرئيسية (V41)
+function lazyProp(o, k, f) {
+  Object.defineProperty(o, k, { configurable: true, enumerable: false,
+    get() { const v = f(); Object.defineProperty(o, k, { value: v, writable: true, configurable: true, enumerable: false }); return v; },
+    set(v) { Object.defineProperty(o, k, { value: v, writable: true, configurable: true, enumerable: false }); } });
+}
+function warmIndex() { let i = 0; const step = dl => { while (i < P.length && (!dl || dl.timeRemaining() > 4)) { const p = P[i++]; void p.nr; void p.ns; } if (i < P.length) (window.requestIdleCallback || (f => setTimeout(() => f(null), 30)))(step); }; (window.requestIdleCallback || (f => setTimeout(() => f(null), 300)))(step); }
 function indexPrinciple(p) {
   p.summary = p.summary || []; p.reasoning = p.reasoning || []; p.articles = p.articles || []; p.topics = p.topics || []; p.defects = p.defects || []; p.laws = p.laws || []; p.headings = p.headings || []; p.appeal_nums = p.appeal_nums || []; p.also = p.also || [];
   p.sum = p.summary.join(' ');
   p.reas = p.reasoning.join('\n');
-  p.nk = norm(p.keywords); p.ns = norm(p.sum); p.nr = norm(p.reas);
+  p.nk = norm(p.keywords); lazyProp(p, 'ns', () => norm(p.sum)); lazyProp(p, 'nr', () => norm(p.reas));
   p.nc = norm((p.cite || '') + ' ' + p.appeal + ' ' + p.appeal_nums.join(' '));
   p.na = norm(p.articles.join(' '));
   p.dsort = p.date ? p.date.split('/').reverse().map(x => x.padStart(2, '0')).join('') : (p.year + '0000');
-  p.tok = new Set(norm(p.keywords + ' ' + p.sum).split(' ').filter(w => w.length > 3));
+  lazyProp(p, 'tok', () => new Set(norm(p.keywords + ' ' + p.sum).split(' ').filter(w => w.length > 3)));
 }
 P.forEach(indexPrinciple);
 
@@ -1808,7 +1816,9 @@ function initIntake() {
     finally { $('#in_ocr').disabled = false; $('#in_stop').disabled = true; $('#in_go').disabled = !SAMPLEX; inCtl = null; }
     if (ctl.signal.aborted) { st.textContent = 'أُوقفت القراءة.'; return; }
     if (t && t.trim()) {
+      const wasSafe = !$('#in_text').value.trim() || MSK_SAFE.get('in_text') === $('#in_text').value.trim();
       $('#in_text').value = ($('#in_text').value.trim() ? $('#in_text').value.trim() + '\n' : '') + t; inOcrDone = true; inTextOnly = true;
+      if (wasSafe && inFiles.length && inFiles.every(f => f.masked)) MSK_SAFE.set('in_text', $('#in_text').value.trim());
       st.textContent = 'تمت القراءة على جهازك في ' + Math.round((Date.now() - t0) / 1000) + ' ثانية، ولم يُرسل شيء. قارن النص بالأصل: الأسماء والأرقام والتواريخ والمبالغ.' + (SAMPLEX ? ' عند «حلّل الملف» سيُرسل النص وحده دون الصور.' : '');
       $('#in_out').innerHTML = '<div class="inlocal"><b>قراءة محلية — لم يُرسل شيء.</b> النص المقروء في المربع. هذه تجربة لدقة القراءة الضوئية على أوراقك؛ صحّح الأخطاء قبل أي استعمال.</div>';
       $('#in_text').scrollTop = 0;
@@ -1823,6 +1833,7 @@ function initIntake() {
   $('#in_go').onclick = async () => {
     const text = $('#in_text').value.trim();
     if (!text && !inFiles.length) { toast('الصق النص أو ارفع الصور أولًا'); return; }
+    if ((SAMPLEX || window.__guardTest) && !mskGuardIntake(() => $('#in_go').click())) return;   /* التعتيم الإجباري (V41) */
     let lim = null; try { lim = await SAMPLEX.limits(); } catch (e) {}
     let imgs = inTextOnly ? [] : inFiles.map(f => f.blob);
     inCtl = new AbortController(); $('#in_go').disabled = true; $('#in_stop').disabled = false;
@@ -1995,15 +2006,17 @@ function initDraft() {
   const run = async (prompt, render, label) => {
     const t = $('#dr_text').value.trim(); if (t.length < 80) { toast('الصق المسودة أولًا'); return; }
     if (!drLast) { drLast = drAnalyze(t); drRender(drLast); }
-    drCtl = new AbortController(); $('#dr_crit').disabled = $('#dr_adv').disabled = true; $('#dr_stop').disabled = false; st.textContent = 'جارٍ ' + label + '… (قد يستغرق دقيقة)';
-    try { const j = await SAMPLEX.json(prompt + t.slice(0, 40000) + drContext(drLast), { signal: drCtl.signal, modelTier: 'default', cache: false }); if (!j || typeof j !== 'object') throw { code: 'invalid_json' }; render(j); st.textContent = 'تم. ' + label + ' مقيّد بمبادئ القاعدة فقط؛ راجعه على الأوراق.'; $('#dr_out').scrollIntoView({ behavior: 'smooth' }); }
+    let g = { ok: true, text: t }; if (SAMPLEX || window.__guardTest) { g = mskGuardDraft(t, () => $(prompt === DR_CRIT ? '#dr_crit' : '#dr_adv').click()); if (!g.ok) return; }
+    drCtl = new AbortController(); $('#dr_crit').disabled = $('#dr_adv').disabled = true; $('#dr_stop').disabled = false; st.textContent = 'جارٍ ' + label + (g.masked ? ' على نسخة معتّمة (' + g.n + ' موضعًا)' : '') + '… (قد يستغرق دقيقة)';
+    try { const j = await SAMPLEX.json(prompt + g.text.slice(0, 40000) + drContext(drLast), { signal: drCtl.signal, modelTier: 'default', cache: false }); if (!j || typeof j !== 'object') throw { code: 'invalid_json' }; render(j); st.textContent = 'تم. ' + label + ' مقيّد بمبادئ القاعدة فقط؛ راجعه على الأوراق.'; $('#dr_out').scrollIntoView({ behavior: 'smooth' }); }
     catch (e) { const c = e && e.code; st.textContent = c === 'cancelled' ? 'أُوقف.' : c === 'not_granted' ? 'لم يُمنح الإذن.' : c === 'rate_limited' ? 'تجاوزت حد الاستخدام؛ حاول لاحقًا.' : c === 'prompt_too_large' ? 'المسودة أطول من الحد؛ قسّمها.' : c === 'invalid_json' ? 'تعذّر تفسير الإجابة؛ حاول مرة أخرى.' : 'تعذّر: ' + (c || 'خطأ'); }
     finally { $('#dr_crit').disabled = $('#dr_adv').disabled = false; $('#dr_stop').disabled = true; drCtl = null; }
   };
   $('#dr_semmatch').onclick = async () => {
     const t = $('#dr_text').value.trim(); if (t.length < 80) { toast('الصق المسودة أولًا'); return; }
     if (!drLast) { drLast = drAnalyze(t); drRender(drLast); }
-    const claims = drLast.claims.filter(c => c.isClaim);
+    let g = { ok: true, text: t, masked: false }; if (SAMPLEX || window.__guardTest) { g = mskGuardDraft(t, () => $('#dr_semmatch').click()); if (!g.ok) return; }
+    const claims = (g.masked ? drAnalyze(g.text) : drLast).claims.filter(c => c.isClaim);
     if (!claims.length) { toast('لم تُرصد قواعد قانونية في المسودة'); return; }
     const shortlist = {}; const seen = {};
     claims.forEach(c => { const sg = inSuggest(c.text, 8); (sg.hits || []).forEach(p => { seen[p.id] = p; }); shortlist[c.i] = (sg.hits || []).map(p => p.id); });
@@ -2612,7 +2625,7 @@ const MSK_MARK = [
 ].map(x => ({ ...x, m: x.m.map(mskNorm) }));
 // كلمات توقف جمع الاسم (لا تكون جزءًا منه)
 const MSK_STOP = new Set(('القاضي قاضي امين سر الجلسه الرقم رقم المدني مدني الجنسيه الجنسيه العنوان الساكن ويعلن ضد بصفته بصفتها بصفتهم هاتف الهاتف وهاتفه هاتفه ' +
-  'بان ان انه انها الذي التي الذين في علي علي من عن الي الى او قد كان كانت بتاريخ حيث وحيث وقد لدي وكيل وكيله وكيلها المدعي المدعيه المدعيعليه عليه عليها له لها ' +
+  'بان بانه بانها بانهم وبان وانه وانها لانه لانها كونه كونها ان انه انها الذي التي الذين في علي علي من عن الي الى او قد كان كانت بتاريخ حيث وحيث وقد لدي وكيل وكيله وكيلها المدعي المدعيه المدعيعليه عليه عليها له لها ' +
   'اقام اقامت اقامه الدعوي الحكم بالحكم المحكمه تقرير المنتدب المنتدبه بجلسه جلسه وحضر حضر وقدم وقدمت قدم شهد وشهد وقرر قرر وافاد افاد واضاف مع و ثم ف').split(' ').map(mskNorm));
 // كلمات عامة لا تُعمَّم على بقية الصفحات وإن عُتّمت في موضعها (أجزاء أسماء الشركات والألقاب)
 const MSK_GENERIC = new Set(('شركه الشركه مؤسسه المؤسسه مكتب معهد مطعم مستشفي مركز مجموعه للتجاره التجاريه العامه والمقاولات للمقاولات للخدمات الخدمات الطبيه ' +
@@ -2702,7 +2715,7 @@ function mskCompute(pages, opt) {
     // ما يلي علامات الأرقام الشخصية على السطر نفسه
     for (let i = 0; i < W.length; i++) {
       for (const mk of MSK_IDNUM) {
-        if (MSK_NOTID.has(N[i]) || !mskEq(N[i], mskNorm(mk[0]))) continue;
+        const mw = mskNorm(mk[0]); if (MSK_NOTID.has(N[i]) || !(N[i] === mw || ((mw === 'المدني' || mw === 'الهاتف') && mskEq(N[i], mw)))) continue;
         let j = i + 1, got = 0;
         while (j < W.length && W[j].ln === W[i].ln && got < 4 && j - i <= 6) {
           if (mskDigits(W[j].t)) { out[pi].set(j, 'num'); got++; }
@@ -2851,23 +2864,25 @@ async function mskFinalBlobs() {
   }
   MSK.final = keep; return out;
 }
+async function mskImport(list) {
+  const st = $('#msk_status');
+  for (const f of list) {
+    const blob = f.blob || f, name = f.name || 'صفحة', type = (blob.type || '');
+    try {
+      if (type === 'application/pdf') { st.textContent = 'تحويل PDF إلى صور…'; const r = await inPdfToImages(blob); for (const x of r.images) MSK.pages.push({ blob: x.blob, name: x.name, img: await mskLoadImg(x.blob), words: [], manual: [] }); }
+      else if (type.startsWith('image/')) MSK.pages.push({ blob, name, img: await mskLoadImg(blob), words: [], manual: [] });
+    } catch (err) { toast('تعذّر قراءة ' + name); }
+  }
+  MSK.found = null; MSK.res = null;
+  $('#msk_info').textContent = MSK.pages.length + ' صفحة'; st.textContent = 'اضغط «اكشف وعتّم» — القراءة تجري على جهازك.';
+  mskRenderPages(); mskChips(); $('#msk_pdf').disabled = $('#msk_send').disabled = true;
+}
 function initMask() {
   if (mskInit) return; mskInit = true;
   const st = $('#msk_status');
   const setBusy = b => { $('#msk_go').disabled = b; $('#msk_stop').disabled = !b; $('#msk_pdf').disabled = b || !MSK.res; $('#msk_send').disabled = b || !MSK.res; };
   const reset = () => { MSK.pages.forEach(p => { try { URL.revokeObjectURL(p.img.src); } catch (e) {} }); Object.assign(MSK, { pages: [], found: null, res: null }); MSK.off.clear(); MSK.extra.clear(); MSK.wordOn.clear(); MSK.wordOff.clear(); $('#msk_pages').innerHTML = ''; $('#msk_names').innerHTML = ''; $('#msk_info').textContent = 'لا ملفات'; setBusy(false); $('#msk_pdf').disabled = $('#msk_send').disabled = true; };
-  $('#msk_files').onchange = async e => {
-    const fs = [...e.target.files]; e.target.value = ''; if (!fs.length) return;
-    for (const f of fs) {
-      try {
-        if (f.type === 'application/pdf') { st.textContent = 'تحويل PDF إلى صور…'; const r = await inPdfToImages(f); for (const x of r.images) MSK.pages.push({ blob: x.blob, name: x.name, img: await mskLoadImg(x.blob), words: [], manual: [], w: 0, h: 0 }); }
-        else if (f.type.startsWith('image/')) MSK.pages.push({ blob: f, name: f.name, img: await mskLoadImg(f), words: [], manual: [] });
-      } catch (err) { toast('تعذّر قراءة ' + f.name); }
-    }
-    MSK.found = null; MSK.res = null;
-    $('#msk_info').textContent = MSK.pages.length + ' صفحة'; st.textContent = 'اضغط «اكشف وعتّم» — القراءة تجري على جهازك.';
-    mskRenderPages(); mskChips(); $('#msk_pdf').disabled = $('#msk_send').disabled = true;
-  };
+  $('#msk_files').onchange = async e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) await mskImport(fs); };
   $('#msk_go').onclick = async () => {
     if (!MSK.pages.length) { toast('اختر الملف أولًا'); return; }
     const ctl = new AbortController(); MSK.ctl = ctl; setBusy(true); const t0 = Date.now();
@@ -2890,7 +2905,6 @@ function initMask() {
     $('#msk_pdf').disabled = $('#msk_send').disabled = false;
   };
   $('#msk_stop').onclick = () => MSK.ctl && MSK.ctl.abort();
-  window.__mskDebug = () => ({ pages: MSK.pages.length, words: MSK.pages.map(p => p.words.length), manual: MSK.pages.map(p => p.manual.length), on: MSK.wordOn.size, offW: MSK.wordOff.size, extra: MSK.extra.size, mode: MSK.mode });
   $('#msk_clear').onclick = () => { reset(); st.textContent = 'مُسح كل شيء من الذاكرة.'; };
   $('#msk_hdr').onchange = mskRecompute;
   $('#msk_final').onchange = e => { MSK.final = e.target.checked; MSK.pages.forEach((_, i) => mskDraw(i)); };
@@ -2913,11 +2927,58 @@ function initMask() {
   };
   $('#msk_send').onclick = async () => {
     if (!MSK.res) return; const bl = await mskFinalBlobs();
-    inFiles = bl.map(b => ({ blob: b.blob, name: b.name })); inOcrDone = false; inTextOnly = false;
+    inFiles = bl.map(b => ({ blob: b.blob, name: b.name, masked: true })); inOcrDone = false; inTextOnly = false;
     setView('i'); inThumbs();
     $('#in_status').textContent = SAMPLEX ? 'أُضيفت ' + bl.length + ' صفحة معتّمة. راجعها ثم اضغط «حلّل الملف».' : 'أُضيفت الصفحات المعتّمة. التحليل يعمل داخل claude.ai فقط.';
   };
   reset();
+}
+
+// ---- التعتيم الإجباري قبل أي إرسال إلى Claude (V41)
+const MSK_SAFE = new Map();          // معرف مربع النص -> النص الذي ثبت تعتيمه
+const MSK_BYPASS = {};               // تجاوز لمرة واحدة بعد إقرار صريح
+let MSK_DR_COPY = false;             // فحص المسودة: أرسل نسخة معتّمة دائمًا في هذه الجلسة
+function mskMaskText(t) {
+  const lines = String(t || '').split('\n'), words = [], map = [];
+  lines.forEach((ln, li) => { ln.split(/(\s+)/).forEach((tok, k) => { if (tok && !/^\s+$/.test(tok)) { map.push([li, k]); words.push({ t: tok, x0: 0, y0: 0, x1: 0, y1: 0, ln: String(li) }); } }); });
+  const R = mskCompute([{ w: 1, h: 1, words }], { header: false });
+  const parts = lines.map(ln => ln.split(/(\s+)/)); let n = 0;
+  R.masked[0].forEach((why, wi) => { const [li, k] = map[wi]; const tok = parts[li][k]; const tail = (tok.match(/[،,.؛;:)]+$/) || [''])[0]; parts[li][k] = '■■■' + tail; n++; });
+  return { text: parts.map(p => p.join('')).join('\n'), n, names: R.names.map(x => x.label) };
+}
+function mskGuardCard(out, html) { out.innerHTML = '<div class="kc warn mskguard"><h4><span>حماية البيانات — لم يُرسل شيء</span></h4>' + html + '</div>'; out.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+// تحليل الملف: الصور يجب أن تمر بأداة التعتيم، والنص يجب أن يُعتَّم أو يُقَر بخلوه
+function mskGuardIntake(retry) {
+  if (MSK_BYPASS.in) { MSK_BYPASS.in = false; return true; }
+  const tx = $('#in_text'), txt = tx.value.trim();
+  const raw = inTextOnly ? [] : inFiles.filter(f => !f.masked);
+  const textBad = !!txt && MSK_SAFE.get('in_text') !== txt;
+  if (!raw.length && !textBad) { const old = document.querySelector('#in_out .mskguard'); if (old) old.remove(); return true; }
+  let h = '<p>قبل الإرسال إلى Claude يجب تعتيم بيانات المتقاضين:</p><ul class="msnotes">';
+  if (raw.length) h += '<li><b>' + raw.length + ' صفحة غير معتّمة.</b> <button type="button" class="btn" id="g_img">عتّمها في «إخفاء الهوية»</button></li>';
+  if (textBad) h += '<li><b>النص في المربع لم يُعتَّم' + (raw.length ? '' : '') + '.</b> <button type="button" class="btn" id="g_txt">عتّم الأسماء في النص</button> <span class="help">تستبدل الأداة الأسماء والأرقام الشخصية بـ■■■ ثم تراجعها أنت.</span></li>';
+  h += '</ul><label class="mskopt" style="margin-top:8px"><input type="checkbox" id="g_ack"> أقرّ بأن ما سأرسله خالٍ من بيانات شخصية، أو أن إرساله مأذون.</label><div class="row" style="margin-top:6px"><button type="button" class="btn" id="g_go" disabled>أرسل رغم ذلك</button></div>';
+  mskGuardCard($('#in_out'), h);
+  const gi = $('#g_img'), gt = $('#g_txt');
+  if (gi) gi.onclick = async () => { const moving = inFiles.filter(f => !f.masked); inFiles = inFiles.filter(f => f.masked); inThumbs(); setView('x'); await mskImport(moving); };
+  if (gt) gt.onclick = () => { const r = mskMaskText(tx.value); tx.value = r.text; MSK_SAFE.set('in_text', r.text.trim()); $('#in_status').textContent = 'عُتّم ' + r.n + ' موضعًا في النص. راجعه — المس «حلّل الملف» بعد التأكد.'; $('#in_out').innerHTML = '<div class="inlocal"><b>عُتّم النص محليًا.</b> راجع المربع: أي اسم بقي ظاهرًا احذفه يدويًا، ثم اضغط «حلّل الملف».</div>'; tx.scrollTop = 0; };
+  $('#g_ack').onchange = e => { $('#g_go').disabled = !e.target.checked; };
+  $('#g_go').onclick = () => { MSK_BYPASS.in = true; retry(); };
+  return false;
+}
+// فحص المسودة: تُرسل نسخة معتّمة ويبقى نص المسودة في مربعه كما هو
+function mskGuardDraft(t, retry) {
+  if (MSK_BYPASS.dr) { MSK_BYPASS.dr = false; return { ok: true, text: t, masked: false }; }
+  if (MSK_DR_COPY) { const r = mskMaskText(t); return { ok: true, text: r.text, masked: true, n: r.n }; }
+  const r = mskMaskText(t);
+  let h = '<p>المسودة تحوي على الأرجح أسماء الأطراف. اكتشفت الأداة <b>' + r.n + '</b> موضعًا' + (r.names.length ? ' (منها: ' + r.names.slice(0, 6).map(esc).join('، ') + ')' : '') + '.</p>'
+    + '<div class="row"><button type="button" class="btn primary" id="g_copy">أرسل نسخة معتّمة (يبقى نصك كما هو)</button></div>'
+    + '<label class="mskopt" style="margin-top:8px"><input type="checkbox" id="g_ack"> أقرّ بأن المسودة خالية من بيانات شخصية، أو أن إرسالها مأذون.</label><div class="row" style="margin-top:6px"><button type="button" class="btn" id="g_go" disabled>أرسل النص كما هو</button></div>';
+  mskGuardCard($('#dr_out'), h);
+  $('#g_copy').onclick = () => { MSK_DR_COPY = true; retry(); };
+  $('#g_ack').onchange = e => { $('#g_go').disabled = !e.target.checked; };
+  $('#g_go').onclick = () => { MSK_BYPASS.dr = true; retry(); };
+  return { ok: false };
 }
 
 // ---- boot
@@ -2927,6 +2988,7 @@ run();
 if (pid) { const p = P.find(x => x.id === pid); if (p) openPanel(p); }
 else if (!location.hash) { let lv = null; try { lv = sessionStorage.getItem('tm_view'); } catch (e) {} setView(lv && lv !== 'p' ? lv : 'h'); }
 bootLive();
+warmIndex();
 // ---- PWA: تثبيت وعمل دون اتصال (يفعّل كاملًا عند الاستضافة على نطاقك؛ داخل claude.ai يبقى التطبيق قابلًا للاستخدام)
 (function(){
   try {
