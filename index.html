@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="amali-build" content="20260924220213">
+<meta name="amali-build" content="20260924222544">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -707,19 +707,21 @@ main{min-width:0;max-width:100%;overflow:hidden}
 .note .more{border:0;background:none;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:0 2px;font-size:inherit;cursor:pointer}
 .drawer{position:fixed;top:0;bottom:0;left:0;width:min(400px,92vw);z-index:55;background:var(--panel);box-shadow:var(--shadow);transform:translateX(-102%);visibility:hidden;transition:transform .25s cubic-bezier(.2,.8,.2,1),visibility .25s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .drawer.show{transform:none;visibility:visible}
-html.noscroll,html.noscroll body{overflow:hidden;overscroll-behavior:none}
+.drawer{overflow:hidden}
+html.noscroll,html.noscroll body{overflow:hidden;overscroll-behavior:none;touch-action:none}
 .dh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
 .dh b{font-size:16px}
-.db{flex:1;overflow:auto;overscroll-behavior:contain;padding:6px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.db{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;padding:6px 16px calc(24px + env(safe-area-inset-bottom,0px))}
 .ds{padding:12px 0;border-bottom:1px solid var(--line)}
 .ds:last-child{border-bottom:0}
 .ds h3{margin:0 0 10px;font-size:13px;color:var(--ink3);font-weight:700}
 .ds p{margin:0 0 6px;font-size:13.5px;line-height:1.8;color:var(--ink2)}
 .dhelp{font-size:14px;line-height:1.9;color:var(--ink)}
 .dhelp b{color:var(--ink)}
-.drow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;font-size:14px}
-.drow .fontsel{max-width:190px;width:190px}
-.dseg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.drow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:10px;font-size:14px}
+.drow .fontsel{flex:0 1 170px;max-width:170px;width:auto;min-width:0}
+.dseg{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:9px;overflow:hidden;max-width:100%}
+.dseg button{white-space:nowrap}
 .dseg button{border:0;background:transparent;padding:6px 12px;font-size:13px;font-weight:600;color:var(--ink2)}
 .dseg button+button{border-right:1px solid var(--line)}
 .dseg button.on{background:var(--accent);color:var(--accent-ink)}
