@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="amali-build" content="20260924222544">
+<meta name="amali-build" content="20260925002736">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -347,15 +347,45 @@ figcaption{font-size:13px;color:var(--ink2);margin-top:8px;line-height:1.7}
 /* ---------- home */
 .homewrap{max-width:1150px;margin:0 auto;padding:26px 16px 80px;display:none}
 .homewrap.show{display:block}
-.homehead{margin:2px 0 20px;padding:22px 24px;border-radius:18px;background:linear-gradient(135deg,#182842 0%,#22375a 60%,#2B4674 100%);color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.homehead:before{content:"";position:absolute;inset-block:0;inset-inline-end:-40px;width:150px;background:radial-gradient(circle at 70% 30%,rgba(214,175,88,.20),transparent 70%);pointer-events:none}
+.homehead{margin:2px 0 20px;padding:22px 24px;border-radius:18px;background:linear-gradient(135deg,#182842 0%,#22375a 60%,#2B4674 100%);color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.homehead:before{content:"";position:absolute;inset-block:0;inset-inline-end:-40px;width:150px;background:radial-gradient(circle at 70% 30%,rgba(214,175,88,.20),transparent 70%);pointer-events:none;z-index:0}
+.homehead:after{content:"";position:absolute;top:-20%;bottom:-20%;width:38%;left:-55%;background:linear-gradient(100deg,transparent,rgba(231,197,121,.14),transparent);transform:skewX(-12deg);pointer-events:none;z-index:0;animation:heroSheen 12s ease-in-out infinite}
+@keyframes heroSheen{0%,8%{left:-55%}60%,100%{left:155%}}
+.homehead>*{position:relative;z-index:1}
+.homehead:focus-visible{outline:2px solid #E7C579;outline-offset:3px}
 .heroline{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .heroline .hbrand{font-size:28px;font-weight:800;letter-spacing:.3px;color:#fff}
 .heroline .hsep{color:#D6AF58;font-size:22px}
 .heroline .htag{font-size:18px;font-weight:600;color:#E7C579}
-.heroq{margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(214,175,88,.32);font-size:15px;line-height:1.95;color:#e3e9f2;max-width:640px;font-family:var(--body,inherit)}
+.heroq{margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(214,175,88,.32);font-size:15px;line-height:1.95;color:#e3e9f2;max-width:640px;font-family:var(--body,inherit);transition:opacity .45s ease;min-height:3.9em}
+.heroq.fading{opacity:0}
 .heroq cite{display:block;margin-top:6px;font-style:normal;font-size:13px;font-weight:600;color:#E7C579}
-.heroq cite:before{content:"— "}
+.heroq cite:empty{display:none}
+.heroq cite:not(:empty):before{content:"— "}
+.hqdots{display:flex;gap:6px}
+.hqdots i{width:6px;height:6px;border-radius:99px;background:rgba(231,197,121,.34);transition:background .3s,width .3s}
+.hqdots i.on{background:#E7C579;width:16px}
+.herodeco{position:absolute;inset:0;width:100%;height:100%;opacity:.06;color:#E7C579;pointer-events:none;z-index:0}
+.herogreet{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-size:12.5px;color:#E7C579;font-weight:600;margin-bottom:10px}
+.herogreet .hg-date{color:#c9d3e2;font-weight:500;font-variant-numeric:tabular-nums}
+.herobottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px}
+.herobrief{display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px;color:#e3e9f2;background:rgba(255,255,255,.06);border:1px solid rgba(231,197,121,.28);border-radius:10px;padding:6px 11px;cursor:pointer;transition:background .15s,transform .12s}
+.herobrief b{color:#E7C579;font-weight:700;font-variant-numeric:tabular-nums}
+.herobrief:hover{background:rgba(255,255,255,.11)}
+.herobrief:active{transform:scale(.97)}
+.herobrief .hb-sep{opacity:.35}
+@keyframes tileIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tiles.anim .tile{animation:tileIn .42s cubic-bezier(.2,.7,.3,1) both}
+.tiles.anim .tile:nth-child(2){animation-delay:.05s}
+.tiles.anim .tile:nth-child(3){animation-delay:.1s}
+.tiles.anim .tile:nth-child(4){animation-delay:.15s}
+.tiles.anim .tile:nth-child(5){animation-delay:.2s}
+.tiles.anim .tile:nth-child(6){animation-delay:.25s}
+.tiles.anim .tile:nth-child(n+7){animation-delay:.3s}
+.tile:active{transform:scale(.97)}
+.btn{transition:transform .12s ease}
+.btn:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.homehead:after{animation:none;display:none}.heroq{transition:none}.tiles.anim .tile{animation:none}.tile:active,.btn:active,.herobrief:active{transform:none}}
 .homesearch{position:relative;max-width:720px;margin:14px 0 22px}
 .homesearch input{width:100%;padding:13px 46px 13px 14px;border:1.5px solid var(--line2);border-radius:14px;background:var(--panel);font-size:16.5px}
 .homesearch input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);outline:none}
@@ -646,6 +676,10 @@ main{min-width:0;max-width:100%;overflow:hidden}
 .msf label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--ink2);min-width:0}
 .msf input,.msf select{width:100%;min-width:0;max-width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-size:14.5px;font-family:var(--ui);color:var(--ink);font-variant-numeric:tabular-nums}
 .msf input[type=date]{min-height:36px}
+/* iOS: امنع العرض الجوهري لحقل التاريخ من تجاوز البطاقة */
+.msf input[type=date],.dlhol input[type=date],.rw input[type=date]{-webkit-appearance:none;appearance:none}
+.msf input[type=date]::-webkit-date-and-time-value,.dlhol input[type=date]::-webkit-date-and-time-value,.rw input[type=date]::-webkit-date-and-time-value{text-align:start;margin:0}
+input[type=date]::-webkit-date-and-time-value{min-width:0}
 .msf .msh{grid-column:1/-1;margin:0;font-size:12px;color:var(--ink3);line-height:1.6}
 .msf .mschk{flex-direction:row;align-items:center;gap:8px;grid-column:1/-1;font-size:13.5px;color:var(--ink)}
 .msf .mschk input{width:auto}
@@ -1233,7 +1267,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
 </div>
 
 <div class="homewrap" id="homewrap">
-  <div class="homehead"><div class="heroline"><span class="hbrand">منصّة عمّالي</span><span class="hsep">·</span><span class="htag">لعدالة ناجزة</span></div><blockquote class="heroq">القضاء هو مقياس الخير في الأمم، وهو معيار العظمة فيها، وهو رأس مفاخر كل أمة حية وراشدة.<cite>علي الطنطاوي</cite></blockquote></div>
+  <div class="homehead" id="homehead" role="button" tabindex="0" aria-label="مقولة في القضاء — انقر لعرض غيرها" title="انقر لمقولة أخرى"><svg class="herodeco" aria-hidden="true"><defs><pattern id="hpat" width="46" height="46" patternUnits="userSpaceOnUse"><g fill="none" stroke="currentColor" stroke-width="1.1"><rect x="11" y="11" width="24" height="24"></rect><rect x="11" y="11" width="24" height="24" transform="rotate(45 23 23)"></rect></g></pattern></defs><rect width="100%" height="100%" fill="url(#hpat)"></rect></svg><div class="herogreet" id="herogreet"></div><div class="heroline"><span class="hbrand">منصّة عمّالي</span><span class="hsep">·</span><span class="htag">لعدالة ناجزة</span></div><blockquote class="heroq" id="heroq"><span class="hqt"></span><cite></cite></blockquote><div class="herobottom"><div class="hqdots" id="hqdots" aria-hidden="true"></div><div class="herobrief" id="herobrief" role="button" tabindex="0" hidden></div></div></div>
   <div class="homesearch"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span><input id="homeq" type="search" placeholder="ابحث في كل شيء: مكافأة نهاية الخدمة، م44، الطعن 427 لسنة 2014، الحاسبة…" autocomplete="off" enterkeyhint="go"><div class="gslist homegs hidden" id="homegs" role="listbox"></div></div>
   <div id="homealert" class="homealert"></div><div class="tgroups" id="tiles"></div>
   <div class="homefoot">كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك.</div>
@@ -1585,7 +1619,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V63</p>
+      <p class="dver">الإصدار V66</p>
     </section>
   </div>
 </div>
@@ -2111,7 +2145,10 @@ function renderHome() {
   const tile = t => '<button type="button" class="tile app ' + t[4] + '" data-go="' + t[0] + '" title="' + esc(t[2]) + '" aria-label="' + esc(t[1]) + '">' + (AI_TOOLS.has(t[0]) ? '<span class="aibadge" title="يتطلب اشتراكك في Claude">Claude</span>' : '') + '<span class="ic">' + t[5] + '</span><b>' + t[1] + '</b></button>';
   $('#tiles').innerHTML = NAV_GROUPS.map(G => { const vs = G.views.filter(v => !TOOL_HIDE.has(v)); return vs.length ? '<section class="tgroup" data-g="' + G.g + '" style="--n:' + vs.length + '"><h3 class="tgh">' + G.name + '<small>' + G.sub + '</small></h3><div class="tiles">' + vs.map(v => HOME_TILES.find(t => t[0] === v)).filter(Boolean).map(tile).join('') + '</div></section>' : ''; }).join('');
   $('#tiles').querySelectorAll('[data-go]').forEach(b => b.onclick = () => setView(b.dataset.go));
+  try { if (!HOME_ANIMED) { HOME_ANIMED = true; var rm = false; try { rm = matchMedia('(prefers-reduced-motion:reduce)').matches; } catch (e) {} if (!rm) { $('#tiles').querySelectorAll('.tiles').forEach(t => t.classList.add('anim')); setTimeout(() => $('#tiles').querySelectorAll('.tiles').forEach(t => t.classList.remove('anim')), 950); } } } catch (e) {}
+  try { if (window.amaliBrief) window.amaliBrief(); } catch (e) {}
 }
+let HOME_ANIMED = false;
 function searchPrinciples(v) { v = (v || '').trim(); state.q = v; q.value = v; setView('p'); run(); $('#qclr').classList.toggle('hidden', !v); $('#qhint').classList.toggle('hidden', !!v); }
 document.querySelector('.brand').onclick = () => setView('h');
 
@@ -5467,6 +5504,87 @@ try { if (!localStorage.getItem('tm_onboarded') && !navigator.webdriver) setTime
   window.addEventListener('appinstalled', function(){ var btn = document.getElementById('installbtn'); if (btn) btn.classList.add('hidden'); });
   if ('serviceWorker' in navigator) { try { navigator.serviceWorker.register('sw.js').catch(function(){}); } catch (e) {} }
 })();
+})();
+
+/* ==== افتتاحية الرئيسية: مقولات في القضاء تتبدّل، مع تلاشٍ متبادل ونقر للتبديل ==== */
+(function(){
+  // المصدر: مقولات يعتمدها القاضي؛ لا تُختلق ولا تُنسب زورًا. a فارغة = بلا نسبة.
+  var HERO_QUOTES = [
+    { t:'القاضي الحقُّ مَن اتَّسع صدرُه لِما ضاقت به صدورُ الناس، وضاقت ذِمّتُه عمّا اتَّسعت له ذِمَمُ الناس.', a:'' },
+    { t:'أَعْطُوا الأجيرَ أجرَه قبل أن يجفَّ عرقُه.', a:'حديث شريف — رواه ابن ماجه' },
+    { t:'ثلاثٌ إذا كنّ في القاضي فليس بقاضٍ: إذا كره الملام، وأحبّ المحامد، وكره العزل.', a:'الإمام الزهري' },
+    { t:'إنّ العدل ميزان الله سبحانه الذي وضعه في الخلق، ونصبه لإقامة الحق، فلا تخالفه في ميزانه.', a:'الإمام علي بن أبي طالب' },
+    { t:'العدل يضع الأمور مواضعها، والجود يُخرجها من جهتها، والعدل سائسٌ عام، والجود عارضٌ خاص، فالعدل أشرفهما وأفضلهما.', a:'الإمام علي بن أبي طالب' },
+    { t:'العدالة هي إعطاء كلّ ذي حقٍّ حقَّه، وهي الفضيلة العليا التي تجعل من الممكن وجود الفضائل الأخرى.', a:'أفلاطون' },
+    { t:'إذا فشل العدل في أن يكون سيفًا يحمي المظلوم، تحوّل إلى خنجرٍ في يد الظالم.', a:'ألبير كامو' },
+    { t:'إنّ الكسب هو قيمة الأعمال البشرية، فإذا قعد الناس عن العمل وهُضمت حقوقهم فسد العمران.', a:'ابن خلدون' },
+    { t:'الحقوق تُقاس بميزان القانون لا بالمراكز الاقتصادية؛ فلا يجور القضاء على عاملٍ لضعفه، ولا يظلم صاحبَ عملٍ لمَلاءته.', a:'حكمة قضائية' },
+    { t:'القضاء هو مقياس الخير في الأمم، وهو معيار العظمة فيها، وهو رأس مفاخر كل أمة حية وراشدة.', a:'علي الطنطاوي' },
+    { t:'إنّ أولى الناس بالحق مَن عاشوا للحق وقضوا به، فلنتعاون جميعًا على كفالة استقلال القضاء والمحاماة، فهما جناحا الحق يحلّقان به في أفق العدل ويأويان إلى صرحه الآمن.', a:'الشيخ جابر الأحمد الصباح' },
+    { t:'إنّ أمن الوطن واستقراره وسيادة القانون واحترام القضاء فوق الحريات وقبل كل الحريات.', a:'الشيخ صباح الأحمد الجابر الصباح' },
+    { t:'العدل أساس الملك والحكم، وفوق سلطتكم رقيبٌ وضمير، وكما تُراقِبون.. تُراقَبون.', a:'الشيخ مشعل الأحمد الجابر الصباح' }
+  ];
+  function fmt(d,cal){ try{ return new Intl.DateTimeFormat('ar-u-ca-'+cal,{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(d);}catch(e){ try{return new Intl.DateTimeFormat('ar',{day:'numeric',month:'long',year:'numeric'}).format(d);}catch(_){return '';} } }
+  function greet(){
+    var el=document.getElementById('herogreet'); if(!el) return;
+    var now=new Date(), h=now.getHours();
+    var g = (h>=4&&h<12)?'صباح الخير':(h<4?'ليلة طيبة':'مساء الخير');
+    var hij=fmt(now,'islamic-umalqura'), greg=fmt(now,'gregory');
+    el.innerHTML='<span>'+g+'</span><span class="hg-date">'+(hij?hij+' هـ':'')+(hij&&greg?' — ':'')+(greg?greg+' م':'')+'</span>';
+  }
+  function brief(){
+    var el=document.getElementById('herobrief'); if(!el) return;
+    var R=null; try{ R=JSON.parse(localStorage.getItem('tm_roll')||'null'); }catch(e){}
+    var cards=(R&&R.cards)||[]; if(!cards.length){ el.hidden=true; return; }
+    var today=new Date(); today.setHours(0,0,0,0);
+    var iso=function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+    var t=iso(today);
+    // أقرب تاريخ جلسة (next) من اليوم فصاعدًا
+    var nexts=cards.map(function(c){return c.next;}).filter(function(x){return x&&x>=t;}).sort();
+    if(!nexts.length){ el.hidden=true; return; }
+    var day=nexts[0];
+    var inDay=cards.filter(function(c){return c.next===day;});
+    var res=inDay.filter(function(c){return (c.stage||'').indexOf('محجوز')>-1;}).length;
+    var ann=inDay.filter(function(c){return (c.stage||'').indexOf('إعلان')>-1;}).length;
+    var dtxt=''; try{ var p=day.split('-'); dtxt=new Intl.DateTimeFormat('ar',{weekday:'long',day:'numeric',month:'long'}).format(new Date(+p[0],+p[1]-1,+p[2])); }catch(e){ dtxt=day; }
+    var parts=['<span>جلسة '+dtxt+'</span>','<span class="hb-sep">—</span>','القضايا <b>'+inDay.length+'</b>'];
+    if(res) parts.push('<span class="hb-sep">·</span>','محجوزة <b>'+res+'</b>');
+    if(ann) parts.push('<span class="hb-sep">·</span>','للإعلان <b>'+ann+'</b>');
+    el.innerHTML=parts.join(' ');
+    el.hidden=false;
+    el.setAttribute('aria-label','موجز جلسة '+dtxt+' — افتح رول الجلسة');
+    if(!el._wired){ el._wired=1;
+      var go=function(e){ e.stopPropagation(); var b=document.querySelector('#tiles [data-go=r]'); if(b) b.click(); };
+      el.addEventListener('click',go);
+      el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(e); } });
+    }
+  }
+  function init(){
+    var head=document.getElementById('homehead'), q=document.getElementById('heroq'), dots=document.getElementById('hqdots');
+    if(!head||!q) return;
+    greet(); try{ brief(); }catch(e){}
+    try{ window.amaliBrief=function(){ try{ greet(); brief(); }catch(e){} }; }catch(e){}
+    var qt=q.querySelector('.hqt'), cite=q.querySelector('cite');
+    var reduce=false; try{reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;}catch(e){}
+    // فهرس البدء يتقدّم مع كل فتح فتتبدّل المقولة «بين فترة وأخرى»
+    var i=0; try{ i=(parseInt(localStorage.getItem('tm_hq')||'0',10)||0) % HERO_QUOTES.length; }catch(e){}
+    if(dots){ dots.innerHTML=''; HERO_QUOTES.forEach(function(){ dots.appendChild(document.createElement('i')); }); }
+    function paint(){ var it=HERO_QUOTES[i]; qt.textContent=it.t; cite.textContent=it.a||'';
+      if(dots) [].forEach.call(dots.children,function(d,n){ d.className = n===i?'on':''; }); }
+    function show(n){ i=((n%HERO_QUOTES.length)+HERO_QUOTES.length)%HERO_QUOTES.length;
+      try{ localStorage.setItem('tm_hq', String((i+1)%HERO_QUOTES.length)); }catch(e){}
+      if(reduce){ paint(); return; }
+      q.classList.add('fading'); setTimeout(function(){ paint(); q.classList.remove('fading'); }, 300); }
+    paint();
+    try{ localStorage.setItem('tm_hq', String((i+1)%HERO_QUOTES.length)); }catch(e){}
+    var timer=null;
+    function auto(){ if(reduce||HERO_QUOTES.length<2) return; clearInterval(timer); timer=setInterval(function(){ if(document.hidden) return; show(i+1); }, 11000); }
+    function next(){ show(i+1); auto(); }
+    head.addEventListener('click', next);
+    head.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); next(); } });
+    auto();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>
 </body>
