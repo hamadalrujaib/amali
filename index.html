@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="amali-build" content="20260924171012">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -84,6 +85,33 @@ input,select{font-family:inherit;font-size:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 mark{background:var(--hl);color:inherit;padding:0 1px;border-radius:2px}
 .hidden{display:none!important}
+/* V60: قفل الخصوصية — الستار يظهر قبل تحميل السكربت إن كان القفل مفعّلًا (html.locked)، وعند مغادرة التطبيق (html.cover) */
+#lockscr{display:none;position:fixed;inset:0;z-index:10000;background:var(--bg);color:var(--ink);align-items:center;justify-content:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+html.locked #lockscr,html.cover #lockscr{display:flex}
+html.locked body>:not(#lockscr):not(script),html.cover body>:not(#lockscr):not(script){visibility:hidden}
+html.locked,html.locked body{overflow:hidden}
+#lockscr .lkbox{width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+#lockscr .lkico{width:64px;height:64px;border-radius:18px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+#lockscr .lkico svg{width:32px;height:32px}
+#lockscr h2{margin:4px 0 0;font-size:20px}
+#lockscr .lkform{display:none;flex-direction:column;gap:10px;width:100%}
+html.locked #lockscr .lkform{display:flex}
+#lockscr input{width:100%;font-size:24px;letter-spacing:8px;text-align:center;padding:10px;border:1.5px solid var(--line2);border-radius:12px;background:var(--panel);color:var(--ink);font-family:var(--ui);direction:ltr}
+#lockscr input:focus{outline:none;border-color:var(--accent)}
+#lockscr .btn{width:100%;justify-content:center;padding:11px;font-size:15px}
+#lockscr .lkmsg{min-height:20px;font-size:13.5px;color:var(--bad)}
+#lockscr .lkfor{background:none;border:0;color:var(--ink3);font-size:13px;text-decoration:underline;cursor:pointer;font-family:inherit;padding:4px}
+#lockscr .lkwipe{font-size:13px;line-height:1.7;color:var(--ink2);background:var(--panel);border:1px solid var(--bad);border-radius:10px;padding:10px 12px;text-align:right}
+#lockscr .lkwipe .btn{margin-top:8px;color:var(--bad);border-color:var(--bad)}
+.lkset .drow{flex-wrap:wrap}.lkset input[type=password]{width:130px;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);color:var(--ink);font-size:16px;letter-spacing:4px;text-align:center;direction:ltr}
+.lkset select{padding:6px 8px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);color:var(--ink);font-family:var(--ui)}
+.lkset .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.lkset .lkst{font-weight:700}.lkset .lkst.on{color:var(--ok)}
+/* V60: شريط «نسخة أحدث جاهزة» */
+#updbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;max-width:calc(100% - 24px);background:var(--panel);color:var(--ink);border:1.5px solid var(--accent);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;font-size:14px}
+#updbar .btn{padding:6px 14px}
+@media (max-width:700px){#updbar{bottom:calc(var(--bnh) + 12px + env(safe-area-inset-bottom,0px))}}
+@media print{#lockscr,#updbar{display:none!important}html.locked body>*,html.cover body>*{visibility:visible}}
 
 /* ---------- app bar */
 .bar{min-width:0;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 16px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"brand search tools" "seg seg seg";gap:10px 14px;align-items:center;max-width:100%;overflow:hidden}
@@ -840,6 +868,18 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
 </style>
 </head>
 <body>
+<script>try{if(localStorage.getItem('tm_lock'))document.documentElement.classList.add('locked')}catch(e){}</script>
+<div id="lockscr" role="dialog" aria-modal="true" aria-label="عمّالي مقفل"><div class="lkbox">
+  <div class="lkico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h2>عمّالي</h2>
+  <form class="lkform" id="lk_form" autocomplete="off" onsubmit="return false"><p class="k" style="margin:0;color:var(--ink2)">اكتب رمز الفتح</p>
+    <input type="password" id="lk_pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" aria-label="رمز الفتح">
+    <div class="lkmsg" id="lk_msg" role="alert"></div>
+    <button type="submit" class="btn primary" id="lk_go">فتح</button>
+    <button type="button" class="btn hidden" id="lk_bio">فتح بـ Face ID / بصمة الجهاز</button>
+    <button type="button" class="lkfor" id="lk_for">نسيت الرمز</button>
+    <div class="lkwipe hidden" id="lk_wipe">لا يمكن استعادة الرمز. البديل: مسح بيانات «رول الجلسة» ومفتاح المزامنة من <b>هذا الجهاز</b> وإلغاء القفل، ثم استعادتها من ملف المزامنة في OneDrive برمز المزامنة. المبادئ والتشريعات لا تتأثر.<button type="button" class="btn" id="lk_wipego">مسح بيانات الرول من هذا الجهاز وإلغاء القفل</button></div>
+  </form>
+</div></div>
 
 <header class="bar">
   <div class="brand">
@@ -857,6 +897,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
   </div>
   <div class="tools">
     <button class="ib gsbtn" id="gsbtn" title="بحث شامل: مادة، طعن، مبدأ، أداة (Ctrl+K)" aria-label="بحث شامل" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6M11 8v6"/></svg><span>بحث شامل</span><span class="kbd" id="gskbd">Ctrl K</span></button>
+    <button class="ib hidden" id="lockbtn" title="اقفل التطبيق الآن" aria-label="اقفل التطبيق الآن" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>
     <button class="ib" id="menubtn" title="الإعدادات والتعليمات" aria-label="الإعدادات والتعليمات" aria-haspopup="dialog" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
   <nav class="nav" id="nav" aria-label="التنقل"><div class="grp" id="grp" role="tablist"><button type="button" data-g="home" title="الرئيسية" aria-label="الرئيسية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg></button><button type="button" data-g="research">البحث</button><button type="button" data-g="case">القضية</button><button type="button" data-g="write">الكتابة</button><button type="button" data-g="ai">المساعد</button></div><span class="sep" aria-hidden="true"></span><div class="seg" id="seg"><button type="button" data-v="p" data-g="research" class="on">المبادئ</button><button type="button" data-v="l" data-g="research">التشريعات</button><button type="button" data-v="m" data-g="research">الخرائط</button><button type="button" data-v="t" data-g="research">الخط الزمني</button><button type="button" data-v="r" data-g="case">رول الجلسة</button><button type="button" data-v="i" data-g="case">تحليل الملف</button><button type="button" data-v="x" data-g="case">إخفاء الهوية</button><button type="button" data-v="c" data-g="case">التحقق</button><button type="button" data-v="s" data-g="case">حاسبة المستحقات</button><button type="button" data-v="e" data-g="case">المواعيد الإجرائية</button><button type="button" data-v="f" data-g="case">ملفاتي</button><button type="button" data-v="d" data-g="write">فحص المسودة</button><button type="button" data-v="w" data-g="write">Word وصياغاتي</button><button type="button" data-v="a" data-g="ai">المساعد</button></div><button class="ib gsbtn gsnav" id="gsbtn2" title="بحث شامل: مادة، طعن، مبدأ، أداة (Ctrl+K)" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6M11 8v6"/></svg><span>بحث شامل</span><span class="kbd gskbd">Ctrl K</span></button></nav>
@@ -1397,6 +1438,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
 </div>
 
 <div class="scrim" id="scrim"></div>
+<div id="updbar" class="hidden" role="status"><span>نسخة أحدث من عمّالي جاهزة.</span><button type="button" class="btn primary" id="upd_go">تحديث الآن</button><button type="button" class="btn" id="upd_x">لاحقًا</button></div>
 <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="الإعدادات والتعليمات">
   <div class="dh"><b>الإعدادات والتعليمات</b><button class="ib" id="dclose" type="button" aria-label="إغلاق">✕</button></div>
   <div class="db" id="dbody">
@@ -1423,6 +1465,10 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
       <div class="knlaws"><label class="mskopt"><input type="checkbox" data-law="عمل 6/2010" checked> قانون العمل 6/2010</label><label class="mskopt"><input type="checkbox" data-law="مرافعات"> المرافعات</label><label class="mskopt"><input type="checkbox" data-law="إثبات"> الإثبات</label><label class="mskopt"><input type="checkbox" data-law="خبرة"> الخبرة</label><label class="mskopt"><input type="checkbox" data-law="عمالة منزلية 68/2015,قرار وزاري 22/2022,قرار وزاري 2302/2016,قرار وزاري 2194/2016" checked> العمالة المنزلية (68/2015 ولوائحه)</label><label class="mskopt"><input type="checkbox" data-law="قرار إداري 842/2015,قرار إداري 378/2016,قرار إداري 680/2026,قرار وزاري 3/2024"> قرارات الهيئة (842/2015 وتعديلاته، 3/2024)</label></div>
       <div class="sybtns"><button type="button" class="btn primary" id="kn_go">إنشاء الملف</button></div><p class="synote" id="kn_note"></p></div>
     </section>
+    <section class="ds lkset" id="dlock"><h3>قفل الخصوصية</h3>
+      <p class="synote">ستار لهذا الجهاز وحده: يطلب رمزًا (أو Face ID) عند فتح التطبيق وبعد الخمول، ويخفي المحتوى عند الانتقال إلى تطبيق آخر. <b>ليس تشفيرًا للبيانات</b>؛ الحماية الأساسية قفل الهاتف نفسه.</p>
+      <div id="lk_set"></div>
+    </section>
     <section class="ds" id="dsync"><h3>المزامنة بين أجهزتك</h3>
       <p class="synote">تُجمع بيانات «رول الجلسة» والمحفوظات في ملف واحد مشفّر برمز تختاره (AES-256)، وتحفظه في OneDrive، ثم تجلبه على الجهاز الآخر فيُدمج. لا يُقرأ الملف دون الرمز، ولا يُرسل شيء إلى أي خادم.</p>
       <div id="sy_body"></div>
@@ -1433,7 +1479,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V59</p>
+      <p class="dver">الإصدار V60</p>
     </section>
   </div>
 </div>
@@ -5100,6 +5146,98 @@ else if (!location.hash) { let lv = null; try { lv = sessionStorage.getItem('tm_
 bootLive();
 warmIndex();
 // ---- PWA: تثبيت وعمل دون اتصال (يفعّل كاملًا عند الاستضافة على نطاقك؛ داخل claude.ai يبقى التطبيق قابلًا للاستخدام)
+// ---- V60: قفل الخصوصية (لهذا الجهاز وحده — localStorage tm_lock، لا يُزامن) — ستار لا تشفير
+var LK_KEY = 'tm_lock', LK_WAIT = 'tm_lock_wait', LK_IDLE = [[0, 'فور مغادرة التطبيق'], [1, 'بعد دقيقة'], [5, 'بعد 5 دقائق'], [15, 'بعد 15 دقيقة']];
+var lkAct = Date.now(), lkHidAt = 0, lkBusy = false;
+function lkCfg() { try { return JSON.parse(localStorage.getItem(LK_KEY) || 'null'); } catch (e) { return null; } }
+function lkPut(c) { try { if (c) localStorage.setItem(LK_KEY, JSON.stringify(c)); else localStorage.removeItem(LK_KEY); return true; } catch (e) { toast('تعذّر الحفظ على الجهاز — القفل يحتاج التخزين المحلي'); return false; } }
+const lkB64 = u => btoa(String.fromCharCode(...new Uint8Array(u))), lkUnb = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function lkHash(pin, salt, it) { const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']); return lkB64(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: lkUnb(salt), iterations: it }, k, 256)); }
+function lkIsLocked() { return document.documentElement.classList.contains('locked'); }
+function lkLock() { const c = lkCfg(); if (!c) return; document.documentElement.classList.add('locked'); document.documentElement.classList.remove('cover'); closeDrawer(); $('#lk_pin').value = ''; $('#lk_msg').textContent = ''; $('#lk_wipe').classList.add('hidden'); $('#lk_bio').classList.toggle('hidden', !c.cred); lkWaitMsg(); if (!IS_IOS) setTimeout(() => { if (lkIsLocked()) $('#lk_pin').focus(); }, 60); }
+function lkOpen() { document.documentElement.classList.remove('locked', 'cover'); lkAct = Date.now(); try { localStorage.removeItem(LK_WAIT); } catch (e) {} }
+function lkWaitLeft() { try { const w = JSON.parse(localStorage.getItem(LK_WAIT) || 'null'); return w && w.until > Date.now() ? Math.ceil((w.until - Date.now()) / 1000) : 0; } catch (e) { return 0; } }
+function lkWaitMsg() { const s = lkWaitLeft(); if (s) { $('#lk_msg').textContent = 'محاولات خاطئة كثيرة — انتظر ' + s + ' ثانية.'; setTimeout(() => { if (lkIsLocked() && !lkWaitLeft()) $('#lk_msg').textContent = ''; }, s * 1000 + 50); } }
+async function lkTry(pin) {
+  const c = lkCfg(); if (!c) { lkOpen(); return true; } if (lkWaitLeft()) { lkWaitMsg(); return false; }
+  if (await lkHash(pin, c.salt, c.it) === c.h) { lkOpen(); return true; }
+  let w = null; try { w = JSON.parse(localStorage.getItem(LK_WAIT) || 'null'); } catch (e) {} w = w || { n: 0, until: 0 }; w.n++;
+  if (w.n >= 5) w.until = Date.now() + 30000 * Math.pow(2, Math.min(w.n - 5, 5)); try { localStorage.setItem(LK_WAIT, JSON.stringify(w)); } catch (e) {}
+  $('#lk_msg').textContent = 'الرمز غير صحيح' + (w.n >= 3 && w.n < 5 ? ' — بقيت ' + (5 - w.n) + ' محاولة قبل الانتظار' : ''); if (w.n >= 5) lkWaitMsg(); return false;
+}
+async function lkBioAvail() { try { return !!(window.PublicKeyCredential && await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()); } catch (e) { return false; } }
+async function lkBioGet(cred) { const r = await navigator.credentials.get({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), allowCredentials: [{ type: 'public-key', id: lkUnb(cred) }], userVerification: 'required', timeout: 60000 } }); return !!r; }
+async function lkBioNew() { const r = await navigator.credentials.create({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: 'عمّالي' }, user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'amali', displayName: 'عمّالي' }, pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }], authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'discouraged' }, timeout: 60000 } }); return r ? lkB64(r.rawId) : ''; }
+async function lkWipe() {
+  try { localStorage.removeItem(RL_KEY); localStorage.removeItem(LK_KEY); localStorage.removeItem(LK_WAIT); localStorage.removeItem('tm_sync'); } catch (e) {}
+  try { await new Promise(r => { const q = indexedDB.deleteDatabase('amali_sync'); q.onsuccess = q.onerror = q.onblocked = () => r(); }); } catch (e) {}
+  location.reload();
+}
+// شاشة القفل
+$('#lk_form').onsubmit = async e => { e.preventDefault(); await lkSubmit(); return false; }; async function lkSubmit() { if (lkBusy) return; lkBusy = true; try { const pin = $('#lk_pin').value.trim(); if (pin) await lkTry(pin); } finally { lkBusy = false; $('#lk_pin').value = ''; } }
+$('#lk_pin').addEventListener('input', () => { const c = lkCfg(), v = $('#lk_pin').value; if (c && c.len && v.length === c.len) $('#lk_form').requestSubmit ? $('#lk_form').requestSubmit() : $('#lk_go').click(); });
+$('#lk_bio').onclick = async () => { const c = lkCfg(); if (!c || !c.cred) return; try { if (await lkBioGet(c.cred)) lkOpen(); } catch (e) { $('#lk_msg').textContent = 'لم يتم التحقق — اكتب الرمز'; } };
+$('#lk_for').onclick = () => $('#lk_wipe').classList.toggle('hidden');
+$('#lk_wipego').onclick = () => { const b = $('#lk_wipego'); if (b.dataset.sure) lkWipe(); else { b.dataset.sure = '1'; b.textContent = 'تأكيد المسح؟'; } };
+$('#lockbtn').onclick = () => lkLock();
+// أثناء القفل: لا اختصارات لوحة مفاتيح خارج شاشة القفل
+window.addEventListener('keydown', e => { if (!lkIsLocked()) return; e.stopImmediatePropagation(); if (!e.target.closest || !e.target.closest('#lockscr') || e.ctrlKey || e.metaKey || e.altKey) e.preventDefault(); }, true);
+['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(ev => window.addEventListener(ev, () => { lkAct = Date.now(); }, { passive: true, capture: true }));
+// مغادرة التطبيق: ستار فوري (يخفي المحتوى في مبدّل التطبيقات)، والعودة بعد المدة تقفل
+document.addEventListener('visibilitychange', () => { const c = lkCfg(); if (!c) return;
+  if (document.visibilityState === 'hidden') { lkHidAt = Date.now(); if (!lkIsLocked()) document.documentElement.classList.add('cover'); }
+  else { if (lkHidAt && Date.now() - lkHidAt >= (c.idle || 0) * 60000) lkLock(); document.documentElement.classList.remove('cover'); lkHidAt = 0; } });
+window.addEventListener('pagehide', () => { if (lkCfg() && !lkIsLocked()) document.documentElement.classList.add('cover'); });
+setInterval(() => { const c = lkCfg(); if (c && !lkIsLocked() && document.visibilityState === 'visible' && Date.now() - lkAct >= (c.idle > 0 ? c.idle : 5) * 60000) lkLock(); }, 20000);
+// لوحة الإعدادات
+function lkSetRender() {
+  const box = $('#lk_set'); if (!box) return; const c = lkCfg();
+  $('#lockbtn').classList.toggle('hidden', !c);
+  const idleSel = v => '<select id="lk_idle">' + LK_IDLE.map(x => '<option value="' + x[0] + '"' + (x[0] === v ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select>';
+  if (!c) {
+    box.innerHTML = '<div class="drow"><span>الحالة</span><span class="lkst">غير مفعّل</span></div><div class="row"><button type="button" class="btn" id="lk_on">تفعيل القفل</button></div><div id="lk_new" class="hidden">'
+      + '<div class="drow"><span>الرمز (4–6 أرقام)</span><input type="password" id="lk_p1" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="new-password"></div>'
+      + '<div class="drow"><span>تأكيد الرمز</span><input type="password" id="lk_p2" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="new-password"></div>'
+      + '<div class="drow"><span>القفل التلقائي</span>' + idleSel(5) + '</div><div class="row"><button type="button" class="btn primary" id="lk_save">حفظ وتفعيل</button></div></div>';
+    $('#lk_on').onclick = () => { $('#lk_new').classList.toggle('hidden'); $('#lk_p1').focus(); };
+    $('#lk_save').onclick = async () => { const a = $('#lk_p1').value.trim(), b = $('#lk_p2').value.trim();
+      if (!/^\d{4,6}$/.test(a)) { toast('الرمز من 4 إلى 6 أرقام'); return; } if (a !== b) { toast('الرمزان غير متطابقين'); return; }
+      const salt = lkB64(crypto.getRandomValues(new Uint8Array(16))), it = 150000;
+      if (lkPut({ v: 1, salt, it, h: await lkHash(a, salt, it), len: a.length, idle: +$('#lk_idle').value, cred: '' })) { toast('فُعّل القفل على هذا الجهاز'); lkSetRender(); } };
+    return;
+  }
+  box.innerHTML = '<div class="drow"><span>الحالة</span><span class="lkst on">مفعّل على هذا الجهاز</span></div>'
+    + '<div class="drow"><span>القفل التلقائي</span>' + idleSel(c.idle || 0) + '</div>'
+    + '<div class="drow hidden" id="lk_biorow"><span>Face ID / بصمة الجهاز</span><button type="button" class="btn" id="lk_biot">' + (c.cred ? 'إيقاف' : 'تفعيل') + '</button></div>'
+    + '<div class="row"><button type="button" class="btn primary" id="lk_now">اقفل الآن</button><button type="button" class="btn" id="lk_chg">تغيير الرمز</button><button type="button" class="btn" id="lk_off">إلغاء القفل</button></div>'
+    + '<div id="lk_ask" class="hidden"><div class="drow"><span id="lk_askl">الرمز الحالي</span><input type="password" id="lk_cur" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off"></div><div class="drow hidden" id="lk_nrow"><span>الرمز الجديد</span><input type="password" id="lk_new1" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="new-password"></div><div class="row"><button type="button" class="btn primary" id="lk_askok">تأكيد</button></div></div>'
+    + '<p class="help">«نسيت الرمز» في شاشة القفل يمسح بيانات الرول ومفتاح المزامنة من هذا الجهاز وحده، فتُستعاد من ملف المزامنة برمز المزامنة.</p>';
+  $('#lk_idle').onchange = () => { const x = lkCfg(); x.idle = +$('#lk_idle').value; lkPut(x); toast('القفل التلقائي: ' + LK_IDLE.find(y => y[0] === x.idle)[1]); };
+  $('#lk_now').onclick = () => lkLock();
+  lkBioAvail().then(ok => { const r = $('#lk_biorow'); if (r) r.classList.toggle('hidden', !ok && !c.cred); });
+  $('#lk_biot').onclick = async () => { const x = lkCfg(); if (x.cred) { x.cred = ''; lkPut(x); toast('أُوقف Face ID — الرمز وحده'); lkSetRender(); return; }
+    try { const id = await lkBioNew(); if (id) { x.cred = id; lkPut(x); toast('فُعّل الفتح بـ Face ID / البصمة'); lkSetRender(); } } catch (e) { toast('تعذّر تفعيل Face ID في هذه النافذة — يعمل في التطبيق المثبّت على الموقع'); } };
+  let mode = '';
+  const ask = m => { mode = m; $('#lk_ask').classList.remove('hidden'); $('#lk_nrow').classList.toggle('hidden', m !== 'chg'); $('#lk_cur').value = ''; $('#lk_new1').value = ''; $('#lk_cur').focus(); };
+  $('#lk_chg').onclick = () => ask('chg'); $('#lk_off').onclick = () => ask('off');
+  $('#lk_askok').onclick = async () => { const x = lkCfg(); if (await lkHash($('#lk_cur').value.trim(), x.salt, x.it) !== x.h) { toast('الرمز الحالي غير صحيح'); return; }
+    if (mode === 'off') { lkPut(null); try { localStorage.removeItem(LK_WAIT); } catch (e) {} toast('أُلغي القفل على هذا الجهاز'); lkSetRender(); return; }
+    const n = $('#lk_new1').value.trim(); if (!/^\d{4,6}$/.test(n)) { toast('الرمز الجديد من 4 إلى 6 أرقام'); return; }
+    x.salt = lkB64(crypto.getRandomValues(new Uint8Array(16))); x.h = await lkHash(n, x.salt, x.it); x.len = n.length; lkPut(x); toast('غُيّر الرمز'); lkSetRender(); };
+}
+lkSetRender();
+if (lkCfg()) lkLock(); else document.documentElement.classList.remove('locked');
+// ---- V60: شريط «نسخة أحدث جاهزة» (النسخة المستضافة مع عامل الخدمة)
+var AMALI_BUILD = (document.querySelector('meta[name=amali-build]') || {}).content || '';
+function updShow() { if (!$('#updbar').classList.contains('hidden')) return; $('#updbar').classList.remove('hidden'); }
+$('#upd_go').onclick = () => location.reload();
+$('#upd_x').onclick = () => $('#updbar').classList.add('hidden');
+(async () => { try {
+  if (!('serviceWorker' in navigator) || !window.caches) return;
+  navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'amali-update' && e.data.build !== AMALI_BUILD) updShow(); });
+  const f = await caches.match('./__amali_update'); if (f) { const j = await f.json(); if (j.build && j.build !== AMALI_BUILD) updShow(); else { const ks = await caches.keys(); for (const k of ks) (await caches.open(k)).delete('./__amali_update'); } }
+} catch (e) {} })();
+
 (function(){
   try {
     if (!document.querySelector('link[rel=manifest]')) {
