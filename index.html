@@ -35,6 +35,7 @@
 @font-face{font-family:'Readex Pro';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/readex-700.woff2') format('woff2')}
 @font-face{font-family:'Markazi Text';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/markazi-400.woff2') format('woff2')}
 @font-face{font-family:'Markazi Text';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/markazi-700.woff2') format('woff2')}
+.icsbox{margin-top:10px;padding:12px;border:1px solid var(--line,#ccc);border-radius:12px;background:var(--panel)}.icsbox h4{margin:0 0 8px;font-size:1rem}.icsbox ol{margin:0;padding-inline-start:20px}.icsbox li{margin-bottom:10px;line-height:1.8}.icsbox .row{margin-top:6px}
 </style>
 <style>
 :root{
@@ -1075,8 +1076,9 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
     <p class="k">اكتب اسم كل عضو كما يرد في كشف النظام بعد «المستشار:» (يكفي الاسم الأول والأخير)، فيحدد التطبيق كاتب الحكم تلقائيًا عند استيراد كشف المحجوزة. الأسماء تُحفظ على هذا الجهاز وحده ولا تظهر في الأوراق المطبوعة.</p>
     <div class="rlmem"><label>الرئيس <input id="rm_p" type="text" autocomplete="off"></label><label>العضو اليمين <input id="rm_r" type="text" autocomplete="off"></label><label>العضو اليسار <input id="rm_l" type="text" autocomplete="off"></label><label>(د) عند الحاجة <input id="rm_d" type="text" autocomplete="off"></label></div>
     <h3 style="margin-top:14px">التنبيهات في تقويم الجهاز</h3>
-    <p class="k">التطبيق لا يرسل تنبيهات وهو مغلق؛ لذلك تُضاف المواعيد إلى تقويم جهازك فتنبّهك منه: الجلسات بتنبيه الساعة 7 مساءً قبلها بيوم، ومواعيد نطق أحكامك (أ) التي لم تجهز مسوداتها بتنبيه قبل 3 أيام وقبل يوم. افتح الملف مرة واحدة واختر «إضافة الكل»؛ وأعد «أحكامي» بعد كل توزيع.</p>
+    <p class="k">التطبيق لا يرسل تنبيهات وهو مغلق؛ لذلك تُضاف المواعيد إلى تقويم جهازك فتنبّهك منه: الجلسات بتنبيه الساعة 7 مساءً قبلها بيوم، ومواعيد نطق أحكامك (أ) التي لم تجهز مسوداتها بتنبيه قبل 3 أيام وقبل يوم. على الحاسوب يُنزَّل ملف تفتحه وتختار «إضافة الكل»؛ وعلى الآيفون والآيباد تظهر طرق الإضافة (أسهلها نسخ طلب يُلصق في تطبيق Claude). وأعد «أحكامي» بعد كل توزيع.</p>
     <div class="row"><button type="button" class="btn" id="rl_icss">إضافة الجلسات إلى التقويم</button><button type="button" class="btn" id="rl_icsj">إضافة مواعيد أحكامي</button></div>
+    <div class="icsbox hidden" id="rl_icsbox"></div>
   </div>
   <div class="rlbar hidden" id="rl_dayrow"><div class="chips" id="rl_days"></div><label class="chip dayx" for="rl_dayx">يوم آخر: <input type="date" id="rl_dayx"></label></div>
   <div class="rlbar hidden" id="rl_filters">
@@ -1297,7 +1299,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V48</p>
+      <p class="dver">الإصدار V48.2</p>
     </section>
   </div>
 </div>
@@ -2643,7 +2645,8 @@ function rlIcs(kind) {
   const esc2 = s => String(s).replace(/\\/g, '\\\\').replace(/[,;]/g, m => '\\' + m).replace(/\n/g, '\\n');
   const fold = l => { const out = []; let s = l; while (s.length > 30) { out.push(s.slice(0, 30)); s = ' ' + s.slice(30); } out.push(s); return out.join('\r\n'); };
   const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
-  const ev = (uid, day, summary, alarms) => { const d = day.replace(/-/g, ''); return ['BEGIN:VEVENT', 'UID:' + uid + '@amali', 'DTSTAMP:' + stamp, 'DTSTART:' + d + 'T050000Z', 'DTEND:' + d + 'T090000Z', 'SUMMARY:' + esc2(summary)].concat(...alarms.map(a => ['BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc2(summary), 'TRIGGER:' + a, 'END:VALARM'])).concat(['END:VEVENT']); };
+  const E = [];
+  const ev = (uid, day, summary, alarms) => { E.push({ day, summary, alarms }); const d = day.replace(/-/g, ''); return ['BEGIN:VEVENT', 'UID:' + uid + '@amali', 'DTSTAMP:' + stamp, 'DTSTART:' + d + 'T050000Z', 'DTEND:' + d + 'T090000Z', 'SUMMARY:' + esc2(summary)].concat(...alarms.map(a => ['BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc2(summary), 'TRIGGER:' + a, 'END:VALARM'])).concat(['END:VEVENT']); };
   let L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//amali//roll//AR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:' + esc2(kind === 'j' ? 'أحكامي' : 'جلسات الدائرة')];
   const t = rlToday();
   if (kind === 's') { const lim = new Date(); lim.setMonth(lim.getMonth() + 6); const limIso = rlIso(lim.getFullYear(), lim.getMonth() + 1, lim.getDate());
@@ -2652,14 +2655,26 @@ function rlIcs(kind) {
     Object.keys(byD).forEach(d => { L = L.concat(ev('j' + d.replace(/-/g, ''), d, 'نطق أحكامي (' + byD[d].length + '): ' + byD[d].join('، '), ['-P3DT13H', '-PT13H'])); }); if (!Object.keys(byD).length) { toast('لا أحكام معلّقة لك بموعد نطق قادم'); return; } }
   L.push('END:VCALENDAR');
   const ics = L.map(fold).join('\r\n') + '\r\n'; const name = kind === 'j' ? 'أحكامي.ics' : 'جلسات الدائرة.ics';
-  if (IS_IOS) {
-    const f = new File([ics], name, { type: 'text/calendar' });
-    if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f] }).then(() => toast('افتح الملف من «الملفات» ثم «إضافة الكل»')).catch(() => {}); return; }
-    if (!isStandalone()) { location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); return; }
-    toast('افتح الموقع في Safari لإضافة التقويم'); return;
-  }
+  if (IS_IOS) { rlIcsIOS(ics, name, E, kind); return; }
   const b = new Blob([ics], { type: 'text/calendar' }); if (DLX) { DLX.save({ filename: name, data: b }).catch(() => {}); return; }
   const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('نُزّل ملف التقويم — افتحه لإضافته');
+}
+// iPhone/iPad: تطبيق «التقويم» لا يظهر في نافذة المشاركة، فتُعرض طرق مجرّبة للإضافة
+function rlIcsIOS(ics, name, E, kind) {
+  const box = $('#rl_icsbox'); box.classList.remove('hidden');
+  const al = a => a === '-PT13H' ? 'تنبيه الساعة 7 مساءً في اليوم السابق' : 'تنبيه الساعة 7 مساءً قبلها بثلاثة أيام';
+  const prompt = 'أضف إلى تقويم جهازي الأحداث التالية (بتوقيت الكويت)، كل حدث من الساعة 8:00 صباحًا إلى 12:00 ظهرًا:\n' + E.map(e => '- ' + rlDay(e.day) + ' ' + e.day + ': ' + e.summary + ' — ' + e.alarms.map(al).join('، و')).join('\n') + '\nتحقق أولًا من عدم وجود الحدث نفسه في تقويمي حتى لا يتكرر.';
+  const safari = !isStandalone();
+  box.innerHTML = '<h4>إضافة ' + (kind === 'j' ? 'مواعيد أحكامي' : 'الجلسات') + ' إلى تقويم الآيفون (' + E.length + ')</h4>' +
+    '<ol><li><b>الأسهل — عبر تطبيق Claude:</b> انسخ الطلب ثم الصقه في محادثة في تطبيق Claude على الجهاز نفسه، فيضيف المواعيد والتنبيهات إلى تقويمك مباشرة.<div class="row"><button type="button" class="btn primary" id="rl_icsc">نسخ الطلب</button></div></li>' +
+    '<li><b>عبر البريد:</b> اضغط «مشاركة الملف» واختر «البريد» وأرسله إلى نفسك، ثم افتح الرسالة واضغط المرفق ← «إضافة الكل».<div class="row"><button type="button" class="btn" id="rl_icsf">مشاركة الملف</button></div></li>' +
+    (safari ? '<li><b>من Safari مباشرة:</b><div class="row"><button type="button" class="btn" id="rl_icso">فتح في التقويم</button></div></li>' : '') +
+    '</ol><div class="row"><button type="button" class="btn" id="rl_icsx">إغلاق</button></div>';
+  $('#rl_icsc').onclick = () => copy(prompt, 'نُسخ الطلب — الصقه في تطبيق Claude');
+  $('#rl_icsf').onclick = () => { const f = new File([ics], name, { type: 'text/calendar' }); if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f] }).catch(() => {}); else toast('المشاركة غير متاحة — استعمل الطريقة الأولى'); };
+  if (safari) $('#rl_icso').onclick = () => { location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); };
+  $('#rl_icsx').onclick = () => box.classList.add('hidden');
+  box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 // أمر بدء المحادثة في مشروع الدائرة العمالية
 function rlPrompt(c) {
