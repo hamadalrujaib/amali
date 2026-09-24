@@ -45,6 +45,8 @@
 .rlpath{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:6px 0 8px}.rlpath i{color:var(--ink3);font-style:normal;font-size:12px}.rlpath .st{font-family:inherit;font-size:12px;border:1px solid var(--line2);background:var(--bg);color:var(--ink2);border-radius:999px;padding:3px 10px;cursor:pointer;white-space:nowrap}.rlpath .st.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}.rlpath .st.nx{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
 .toolvis{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}.toolvis .mskopt{font-size:13px}.askhost{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;line-height:1.9;font-size:14px}.askhost ul{margin:6px 0;padding-inline-start:18px}.askhost li{margin:2px 0}.askhost .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.askhost textarea{width:100%;min-height:110px;border:1px solid var(--line2);border-radius:10px;padding:8px 10px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;margin-top:8px}.cv{margin:6px 0 0;padding:0;list-style:none}.cv li{padding:4px 0;border-bottom:1px dashed var(--line)}.cv .y{color:var(--ok);font-weight:700}.cv .n{color:var(--bad);font-weight:700}
 .fmbox{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:8px}.fmbox h3{margin:0;font-size:15px}.fmbox h3 small{font-weight:400;color:var(--ink3);font-size:12px;margin-inline-start:6px}.fmcats{display:flex;flex-wrap:wrap;gap:6px}.fmcats button{font-family:inherit;font-size:12.5px;border:1px solid var(--line2);background:var(--bg);color:var(--ink2);border-radius:999px;padding:3px 11px;cursor:pointer}.fmcats button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}.fmit{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--bg)}.fmit .fmt{flex:1;min-width:0;cursor:pointer}.fmit .fmt b{display:block;font-size:14px}.fmit .fmt span{display:block;font-size:12.5px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fmit .fma{display:flex;gap:4px;flex:none}.fmit .fma button{font-family:inherit;font-size:12px;border:1px solid var(--line2);background:var(--panel);color:var(--ink2);border-radius:8px;padding:3px 8px;cursor:pointer}.fmform{display:grid;gap:6px;border:1px solid var(--accent);border-radius:10px;padding:10px}.fmform input,.fmform select,.fmform textarea{width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:8px;padding:7px 10px;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:14px}.fmform textarea{min-height:120px;font-family:var(--body);line-height:1.8}
+.rsvbox{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;padding:8px 10px;border:1px solid var(--accent);border-radius:10px;background:var(--bg);font-size:13.5px}.rsvbox select{padding:6px 8px;border:1px solid var(--line2);border-radius:8px;background:var(--panel);color:var(--ink);font-family:var(--ui)}
+.mstmode{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.mstmode button{font-family:inherit;font-size:13.5px;border:1px solid var(--line2);background:var(--panel);color:var(--ink2);border-radius:999px;padding:6px 14px;cursor:pointer}.mstmode button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}#ms_dgrid[hidden],#ms_pgrid[hidden]{display:none!important}.dmt{width:100%;border-collapse:collapse;font-size:14px}.dmt td,.dmt th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:right;vertical-align:top}.dmt td.n{white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:700}.dmt tr.tot td{border-top:2px solid var(--ink3);font-size:15px}.dmt .why{font-size:12.5px;color:var(--ink3)}
 </style>
 <style>
 :root{
@@ -359,6 +361,8 @@ body.home .search{visibility:hidden}
 .wefields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .wefields label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--ink2)}
 .wefields label:nth-child(4),.wefields label:nth-child(5){grid-column:1/-1}
+.wefields small{color:var(--ink3);font-size:11.5px}
+.wefields textarea{width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);color:var(--ink);font-size:14px;font-family:var(--ui);resize:vertical;min-height:40px;line-height:1.6}
 .wefields input{width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-size:14px;font-family:var(--ui)}
 .note code{background:var(--panel2);border-radius:4px;padding:1px 5px;font-size:12px}
 .wepage{background:#fff;color:#111;border:1px solid var(--line);border-radius:8px;padding:26px 30px;font-family:Arial,"Noto Naskh Arabic",serif;direction:rtl;line-height:1.9;box-shadow:var(--shadow)}
@@ -553,6 +557,7 @@ main{min-width:0;max-width:100%;overflow:hidden}
 .msf .mschk{flex-direction:row;align-items:center;gap:8px;grid-column:1/-1;font-size:13.5px;color:var(--ink)}
 .msf .mschk input{width:auto}
 .mstform h3{border-bottom:1px solid var(--line);padding-bottom:4px}
+.mstform h3 small{font-weight:400;color:var(--ink3);font-size:.8em}
 .mswarn{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);border-radius:var(--r);padding:9px 12px;font-size:13px;font-weight:600;line-height:1.6}
 .mssum{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .mssum .tt{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
@@ -1045,7 +1050,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
   <section class="chklist">
     <h3>قائمة التحقق الإلزامية للحكم</h3>
     <div class="ticks" id="k_ticks"></div>
-    <div class="rel"><button class="btn primary" id="k_copy" type="button">نسخ ملخص التحقق</button><button class="btn" id="k_reset" type="button">إعادة ضبط</button></div>
+    <div class="rel"><button class="btn primary" id="k_copy" type="button">نسخ ملخص التحقق</button><button class="btn" id="k_save" type="button">حفظ في قضية</button><button class="btn" id="k_reset" type="button">إعادة ضبط</button></div>
   </section>
 </div>
 
@@ -1191,10 +1196,12 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
 </div>
 <div class="intakewrap" id="mstwrap">
   <div class="note">حساب محلي — الأرقام مسودة عمل تخضع لمراجعة المحكمة. <button type="button" class="more" data-help>المزيد</button></div>
-  <div class="ingrid mstgrid">
+  <div class="mstmode" id="ms_modesel" role="tablist"><button type="button" data-m="p" class="on">عامل في القطاع الأهلي (6/2010)</button><button type="button" data-m="d">عامل منزلي (68/2015)</button></div>
+  <div class="ingrid mstgrid" id="ms_pgrid">
     <section class="inbox mstform" id="ms_form">
       <h3>الأجر</h3>
       <div class="msf">
+        <label>العامل المعني <small>(عند تعدد العمال)</small><input id="ms_who" type="text" placeholder="مثال: المستأنف الأول — بلا اسم"></label>
         <label>طريقة تقاضي الأجر<select id="ms_pay"><option value="m">شهري</option><option value="d">يومي / أسبوعي / بالساعة / بالقطعة</option></select></label>
         <label>قسمة الأجر اليومي<select id="ms_div"><option value="26">÷ 26 — أيام العمل الفعلية (م67/2)</option><option value="30">÷ 30 — قاسم بديل</option></select></label>
         <label><span id="ms_total_l">الأجر الشامل الشهري (د.ك)</span><input id="ms_total" type="number" inputmode="decimal" min="0" step="0.001" placeholder="أساس المكافأة والإنذار"></label>
@@ -1210,6 +1217,16 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
         <label id="ms_notice_w">مهلة الإخطار (م44)<select id="ms_notice"><option value="none">لم تُراعَ</option><option value="partial">رُوعي جزء منها</option><option value="full">رُوعيت كاملة</option><option value="exempt">أُعفي العامل من العمل خلالها (م44/د)</option></select></label>
         <label id="ms_ndays_w" hidden>أيام الإخطار المراعاة<input id="ms_ndays" type="number" inputmode="numeric" min="0" step="1" placeholder="بالأيام"></label>
       </div>
+      <h3>العمل الإضافي والراحة الأسبوعية والعطل الرسمية <small>(م64، م66–68 — اختياري)</small></h3>
+      <div class="msf">
+        <label>أساس أجر اليوم لهذه البنود<select id="ms_xbase"><option value="b">الأجر الأساسي</option><option value="t">الأجر الشامل</option></select></label>
+        <label>ساعات العمل الإضافي (إجمالي)<input id="ms_oth" type="number" inputmode="decimal" min="0" step="0.5" placeholder="0"></label>
+        <label>أيام راحة أسبوعية (الجمع) عمل فيها<input id="ms_rest" type="number" inputmode="numeric" min="0" step="1" placeholder="0"></label>
+        <label>المحتسب عن يوم الراحة<select id="ms_restm"><option value="1.5">أجر اليوم + 50% (150%)</option><option value="0.5">الزيادة وحدها 50% (أجر اليوم مصروف)</option></select></label>
+        <label>أيام عطل رسمية عمل فيها (م68)<input id="ms_hol" type="number" inputmode="numeric" min="0" step="1" placeholder="0"></label>
+        <label>المحتسب عن يوم العطلة<select id="ms_holm"><option value="2">أجر مضاعف (200%)</option><option value="1">الضعف الإضافي وحده (أجر اليوم مصروف)</option></select></label>
+        <p class="msh">ساعة العمل = أجر اليوم ÷ 8 (م64). العمل الإضافي بأجر يزيد 25% على الأجر العادي (م66). اختيار الأساس والنسبة قرار للمحكمة؛ الأداة تحسب ما تختاره.</p>
+      </div>
       <h3>الإجازات والخصوم</h3>
       <div class="msf">
         <label>أيام الإجازة المستنفدة<input id="ms_used" type="number" inputmode="decimal" min="0" step="0.5" placeholder="0"></label>
@@ -1218,7 +1235,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
         <label class="mschk"><input id="ms_kw" type="checkbox"><span>عامل كويتي مؤمَّن عليه</span></label>
       </div>
       <div class="row">
-        <button class="btn primary" id="ms_copy" type="button">نسخ البيان</button>
+        <button class="btn primary" id="ms_copy" type="button">نسخ البيان</button><button class="btn" id="ms_save" type="button">حفظ في قضية</button>
         <button class="btn" id="ms_print" type="button">طباعة</button>
         <button class="btn" id="ms_reset" type="button">مسح</button>
         <span class="help" id="ms_status"></span>
@@ -1227,6 +1244,31 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
     <section class="inout" id="ms_out">
       <div class="empty"><b>لا حساب بعد</b>أدخل الأجر والتاريخين وسبب الانتهاء.</div>
     </section>
+  </div>
+
+  <div class="ingrid mstgrid" id="ms_dgrid" hidden>
+    <section class="inbox mstform" id="dm_form">
+      <h3>العامل المنزلي — القانون 68/2015 ولائحته 22/2022</h3>
+      <div class="msf">
+        <label>الأجر الشهري المتفق عليه (د.ك)<input id="dm_wage" type="number" inputmode="decimal" min="0" step="0.001"></label>
+        <label>قاسم الأجر اليومي<select id="dm_div"><option value="30">÷ 30</option><option value="26">÷ 26</option></select></label>
+        <label>تاريخ الاستلام الفعلي للعمل<input id="dm_s" type="date"></label>
+        <label>تاريخ انتهاء العقد أو العلاقة<input id="dm_e" type="date"></label>
+        <label class="mschk"><input id="dm_done" type="checkbox"><span>أتمّ العامل مدة العقد (م23)</span></label>
+        <label>احتساب السنوات<select id="dm_frac"><option value="full">السنوات الكاملة فقط</option><option value="prop">مع كسور السنة بالنسبة</option></select></label>
+        <label>أشهر أجر لم تُدفع<input id="dm_unpaid" type="number" inputmode="numeric" min="0" step="1" placeholder="0"></label>
+        <label>أشهر تأخّر فيها الأجر (م27 / م31 لائحة)<input id="dm_late" type="number" inputmode="numeric" min="0" step="1" placeholder="0"></label>
+        <label>أيام عمل إضافي (م30 لائحة)<input id="dm_ot" type="number" inputmode="numeric" min="0" step="1" placeholder="0"></label>
+        <p class="msh">القانون 68/2015 لم يحدد قاسمًا للأجر اليومي؛ اختر ما تراه. واحتساب كسور السنة في المكافأة وشرط «إتمام مدة العقد» مسألتان تقدرهما المحكمة — الحاسبة تعرض الحساب بحسب اختيارك فقط.</p>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="dm_copy" type="button">نسخ البيان</button>
+        <button class="btn" id="dm_save" type="button">حفظ في قضية</button>
+        <button class="btn" id="dm_prin" type="button">مبادئ ذات صلة</button>
+        <button class="btn" id="dm_reset" type="button">مسح</button>
+      </div>
+    </section>
+    <section class="inout" id="dm_out"><div class="empty"><b>لا حساب بعد</b>أدخل الأجر والتاريخين.</div></section>
   </div>
 </div>
 
@@ -1282,8 +1324,8 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
         <label>رقم الاستئناف<input id="we_appeal" type="text" placeholder="1144/2025"></label>
         <label>الدائرة<input id="we_circuit" type="text" value="عمالي/2"></label>
         <label>تاريخ الجلسة<input id="we_session" type="text" placeholder="10/6/2026"></label>
-        <label>المقام من<input id="we_from" type="text" placeholder="اسم المستأنف"></label>
-        <label>المستأنف ضده<input id="we_against" type="text" placeholder="الاسم — مع «بصفته» للجهات الحكومية"></label>
+        <label>المقام من <small>(اسم في كل سطر — يُرقَّم عند التعدد)</small><textarea id="we_from" rows="2" placeholder="اسم المستأنف"></textarea></label>
+        <label>المستأنف ضده <small>(اسم في كل سطر)</small><textarea id="we_against" rows="2" placeholder="الاسم — مع «بصفته» للجهات الحكومية"></textarea></label>
         <label>الرقم الآلي<input id="we_autoid" type="text" placeholder="........."></label>
         <label>مبلغ الأتعاب (يُظلَّل)<input id="we_amount" type="text" placeholder="اتركه ليُظلَّل مكانه أو اكتب الرقم"></label>
       </div>
@@ -1301,7 +1343,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
         <div id="fm_list"></div>
         <div class="row"><button type="button" class="btn" id="fm_new">＋ صياغة جديدة</button></div>
         <div id="fm_edit"></div>
-        <p class="help">المتغيرات تُستبدل عند الإدراج من بيانات الترويسة: {رقم_الاستئناف} {الدائرة} {الجلسة} {المستأنف} {المستأنف_ضده} {الأتعاب}. وما تضعه بين 〖 〗 يُظلَّل في Word ليذكّرك بقرارك. الصياغات لك وحدك، تُحفظ على جهازك وتدخل في المزامنة المشفّرة.</p>
+        <p class="help">المتغيرات تُستبدل عند الإدراج من بيانات الترويسة: {رقم_الاستئناف} {الدائرة} {الجلسة} {المستأنف} {المستأنف_ضده} {الأتعاب} (عند تعدد الخصوم تُجمع الأسماء بـ«و»). وما تضعه بين 〖 〗 يُظلَّل في Word ليذكّرك بقرارك. الصياغات لك وحدك، تُحفظ على جهازك وتدخل في المزامنة المشفّرة.</p>
       </div>
     </section>
     <section class="inout" id="we_out"><div class="empty"><b>لا معاينة بعد</b>املأ البيانات والنص ثم اضغط «معاينة» أو «تنزيل Word».</div></section>
@@ -1354,7 +1396,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V55</p>
+      <p class="dver">الإصدار V57</p>
     </section>
   </div>
 </div>
@@ -1841,7 +1883,7 @@ const HOME_TILES = [
   ['l', 'التشريعات', 'قانون العمل 6/2010 بنصه النافذ والأصلي، والمرافعات والإثبات والخبرة والقرارات المنظمة.', () => ARTS.length + ' مادة', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M4 7h16"/><path d="M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></svg>'],
   ['m', 'الخرائط', 'خرائط ذهنية للمكافأة والإجازات والفصل والتقادم وحاسبة المستحقات.', () => 'مرجع سريع', '', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 9V4M12 15v5M9 12H4M15 12h5"/><circle cx="12" cy="4" r="1.5"/><circle cx="12" cy="20" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="20" cy="12" r="1.5"/></svg>'],
   ['c', 'التحقق', 'أدخل معطيات القضية فيعيد تشغيل قائمة التحقق: النصاب، التقادم، المكافأة، الفوائد، المصروفات.', () => 'قائمة إلزامية', '', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 16h8"/></svg>'],
-  ['s', 'حاسبة المستحقات', 'المكافأة ورصيد الإجازات وبدل الإنذار خطوة بخطوة، مع مادة كل بند ومبادئه — ومعالجة الخدمة الممتدة من قبل 2010.', () => 'مسودة تُراجع', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h4"/></svg>'],
+  ['s', 'حاسبة المستحقات', 'المكافأة ورصيد الإجازات وبدل الإنذار خطوة بخطوة، مع مادة كل بند ومبادئه — ومعالجة الخدمة الممتدة من قبل 2010. وفيها حاسبة العامل المنزلي (68/2015).', () => 'مسودة تُراجع', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h4"/></svg>'],
   ['e', 'المواعيد الإجرائية', 'ميعاد الاستئناف والتمييز والالتماس، وعدم السماع (م144)، والشطب والوقف وسقوط الخصومة — بحساب م17 وامتداد العطلة، ويُضاف إلى القضية.', () => 'حساب آلي يُراجع', 'gold', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6M12 2v3"/></svg>'],
   ['x', 'إخفاء الهوية', 'عتّم أسماء المتقاضين والأرقام المدنية على صور الأوراق داخل جهازك، ثم نزّلها PDF أو أرسلها للتحليل.', () => 'محلي بالكامل', 'mix', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><rect x="7" y="12" width="7" height="2.6" fill="currentColor"/><rect x="7" y="16" width="4" height="2.6" fill="currentColor"/></svg>'],
   ['i', 'تحليل الملف', 'الصق أوراق القضية أو ارفعها فيستخرج بطاقة القضية والطلبات وأوجه النعي ويقترح المبادئ.', () => 'مرحلة 1–2', 'mix', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>', 'Claude'],
@@ -1923,7 +1965,7 @@ function openArticleByTag(tag) {
 // ---- global search (V44): مادة · طعن · مبدأ · أداة · خريطة · ملف — محلي بالكامل
 const GS_TOOLS = {
   p: 'مبادئ قواعد تمييز احكام موجز بحث', l: 'تشريعات قانون مواد نص مرافعات اثبات خبره قرارات', m: 'خرائط خريطه مكافاه اجازات فصل تقادم مسار', t: 'خط زمني تطور استقرار المبدا',
-  r: 'رول جلسه جلسات الجلسه قضايا بطاقات مواعيد اجل ورقه طباعه', i: 'تحليل ملف اوراق صحيفه استئناف تقرير خبير رفع صور', x: 'اخفاء هويه تعتيم اسماء حجب ارقام مدنيه', c: 'تحقق قائمه نصاب تقادم فوائد مصروفات', s: 'حاسبه مستحقات مكافاه اجازات انذار حساب', f: 'ملفاتي ملفات قضايا محفوظات',
+  r: 'رول جلسه جلسات الجلسه قضايا بطاقات مواعيد اجل ورقه طباعه', i: 'تحليل ملف اوراق صحيفه استئناف تقرير خبير رفع صور', x: 'اخفاء هويه تعتيم اسماء حجب ارقام مدنيه', c: 'تحقق قائمه نصاب تقادم فوائد مصروفات', s: 'حاسبه مستحقات مكافاه اجازات انذار حساب منزلي منزليه خادم خدم عمالة منزلية 68/2015', f: 'ملفاتي ملفات قضايا محفوظات',
   e: 'مواعيد ميعاد اجرائيه استئناف تمييز طعن التماس تقادم عدم سماع شطب وقف سقوط خصومه امتداد عطله مسافه',
   d: 'فحص مسوده مراجعه اسباب احالات تدقيق', w: 'تصدير word وورد docx قالب طباعه صياغات صياغاتي صيغ عبارات منطوق شكل مصاريف اتعاب', a: 'مساعد سؤال اسال claude محادثه', h: 'رئيسيه رئيسية بدايه'
 };
@@ -2020,7 +2062,7 @@ if (/Mac|iPhone|iPad/.test(navigator.platform || '')) document.querySelectorAll(
 })();
 
 // ---- الإعدادات والتعليمات (V45)
-const HELP = {"e": "حاسبة المواعيد الإجرائية: تختار نوع الميعاد وتاريخ بدئه، فتحسب آخر يوم فيه وفق <b>م17 مرافعات</b> (لا يُحسب يوم الحدث؛ تُحسب الشهور والسنين بالتقويم الميلادي؛ إذا صادف آخر الميعاد عطلة رسمية امتد إلى أول يوم عمل)، مع ميعاد المسافة <b>م18</b> لمن موطنه خارج الكويت. الأنواع: الاستئناف (م141 — 30 يومًا، و15 في المستعجل)، والتمييز (م153 — 60 يومًا)، والالتماس (م149 — 30 يومًا)، وعدم سماع الدعوى العمالية (م144 عمل — سنة من انتهاء العقد)، واعتبار الدعوى كأن لم تكن بعد الشطب (م59 — 90 يومًا)، وانتهاء الوقف الجزائي ومهلة التعجيل (م70)، وسقوط الخصومة (م95 — سنة)، وعدم التكليف بالحضور (م49 — 90 يومًا). تُدخل العطل الرسمية مرة واحدة فتُحفظ وتُزامن مع بياناتك. <b>بدء الميعاد</b> (من الصدور أو الإعلان — م129) ووقفه (م130) وحالات م142 تُحدَّد من الأوراق؛ والنتيجة حساب آلي يُراجع وليست رأيًا في شكل الطعن. يمكنك إضافة آخر يوم إلى مواعيد قضية في «رول الجلسة».","l": "قانون العمل رقم 6 لسنة 2010 كاملًا (150 مادة) <b>بنصه النافذ بعد التعديلات<\/b> بالقوانين 90/2013 و108/2013 و32/2016 و85/2017 و17/2018 (المواد المعدَّلة: 9، 10، 51، 57، 70، 138، 140، 142، 146 — كل منها موسومة ومعها نصها الأصلي)، مع نصوص القوانين المعدِّلة نفسها، والقرارات 842/2015 و3/2024 و680/2026 (المصدر: الملف المرفوع وصور الجريدة الرسمية، منسوخة حرفيًا)، و<b>قانون المرافعات كاملًا<\/b> بتعديلاته حتى 2026 (نص مجمَّع غير رسمي) مقابَلًا مادةً مادةً بـ<b>النص الرسمي في طبعة وزارة العدل 2011 مع مذكرته التفسيرية<\/b> (✓ مطابق / ⚠ مختلف)، وكذلك من الطبعة نفسها: قانون الإثبات ومذكرته، قانون تنظيم الخبرة ومذكرته، قانون الدائرة العمالية 46/1987، الدائرة الإدارية، التحكيم القضائي، الرسوم القضائية، وقرارات وزير العدل المنفذة. المذكرة الإيضاحية وتعليق المحاضر يظهران حيث توفرا في محاضرة التعويض.", "m": "خرائط توضيحية مبسّطة من نصوص قانون العمل رقم 6 لسنة 2010، لا تغني عن النص ولا عن تقرير الخبير. اضغط رقم المادة لفتح نصها أو المبادئ الموسومة بها.", "c": "أداة تحقق استرشادية: تُدخل معطيات القضية فتعرض المواعيد والنصاب والمستحقات المحتملة مع سندها من القانون والمبادئ. لا تحسم شيئًا؛ التقدير والقرار للمحكمة.", "i": "محلل الملف: الصق نص حكم أول درجة وصحيفة الاستئناف وتقرير الخبير (أو ارفع صور صفحاتها / ملف PDF)، فيستخرج بطاقة القضية والطلبات وأوجه النعي، ويقترح لكل وجه المبادئ والمواد المرتبطة، ويملأ أداة التحقق. الاستخراج مسودة تُراجع على الأوراق؛ يستهلك رصيد حسابك ويطلب إذنك أول مرة. <b>للدقة الأعلى:<\/b> الصق النص من Word أو PDF نصّي؛ أما الصور الممسوحة فتُقرأ ضوئيًا داخل المتصفح بدقة محدودة ويُعرض نصها لمراجعتك قبل التحليل.", "d": "فاحص المسودة: الصق مسودة أسباب الحكم ومنطوقه، فيفحصها التطبيق محليًا (دون إرسال): يتحقق من كل إحالة إلى طعن أو مادة، ويقترح لكل قاعدة قانونية وردت فيها سندها من مبادئ التمييز أو يقول «لا يوجد سند في قاعدة التطبيق»، ويطابق الأرقام والتواريخ بين الأسباب والمنطوق، ويعيد تشغيل قائمة التحقق والوصلات اللغوية. ثم يمكنك اختياريًا طلب نقد معمّق (المرحلة 5) أو دور الخصم (المرحلة 6) عبر المساعد — وكلاهما مقيّد بمبادئ القاعدة فقط، ولا يرجّح نتيجة.", "s": "حاسبة المستحقات: تحسب مكافأة نهاية الخدمة والمقابل النقدي لرصيد الإجازات وبدل الإنذار وفق القانون 6/2010، وتربط كل بند بمادته ومبادئ التمييز الموسومة في قاعدة التطبيق. الحساب محلي بالكامل. <b>الأرقام مسودة عمل داخلية تخضع لمراجعة المحكمة<\/b> — لا ترجّح نتيجة، وما لا سند له في القاعدة يُعلَّم ولا يُحسب.", "x": "إخفاء الهوية: ارفع أوراق الدعوى (PDF أو صور)، فيقرأها التطبيق <b>على جهازك<\/b> ويحدد مواضع أسماء الأطراف والقاضي وأمين السر والشهود والوكلاء والأرقام المدنية والهواتف، ويغطيها بمستطيلات سوداء على صورة الصفحة نفسها. الناتج صور فقط بلا طبقة نص: تنزّلها PDF لترفعها في محادثاتك، أو ترسلها إلى «تحليل الملف». <b>لا يُرسل شيء أثناء الكشف.<\/b> الكشف الآلي قد يفوته اسم — <b>مراجعتك لكل صفحة قبل الإرسال إلزامية<\/b>.", "t": "الخط الزمني: اختر مسألة (بحث حر، أو موضوع، أو رقم مادة) فيعرض التطبيق أحكام محكمة التمييز المتصلة بها مرتَّبة زمنيًا، ليتبيّن استقرار القاعدة عبر السنين وأي تطور أو تباين. الترتيب والتجميع يجريان محليًا؛ زر «حلّل الاستقرار» اختياري ويرسل الموجزات إلى Claude (يشارك حد استخدام حسابك).", "w": "<b>صياغاتي</b>: تحت مربع النص تحفظ عباراتك المعتادة بنصك أنت (قبول الاستئناف شكلًا، المصاريف والأتعاب، صيغ المنطوق…) مصنفة، وتدرجها بلمسة في موضع المؤشر؛ وتُستبدل المتغيرات {رقم_الاستئناف} {الدائرة} {الجلسة} {المستأنف} {المستأنف_ضده} {الأتعاب} من بيانات الترويسة، وما لم يُملأ يظهر مظللًا. التطبيق لا يقترح نصًا ولا يصوغ. الصياغات تُحفظ على جهازك وتدخل في المزامنة. تصدير Word: يُخرج نص الحكم بملف Word مطابق لقالبك (Arial 14، من اليمين، بلا ترويسة ولا سطر توقيع، «الأسباب» تحتها خط، الرقم الآلي في التذييل، ورقم الصفحة بالمنتصف). التوليد يجري داخل المتصفح بلا إرسال. <b>هذه أداة تنسيق لنصٍّ كتبتَه أنت<\/b> — لا تصوغ ولا تضيف حلقات استدلال. لتظليل موضع يحتاج قرارك (مبلغ أتعاب، جملة استنتاجية) ضعه بين ﴿ ﴾ هكذا: <code>〖نصك〗<\/code> أو <code>[[نصك]]<\/code>، وسيظهر بالأصفر.", "a": "المساعد يجيب من مبادئ التطبيق ونصوص المواد المتاحة فيه حصرًا، ويضع إحالة كل مبدأ. يستهلك رصيد حسابك، ويطلب إذنك عند أول استخدام. إجاباته مسودة تُراجع على المصدر.", "f": "ملفات القضايا تُحفظ في قاعدة التطبيق على حسابك وتظهر على كل أجهزتك، وتحتاج فتح التطبيق وأنت مسجل الدخول. أنشئ ملفًا باسم الاستئناف، ثم أضف إليه المبادئ من لوحة قراءة أي مبدأ، واكتب ملاحظاتك، وصدّر مذكرة الإسناد أو انسخ الإحالات.", "p": "اكتب في حقل البحث كلمة أو أكثر، أو عبارة بين علامتي تنصيص للمطابقة الحرفية (<b>\"الإقرار القضائي\"<\/b>)، أو رقم مادة (<b>م44<\/b>)، أو رقم طعن. المرشحات (السنة، المصدر، الموضوع، المادة، مآل النعي، الفهرس…) في العمود الجانبي، وعلى الهاتف من زر «التصفية». اضغط البطاقة لقراءة القاعدة كاملة مع الإحالة والمبادئ ذات الصلة، و«☆ حفظ» لإضافتها إلى المحفوظات. «نسخ الإحالات» ينسخ إحالات النتائج الظاهرة. زر «✦ دلالي» يعيد ترتيب النتائج بالمعنى عبر Claude (يعمل داخل claude.ai ويستهلك رصيدك).", "h": "التطبيق مقسّم أربع مجموعات: <b>البحث<\/b> (المبادئ، التشريعات، الخرائط، الخط الزمني)، و<b>القضية<\/b> (تحليل الملف، إخفاء الهوية، التحقق، الحاسبة، ملفاتي)، و<b>الكتابة<\/b> (فحص المسودة، تصدير Word)، و<b>المساعد<\/b>. حقل البحث في الرئيسية يبحث في كل شيء: مادة، طعن، مبدأ، أداة. وعلى الحاسوب يفتحه <span class=\"kbd\">Ctrl<\/span>+<span class=\"kbd\">K<\/span> من أي مكان.", "r": "<b>رول الجلسة<\/b> مبني على طريقة عمل الدائرة، في ثلاث شاشات:<br><b>1. رول الجلسة:<\/b> اختر الجلسة من أعلى الشاشة (الجلسات أيام الأربعاء عدا آخر أربعاء في الشهر، وتُعلَّم العطل من «التقويم»). ثم «استيراد كشف الجلسة»: الكشف الذي تطبعه من نظام الاطلاع، إما ملف PDF محفوظ من نافذة الطباعة، أو صورة، أو جدول منسوخ من الصفحة. يقرأ التطبيق على جهازك رقم القضية والرقم الآلي وحالة الإعلان (مثل 1/1: تمّ/المطلوب) والقرار، ويعرضها لمراجعتك قبل الإضافة. <b>أسماء الخصوم لا تُحفظ.<\/b><br>في كل قضية ترى: حالة الإعلان (✓ أو ✗)، وآخر قرار، وعدد مرات التأجيل للإعلان، ومربع «نُفّذ قرار الجلسة السابقة». و«طباعة ورقة المراجعة» تخرج ورقة الجلسة بهذه البيانات مع عمود فارغ للقرار، وقائمة القضايا المحجوزة للنطق في اليوم نفسه.<br><b>2. قرار الجلسة:<\/b> زر «قرار الجلسة» في كل قضية: حجز للحكم، أو تأجيل للإعلان، أو للاطلاع والرد، أو للمذكرات، أو إحالة للخبير، أو غير ذلك. يقترح التطبيق الموعد: الجلسة بعد التالية للحجز، والجلسة التالية للتأجيل، ويمكنك اختيار غيره. كل قرار يُحفظ في سجل جلسات القضية، ويمكن التراجع عن آخر قرار.<br><b>3. المحجوزة للحكم:<\/b> إذا كتبتَ أسماء أعضاء الدائرة مرة واحدة في «التقويم والدائرة» (تبقى على جهازك)، يحدد التطبيق كاتب كل حكم من كشف المحجوزة تلقائيًا. القضايا المحجوزة مجمّعة حسب تاريخ النطق، ولكل منها كاتب الحكم (الرئيس، أو العضو اليمين، أو العضو اليسار) مع عدّاد لكل منهم، و«طباعة التوزيع».<br>تُضاف المبادئ إلى أي قضية من لوحة قراءة المبدأ بزر «＋ رول الجلسة». البيانات محفوظة <b>على هذا الجهاز وحده<\/b>؛ ولنقلها استعمل «تصدير» ثم «استيراد نسخة». التطبيق يسجّل قرار المحكمة ولا يقترح قرارًا ولا يرجّح نتيجة."};
+const HELP = {"e": "حاسبة المواعيد الإجرائية: تختار نوع الميعاد وتاريخ بدئه، فتحسب آخر يوم فيه وفق <b>م17 مرافعات</b> (لا يُحسب يوم الحدث؛ تُحسب الشهور والسنين بالتقويم الميلادي؛ إذا صادف آخر الميعاد عطلة رسمية امتد إلى أول يوم عمل)، مع ميعاد المسافة <b>م18</b> لمن موطنه خارج الكويت. الأنواع: الاستئناف (م141 — 30 يومًا، و15 في المستعجل)، والتمييز (م153 — 60 يومًا)، والالتماس (م149 — 30 يومًا)، وعدم سماع الدعوى العمالية (م144 عمل — سنة من انتهاء العقد)، واعتبار الدعوى كأن لم تكن بعد الشطب (م59 — 90 يومًا)، وانتهاء الوقف الجزائي ومهلة التعجيل (م70)، وسقوط الخصومة (م95 — سنة)، وعدم التكليف بالحضور (م49 — 90 يومًا). تُدخل العطل الرسمية مرة واحدة فتُحفظ وتُزامن مع بياناتك. <b>بدء الميعاد</b> (من الصدور أو الإعلان — م129) ووقفه (م130) وحالات م142 تُحدَّد من الأوراق؛ والنتيجة حساب آلي يُراجع وليست رأيًا في شكل الطعن. يمكنك إضافة آخر يوم إلى مواعيد قضية في «رول الجلسة».","l": "قانون العمل رقم 6 لسنة 2010 كاملًا (150 مادة) <b>بنصه النافذ بعد التعديلات<\/b> بالقوانين 90/2013 و108/2013 و32/2016 و85/2017 و17/2018 (المواد المعدَّلة: 9، 10، 51، 57، 70، 138، 140، 142، 146 — كل منها موسومة ومعها نصها الأصلي)، مع نصوص القوانين المعدِّلة نفسها، والقرارات 842/2015 و3/2024 و680/2026 (المصدر: الملف المرفوع وصور الجريدة الرسمية، منسوخة حرفيًا)، و<b>قانون المرافعات كاملًا<\/b> بتعديلاته حتى 2026 (نص مجمَّع غير رسمي) مقابَلًا مادةً مادةً بـ<b>النص الرسمي في طبعة وزارة العدل 2011 مع مذكرته التفسيرية<\/b> (✓ مطابق / ⚠ مختلف)، وكذلك من الطبعة نفسها: قانون الإثبات ومذكرته، قانون تنظيم الخبرة ومذكرته، قانون الدائرة العمالية 46/1987، الدائرة الإدارية، التحكيم القضائي، الرسوم القضائية، وقرارات وزير العدل المنفذة. المذكرة الإيضاحية وتعليق المحاضر يظهران حيث توفرا في محاضرة التعويض.", "m": "خرائط توضيحية مبسّطة من نصوص قانون العمل رقم 6 لسنة 2010، لا تغني عن النص ولا عن تقرير الخبير. اضغط رقم المادة لفتح نصها أو المبادئ الموسومة بها.", "c": "أداة تحقق استرشادية: تُدخل معطيات القضية فتعرض المواعيد والنصاب والمستحقات المحتملة مع سندها من القانون والمبادئ. لا تحسم شيئًا؛ التقدير والقرار للمحكمة.", "i": "محلل الملف: الصق نص حكم أول درجة وصحيفة الاستئناف وتقرير الخبير (أو ارفع صور صفحاتها / ملف PDF)، فيستخرج بطاقة القضية والطلبات وأوجه النعي، ويقترح لكل وجه المبادئ والمواد المرتبطة، ويملأ أداة التحقق. الاستخراج مسودة تُراجع على الأوراق؛ يستهلك رصيد حسابك ويطلب إذنك أول مرة. <b>للدقة الأعلى:<\/b> الصق النص من Word أو PDF نصّي؛ أما الصور الممسوحة فتُقرأ ضوئيًا داخل المتصفح بدقة محدودة ويُعرض نصها لمراجعتك قبل التحليل.", "d": "فاحص المسودة: الصق مسودة أسباب الحكم ومنطوقه، فيفحصها التطبيق محليًا (دون إرسال): يتحقق من كل إحالة إلى طعن أو مادة، ويقترح لكل قاعدة قانونية وردت فيها سندها من مبادئ التمييز أو يقول «لا يوجد سند في قاعدة التطبيق»، ويطابق الأرقام والتواريخ بين الأسباب والمنطوق، ويعيد تشغيل قائمة التحقق والوصلات اللغوية. ثم يمكنك اختياريًا طلب نقد معمّق (المرحلة 5) أو دور الخصم (المرحلة 6) عبر المساعد — وكلاهما مقيّد بمبادئ القاعدة فقط، ولا يرجّح نتيجة.", "s": "<b>العامل المنزلي</b>: زر «عامل منزلي (68/2015)» أعلى الحاسبة يفتح حسابًا مستقلًا بنصوص القانون 68/2015 ولائحته 22/2022 فقط: المكافأة (م23: أجر شهر عن كل سنة بعد إتمام مدة العقد)، والأجور غير المدفوعة، وجزاء التأخر (10 د.ك عن كل شهر — م27 وم31 لائحة)، والعمل الإضافي (أجر نصف يوم — م30 لائحة)، مع تنبيه الحد الأدنى للأجر (75 د.ك — م27 لائحة؛ و60 د.ك قبلها — 2302/2016). وما لا نص على طريقة حسابه يُذكر ولا يُحسب. وزر «حفظ في قضية» يضيف البيان إلى «حزمة القضية». حاسبة المستحقات: تحسب مكافأة نهاية الخدمة والمقابل النقدي لرصيد الإجازات وبدل الإنذار وفق القانون 6/2010، و<b>اختياريًا</b>: مقابل العمل الإضافي (أجر الساعة = أجر اليوم ÷ 8 — م64، زائدًا 25% — م66)، والعمل في أيام الراحة الأسبوعية (50% على الأقل إضافة للأجر — م67)، والعمل في العطل الرسمية (أجر مضاعف — م68)؛ وتختار أنت أساس الأجر (أساسي/شامل) والنسبة المحتسبة. <b>عند تعدد العمال<\/b> اكتب في «العامل المعني» وصفًا بلا اسم (المستأنف الأول…) واحسب لكل عامل على حدة؛ «حفظ في قضية» يُلحق حساب كل عامل بالسابق في الحزمة ولا يستبدله.  وتربط كل بند بمادته ومبادئ التمييز الموسومة في قاعدة التطبيق. الحساب محلي بالكامل. <b>الأرقام مسودة عمل داخلية تخضع لمراجعة المحكمة<\/b> — لا ترجّح نتيجة، وما لا سند له في القاعدة يُعلَّم ولا يُحسب.", "x": "إخفاء الهوية: ارفع أوراق الدعوى (PDF أو صور)، فيقرأها التطبيق <b>على جهازك<\/b> ويحدد مواضع أسماء الأطراف والقاضي وأمين السر والشهود والوكلاء والأرقام المدنية والهواتف، ويغطيها بمستطيلات سوداء على صورة الصفحة نفسها. الناتج صور فقط بلا طبقة نص: تنزّلها PDF لترفعها في محادثاتك، أو ترسلها إلى «تحليل الملف». <b>لا يُرسل شيء أثناء الكشف.<\/b> الكشف الآلي قد يفوته اسم — <b>مراجعتك لكل صفحة قبل الإرسال إلزامية<\/b>.", "t": "الخط الزمني: اختر مسألة (بحث حر، أو موضوع، أو رقم مادة) فيعرض التطبيق أحكام محكمة التمييز المتصلة بها مرتَّبة زمنيًا، ليتبيّن استقرار القاعدة عبر السنين وأي تطور أو تباين. الترتيب والتجميع يجريان محليًا؛ زر «حلّل الاستقرار» اختياري ويرسل الموجزات إلى Claude (يشارك حد استخدام حسابك).", "w": "<b>صياغاتي</b>: تحت مربع النص تحفظ عباراتك المعتادة بنصك أنت (قبول الاستئناف شكلًا، المصاريف والأتعاب، صيغ المنطوق…) مصنفة، وتدرجها بلمسة في موضع المؤشر؛ وتُستبدل المتغيرات {رقم_الاستئناف} {الدائرة} {الجلسة} {المستأنف} {المستأنف_ضده} {الأتعاب} من بيانات الترويسة، وما لم يُملأ يظهر مظللًا. التطبيق لا يقترح نصًا ولا يصوغ. الصياغات تُحفظ على جهازك وتدخل في المزامنة. <b>تعدد الخصوم:<\/b> في «المقام من» و«المستأنف ضده» اكتب كل اسم في سطر فيُرقَّم تلقائيًا (1- 2- …) ويُرتَّب في الترويسة تحت بعض؛ وإن كتبت في رقم الاستئناف رقمين أو أكثر مفصولة بـ«و» أو فاصلة صار العنوان «بالاستئنافين رقمي …» للاستئنافات المضمومة أو المقابلة. تصدير Word: يُخرج نص الحكم بملف Word مطابق لقالبك (Arial 14، من اليمين، بلا ترويسة ولا سطر توقيع، «الأسباب» تحتها خط، الرقم الآلي في التذييل، ورقم الصفحة بالمنتصف). التوليد يجري داخل المتصفح بلا إرسال. <b>هذه أداة تنسيق لنصٍّ كتبتَه أنت<\/b> — لا تصوغ ولا تضيف حلقات استدلال. لتظليل موضع يحتاج قرارك (مبلغ أتعاب، جملة استنتاجية) ضعه بين ﴿ ﴾ هكذا: <code>〖نصك〗<\/code> أو <code>[[نصك]]<\/code>، وسيظهر بالأصفر.", "a": "المساعد يجيب من مبادئ التطبيق ونصوص المواد المتاحة فيه حصرًا، ويضع إحالة كل مبدأ. يستهلك رصيد حسابك، ويطلب إذنك عند أول استخدام. إجاباته مسودة تُراجع على المصدر.", "f": "ملفات القضايا تُحفظ في قاعدة التطبيق على حسابك وتظهر على كل أجهزتك، وتحتاج فتح التطبيق وأنت مسجل الدخول. أنشئ ملفًا باسم الاستئناف، ثم أضف إليه المبادئ من لوحة قراءة أي مبدأ، واكتب ملاحظاتك، وصدّر مذكرة الإسناد أو انسخ الإحالات.", "p": "اكتب في حقل البحث كلمة أو أكثر، أو عبارة بين علامتي تنصيص للمطابقة الحرفية (<b>\"الإقرار القضائي\"<\/b>)، أو رقم مادة (<b>م44<\/b>)، أو رقم طعن. المرشحات (السنة، المصدر، الموضوع، المادة، مآل النعي، الفهرس…) في العمود الجانبي، وعلى الهاتف من زر «التصفية». اضغط البطاقة لقراءة القاعدة كاملة مع الإحالة والمبادئ ذات الصلة، و«☆ حفظ» لإضافتها إلى المحفوظات. «نسخ الإحالات» ينسخ إحالات النتائج الظاهرة. زر «✦ دلالي» يعيد ترتيب النتائج بالمعنى عبر Claude (يعمل داخل claude.ai ويستهلك رصيدك).", "h": "التطبيق مقسّم أربع مجموعات: <b>البحث<\/b> (المبادئ، التشريعات، الخرائط، الخط الزمني)، و<b>القضية<\/b> (تحليل الملف، إخفاء الهوية، التحقق، الحاسبة، ملفاتي)، و<b>الكتابة<\/b> (فحص المسودة، تصدير Word)، و<b>المساعد<\/b>. حقل البحث في الرئيسية يبحث في كل شيء: مادة، طعن، مبدأ، أداة. وعلى الحاسوب يفتحه <span class=\"kbd\">Ctrl<\/span>+<span class=\"kbd\">K<\/span> من أي مكان.", "r": "<b>رول الجلسة<\/b> مبني على طريقة عمل الدائرة، في ثلاث شاشات:<br><b>1. رول الجلسة:<\/b> اختر الجلسة من أعلى الشاشة (الجلسات أيام الأربعاء عدا آخر أربعاء في الشهر، وتُعلَّم العطل من «التقويم»). ثم «استيراد كشف الجلسة»: الكشف الذي تطبعه من نظام الاطلاع، إما ملف PDF محفوظ من نافذة الطباعة، أو صورة، أو جدول منسوخ من الصفحة. يقرأ التطبيق على جهازك رقم القضية والرقم الآلي وحالة الإعلان (مثل 1/1: تمّ/المطلوب) والقرار، ويعرضها لمراجعتك قبل الإضافة. <b>أسماء الخصوم لا تُحفظ.<\/b><br>في كل قضية ترى: حالة الإعلان (✓ أو ✗)، وآخر قرار، وعدد مرات التأجيل للإعلان، ومربع «نُفّذ قرار الجلسة السابقة». و«طباعة ورقة المراجعة» تخرج ورقة الجلسة بهذه البيانات مع عمود فارغ للقرار، وقائمة القضايا المحجوزة للنطق في اليوم نفسه.<br><b>2. قرار الجلسة:<\/b> زر «قرار الجلسة» في كل قضية: حجز للحكم، أو تأجيل للإعلان، أو للاطلاع والرد، أو للمذكرات، أو إحالة للخبير، أو غير ذلك. يقترح التطبيق الموعد: الجلسة بعد التالية للحجز، والجلسة التالية للتأجيل، ويمكنك اختيار غيره. كل قرار يُحفظ في سجل جلسات القضية، ويمكن التراجع عن آخر قرار.<br><b>3. المحجوزة للحكم:<\/b> إذا كتبتَ أسماء أعضاء الدائرة مرة واحدة في «التقويم والدائرة» (تبقى على جهازك)، يحدد التطبيق كاتب كل حكم من كشف المحجوزة تلقائيًا. القضايا المحجوزة مجمّعة حسب تاريخ النطق، ولكل منها كاتب الحكم (الرئيس، أو العضو اليمين، أو العضو اليسار) مع عدّاد لكل منهم، و«طباعة التوزيع».<br>تُضاف المبادئ إلى أي قضية من لوحة قراءة المبدأ بزر «＋ رول الجلسة». البيانات محفوظة <b>على هذا الجهاز وحده<\/b>؛ ولنقلها استعمل «تصدير» ثم «استيراد نسخة». التطبيق يسجّل قرار المحكمة ولا يقترح قرارًا ولا يرجّح نتيجة."};
 const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 function isStandalone() { try { return !!(navigator.standalone || matchMedia('(display-mode: standalone)').matches); } catch (e) { return false; } }
 function inFrame() { try { return window.self !== window.top; } catch (e) { return true; } }
@@ -2386,6 +2428,7 @@ function rlCard(c, mode) {
   if (RL_RES.includes(c.stage)) h += '<div class="ln"><span class="k">كاتب الحكم:</span> <select class="mini" data-a="writer"><option value="">— غير موزّعة —</option>' + Object.keys(RL_W).map(k => '<option value="' + k + '"' + (c.writer === k ? ' selected' : '') + '>' + RL_W[k] + '</option>').join('') + '</select></div>';
   if (RL_RES.includes(c.stage) && c.writer === 'p') h += rlPath(c);
   if (RL_RES.includes(c.stage) && c.writer === 'p') h += '<div class="ln jsw"><span class="k">حالة الحكم:</span> <select class="mini" data-a="js">' + RL_JS.map(s => '<option' + (s === (c.js || 'لم يبدأ') ? ' selected' : '') + '>' + s + '</option>').join('') + '</select>' + (rlJsIdx(c) < 3 && c.next ? ' ' + rlDue(c.next) : '') + '</div><div class="ln docs"><span class="k">المستندات المحمّلة:</span> ' + RL_DOCS.map(x => '<button type="button" class="chip' + ((c.docs || {})[x] ? ' on' : '') + '" data-doc="' + x + '">' + x + '</button>').join('') + '</div>';
+  if (c.chk || c.ms) h += '<div class="ln"><span class="k">محفوظ للحزمة:</span> ' + [c.chk ? 'نتيجة التحقق' : '', c.ms ? (c.ms.label || 'حساب المستحقات') : ''].filter(Boolean).join('، ') + ' <button type="button" class="linkbtn" data-a="unres">إزالة</button></div>';
   if (c.an) h += '<div class="ln"><span class="k">التحليل:</span> مربوط بالقضية' + (c.an.form && c.an.form.ruling ? ' — حكم أول درجة ' + rlFmt(c.an.form.ruling) : '') + ' <button type="button" class="linkbtn" data-a="unan">فكّ الربط</button></div>';
   if (c.dls && c.dls.length) h += '<div class="ln"><span class="k">مواعيد:</span><ul class="dls">' + c.dls.map(x => '<li>' + (x.d ? rlDue(x.d) + ' ' : '') + esc(x.t || '') + '</li>').join('') + '</ul></div>';
   if (prs.length || mode !== 'roll') h += '<div class="ln"><span class="k">المبادئ المحفوظة (' + prs.length + '):</span>' + (prs.length ? '<div class="prs">' + prs.map(p => '<div class="it"><span class="t" data-open="' + p.id + '">' + esc((p.keywords || p.appeal).slice(0, 150)) + '<span class="c">' + esc(p.cite_std) + '</span></span><button type="button" class="mini" data-rm="' + p.id + '" title="إزالة من البطاقة">✕</button></div>').join('') + '</div>' : ' <span class="k">تُضاف من لوحة قراءة أي مبدأ بزر «＋ رول الجلسة».</span>') + '</div>';
@@ -2403,6 +2446,7 @@ function rlCard(c, mode) {
   d.querySelectorAll('[data-doc]').forEach(x => x.onclick = () => { c.docs = c.docs || {}; c.docs[x.dataset.doc] = !c.docs[x.dataset.doc]; if (rlJsIdx(c) === 0 && Object.values(c.docs).some(Boolean)) c.js = 'حُمّلت المستندات'; c.updated = Date.now(); rlFocus = c.id; rlSave(); rlRender(); });
   if (q('prompt')) q('prompt').onclick = () => { copy(rlPrompt(c), 'نُسخت حزمة القضية — الصقها في محادثة القضية مع المستندات'); if (!c.pkAt) { c.pkAt = Date.now(); c.updated = Date.now(); rlSave(); rlRender(); } };
   d.querySelectorAll('[data-path]').forEach(b => b.onclick = () => rlPathGo(c, b.dataset.path));
+  if (q('unres')) q('unres').onclick = () => { delete c.chk; delete c.ms; c.updated = Date.now(); rlSave(); rlRender(); toast('أُزيلت النتائج المحفوظة'); };
   if (q('unan')) q('unan').onclick = () => { delete c.an; c.updated = Date.now(); rlSave(); rlRender(); toast('فُكّ ربط التحليل'); };
   if (q('folder')) q('folder').onclick = () => copy(rlFolder(c), 'نُسخ اسم المجلد: ' + rlFolder(c));
   if (q('dec')) q('dec').onclick = () => { rlDecOpen = rlDecOpen === c.id ? null : c.id; rlFocus = c.id; rlRender(); };
@@ -3029,6 +3073,26 @@ function rlIcsIOS(ics, name, E, kind) {
   box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 // أمر بدء المحادثة في مشروع الدائرة العمالية
+
+// V56: حفظ نتيجة أداة («التحقق»، «حاسبة المستحقات»، «مستحقات العامل المنزلي») في بطاقة قضية لتدخل «حزمة القضية»
+function rlSaveResult(kind, text, label, anchor) {
+  if (!text || !text.trim()) { toast('لا نتيجة مكتملة للحفظ'); return; }
+  const old = document.getElementById('rsv_' + kind); if (old) { old.remove(); return; }
+  const open = RL.cards.filter(c => !RL_DONE.includes(c.stage)).sort((a, b) => (a.code || '').localeCompare(b.code || ''));
+  if (!open.length) { toast('لا قضايا في «رول الجلسة»'); return; }
+  const guess = open.find(c => c.id === rlFocus) || open.find(c => RL_RES.includes(c.stage) && c.writer === 'p') || open[0];
+  const box = el('div', 'rsvbox'); box.id = 'rsv_' + kind;
+  box.innerHTML = '<span>حفظ ' + esc(label) + ' في القضية:</span><select>' + open.map(c => '<option value="' + c.id + '"' + (c === guess ? ' selected' : '') + '>' + esc(c.code) + (c.auto ? ' — ' + esc(c.auto) : '') + '</option>').join('') + '</select><button type="button" class="btn primary">حفظ</button><span class="help">تظهر في «حزمة القضية».</span>';
+  anchor.after(box);
+  box.querySelector('button').onclick = () => { const c = RL.cards.find(x => x.id === box.querySelector('select').value); if (!c) return;
+    const prev = c[kind], multi = kind === 'ms' && prev && prev.text && prev.label !== label && !(prev.label || '').split(' ⊕ ').includes(label);
+    // V57: تعدد العمال — حساب عامل آخر يُلحق بالسابق ولا يستبدله؛ حساب العامل نفسه يُستبدل
+    if (multi) c[kind] = { at: Date.now(), text: prev.text + '\n\n━━━━━━━━\n\n' + text.trim(), label: prev.label + ' ⊕ ' + label };
+    else if (kind === 'ms' && prev && (prev.label || '').includes(' ⊕ ') && (prev.label || '').split(' ⊕ ').includes(label)) {
+      const labs = prev.label.split(' ⊕ '), txts = prev.text.split('\n\n━━━━━━━━\n\n'), i = labs.indexOf(label); if (txts.length === labs.length) txts[i] = text.trim(); c[kind] = { at: Date.now(), text: txts.join('\n\n━━━━━━━━\n\n'), label: prev.label };
+    } else c[kind] = { at: Date.now(), text: text.trim(), label };
+    c.updated = Date.now(); rlFocus = c.id; rlSave(); box.remove(); toast((multi ? 'أُلحق ' : 'حُفظ ') + label + ' في ' + c.code); };
+}
 function rlPrinFull(p) { return '— ' + p.cite_std + (p.keywords ? '\n  العنوان: ' + p.keywords : '') + (p.summary && p.summary.length ? '\n  الموجز: ' + p.summary.join(' / ') : '') + (p.reas ? '\n  القاعدة: ' + p.reas.replace(/\s+/g, ' ').slice(0, 1500) + (p.reas.length > 1500 ? ' …' : '') : ''); }
 function rlForm(f) {
   if (!f || !f.ruling) return '';
@@ -3045,6 +3109,8 @@ function rlPrompt(c) {
   const form = rlForm(an && an.form); if (form) t += '\n[2] حساب الشكل:\n' + form + '\n';
   if (c.dls && c.dls.length) t += '\n[3] مواعيد مسجّلة في الرول:\n' + c.dls.map(x => '- ' + (x.d ? rlFmt(x.d) + ': ' : '') + (x.t || '')).join('\n') + '\n';
   if (prs.length) t += '\n[4] مبادئ اخترتها لهذه القضية من قاعدة عمّالي (بإحالتها الحرفية):\n' + prs.map(rlPrinFull).join('\n') + '\n';
+  if (c.chk && c.chk.text) t += '\n[5] نتيجة «التحقق» في عمّالي (حساب آلي يُراجع):\n' + c.chk.text + '\n';
+  if (c.ms && c.ms.text) t += '\n[6] ' + (c.ms.label || 'حساب المستحقات') + ' في عمّالي (مسودة حساب تخضع لمراجعة المحكمة):\n' + c.ms.text + '\n';
   t += '\nالمطلوب بالترتيب:\n1) تلخيص وقائع الدعوى وطلبات المدعي وحكم أول درجة ومنطوقه.\n2) تلخيص أسباب الاستئناف والطلبات الختامية للطرفين.\n3) تحديد المسائل القانونية المطروحة، ولكل مسألة: النص القانوني ومبادئ محكمة التمييز المتصلة بها بإحالتها الحرفية — من المبادئ الواردة أعلاه أو من ملف المعرفة «مبادئ عمّالي» في هذا المشروع فقط؛ وإن لم يوجد سند فقل ذلك صراحة، ولا تخترع مبدأً ولا رقم طعن.\n4) ثم نتناقش قبل كتابة المسودة.\n';
   if ((c.docs || {})['تقرير الخبير']) t += '\nعند كتابة المسودة: الوقائع حتى ورود تقرير الخبير تُنقل حرفيًا من الحكم التمهيدي بندب الخبير، وتبدأ الأسباب من ورود التقرير.\n';
   return t;
@@ -3187,6 +3253,7 @@ function initCheck() {
   }
   ['k_type', 'k_wt', 'k_w', 'k_s', 'k_e', 'k_c', 'k_r', 'k_n', 'k_rem', 'k_lv', 'k_d', 'k_v1', 'k_v2', 'k_q', 'k_nat'].forEach(id => $('#' + id).oninput = run);
   $('#k_copy').onclick = () => { const t = lastSummary + '\n' + TICKS.map((x, i) => ($('#tk' + i).checked ? '☑ ' : '☐ ') + x).join('\n'); copy(t, 'نُسخ ملخص التحقق'); };
+  $('#k_save').onclick = () => rlSaveResult('chk', lastSummary + '\n' + TICKS.map((x, i) => ($('#tk' + i).checked ? '☑ ' : '☐ ') + x).join('\n'), 'نتيجة التحقق', $('#k_save').parentElement);
   $('#k_reset').onclick = () => { document.querySelectorAll('#chkwrap input[type=checkbox]').forEach(c => c.checked = false); run(); };
   run();
 }
@@ -3300,18 +3367,24 @@ function inSuggest(text, n) {
   return { hits: scored.map(x => x[0]), arts };
 }
 const IN_PROMPT = 'أنت مساعد استخراج لقاضٍ في الدائرة العمالية بمحكمة الاستئناف الكويتية. اقرأ الأوراق التالية (قد تكون حكم أول درجة و/أو صحيفة استئناف و/أو تقرير خبير، نصًا أو صورًا) واستخرج منها بيانات القضية حرفيًا كما وردت دون استنتاج أو إضافة. إذا لم ترد معلومة فاكتب "" أو []. لا تخترع رقمًا ولا تاريخًا. التواريخ بصيغة يوم/شهر/سنة كما وردت. المبالغ بالدينار الكويتي أرقامًا. أجب بكائن JSON واحد فقط بهذه المفاتيح:\n'
-  + '{"docs":[أنواع الأوراق التي تعرفت عليها مثل "حكم أول درجة","صحيفة استئناف","تقرير خبير"],"caseNo":"رقم الدعوى الابتدائية","appealNo":"رقم الاستئناف","appellant":"","appellee":"","worker":"اسم العامل","employer":"اسم صاحب العمل","profession":"","contract":"غير محدد المدة|محدد المدة|غير مبين","wage":"الأجر رقمًا","wageType":"شهري|يومي|غير مبين","wageNature":"أساسي|شامل|غير مبين","joinDate":"","endDate":"","endCause":"سبب انتهاء العلاقة كما ورد","laborOfficeDate":"تاريخ تقديم الطلب لإدارة العمل","filingDate":"تاريخ رفع الدعوى","claims":[{"item":"اسم الطلب","amount":"المبلغ رقمًا أو \\"\\""}],"claimsTotal":"مجموع الطلبات الختامية رقمًا إن ورد","expert":{"appointed":true|false,"findings":"ما انتهى إليه الخبير باختصار حرفي","amount":"ما قدره الخبير رقمًا"},"firstRuling":{"date":"","court":"","dispositive":"منطوق الحكم حرفيًا","reasonsSummary":"أهم أسبابه في 3 إلى 6 جمل حرفية أو شبه حرفية","awarded":"المبلغ المقضي به رقمًا"},"appeal":{"filedDate":"تاريخ إيداع الصحيفة","requests":["طلبات المستأنف"],"grounds":[{"n":1,"type":"دفع شكلي|نعي موضوعي","title":"عنوان وجه النعي في سطر","text":"نص الوجه باختصار حرفي","where":"موضعه في الصحيفة (صفحة/بند) إن أمكن"}],"defenses":["دفوع المستأنف ضده إن وردت"]},"numbers":[{"label":"كل رقم أو تاريخ أو مبلغ ورد في أكثر من ورقة","values":["القيم كما وردت في كل ورقة"],"conflict":true|false}],"flags":["تنبيهات: تعارض بين الأوراق، نقص بيان، مواعيد تحتاج تحقق"]}\n\nالأوراق:\n';
+  + '{"docs":[أنواع الأوراق التي تعرفت عليها مثل "حكم أول درجة","صحيفة استئناف","تقرير خبير"],"caseNo":"رقم الدعوى الابتدائية","appealNo":"رقم الاستئناف","appellants":["كل مستأنف في عنصر مستقل بصفته إن وردت"],"appellees":["كل مستأنف ضده في عنصر مستقل"],"relatedAppeals":[{"appealNo":"رقم كل استئناف آخر مقابل أو مضموم إن ورد","appellant":"رافعه"}],"worker":"اسم العامل أو العمال مفصولين بـ؛","employer":"اسم صاحب العمل","profession":"","contract":"غير محدد المدة|محدد المدة|غير مبين","wage":"الأجر رقمًا","wageType":"شهري|يومي|غير مبين","wageNature":"أساسي|شامل|غير مبين","joinDate":"","endDate":"","endCause":"سبب انتهاء العلاقة كما ورد","laborOfficeDate":"تاريخ تقديم الطلب لإدارة العمل","filingDate":"تاريخ رفع الدعوى","claims":[{"item":"اسم الطلب","amount":"المبلغ رقمًا أو \\"\\"","party":"الطالب عند تعدد العمال وإلا \\"\\""}],"claimsTotal":"مجموع الطلبات الختامية رقمًا إن ورد","expert":{"appointed":true|false,"findings":"ما انتهى إليه الخبير باختصار حرفي","amount":"ما قدره الخبير رقمًا"},"firstRuling":{"date":"","court":"","dispositive":"منطوق الحكم حرفيًا","reasonsSummary":"أهم أسبابه في 3 إلى 6 جمل حرفية أو شبه حرفية","awarded":"المبلغ المقضي به رقمًا"},"appeal":{"filedDate":"تاريخ إيداع الصحيفة","requests":["طلبات المستأنف"],"grounds":[{"n":1,"type":"دفع شكلي|نعي موضوعي","title":"عنوان وجه النعي في سطر","text":"نص الوجه باختصار حرفي","where":"موضعه في الصحيفة (صفحة/بند) إن أمكن"}],"defenses":["دفوع المستأنف ضده إن وردت"]},"numbers":[{"label":"كل رقم أو تاريخ أو مبلغ ورد في أكثر من ورقة","values":["القيم كما وردت في كل ورقة"],"conflict":true|false}],"flags":["تنبيهات: تعارض بين الأوراق، نقص بيان، مواعيد تحتاج تحقق"]}\n\nالأوراق:\n';
 
+// V57: تعدد الخصوم — يقبل الصيغة الجديدة (مصفوفات) والقديمة (نص مفرد)
+function inParties(r) {
+  const arr = (a, b) => (Array.isArray(a) ? a : a ? [a] : b ? (Array.isArray(b) ? b : [b]) : []).map(x => String(x || '').trim()).filter(Boolean);
+  const rel = (r && Array.isArray(r.relatedAppeals) ? r.relatedAppeals : []).map(x => typeof x === 'string' ? x : (x && x.appealNo ? x.appealNo + (x.appellant ? ' (' + x.appellant + ')' : '') : '')).filter(Boolean);
+  return { from: arr(r && r.appellants, r && r.appellant), against: arr(r && r.appellees, r && r.appellee), related: rel };
+}
 function inRender() {
   const r = inResult; const O = $('#in_out'); if (!r) return;
   const f = (label, v) => '<div class="kv"><span>' + esc(label) + '</span><b contenteditable="true" data-k="' + esc(label) + '">' + esc(String(v == null ? '' : (Array.isArray(v) ? v.join('، ') : v))) + '</b></div>';
   const a = r.appeal || {}; const fr = r.firstRuling || {}; const ex = r.expert || {};
   let h = '<div class="kc info"><h4><span>بطاقة القضية</span><span class="v">' + esc(r.appealNo || '') + '</span></h4><div class="kvs">'
-    + f('الأوراق المقروءة', r.docs) + f('رقم الدعوى', r.caseNo) + f('رقم الاستئناف', r.appealNo) + f('المستأنف', r.appellant) + f('المستأنف ضده', r.appellee)
+    + f('الأوراق المقروءة', r.docs) + f('رقم الدعوى', r.caseNo) + f('رقم الاستئناف', r.appealNo) + (() => { const pa = inParties(r); return f(pa.from.length > 1 ? 'المستأنفون (' + pa.from.length + ')' : 'المستأنف', pa.from) + f(pa.against.length > 1 ? 'المستأنف ضدهم (' + pa.against.length + ')' : 'المستأنف ضده', pa.against) + (pa.related.length ? f('استئنافات مرتبطة', pa.related) : ''); })()
     + f('العامل', r.worker) + f('صاحب العمل', r.employer) + f('المهنة', r.profession) + f('نوع العقد', r.contract) + f('الأجر', r.wage) + f('طريقة الأجر', r.wageType) + f('طبيعة الأجر', r.wageNature)
     + f('تاريخ الالتحاق', r.joinDate) + f('تاريخ الانتهاء', r.endDate) + f('سبب الانتهاء', r.endCause) + f('طلب إدارة العمل', r.laborOfficeDate) + f('رفع الدعوى', r.filingDate)
     + '</div></div>';
-  h += '<div class="kc"><h4><span>الطلبات</span><span class="v">' + esc(r.claimsTotal || '') + '</span></h4><table class="intbl">' + (r.claims || []).map(c => '<tr><td>' + esc(c.item || '') + '</td><td>' + esc(c.amount || '') + '</td></tr>').join('') + '</table></div>';
+  h += '<div class="kc"><h4><span>الطلبات</span><span class="v">' + esc(r.claimsTotal || '') + '</span></h4><table class="intbl">' + (r.claims || []).map(c => '<tr><td>' + esc(c.item || '') + (c.party ? ' <small>— ' + esc(c.party) + '</small>' : '') + '</td><td>' + esc(c.amount || '') + '</td></tr>').join('') + '</table></div>';
   h += '<div class="kc"><h4><span>تقرير الخبير</span><span class="v">' + esc(ex.amount || '') + '</span></h4><p>' + (ex.appointed ? esc(ex.findings || '') : 'لم يُندب خبير أو لم يرد') + '</p></div>';
   h += '<div class="kc"><h4><span>حكم أول درجة</span><span class="v">' + esc(fr.awarded || '') + '</span></h4><p><b>' + esc(fr.court || '') + (fr.date ? ' – ' + esc(fr.date) : '') + '</b></p><p class="disp">' + esc(fr.dispositive || '') + '</p><div class="why">' + esc(fr.reasonsSummary || '') + '</div></div>';
   h += '<div class="kc warn"><h4><span>صحيفة الاستئناف</span><span class="v">' + esc(a.filedDate || '') + '</span></h4><p><b>الطلبات:</b> ' + esc((a.requests || []).join('؛ ')) + '</p>' + ((a.defenses || []).length ? '<p><b>دفوع المستأنف ضده:</b> ' + esc(a.defenses.join('؛ ')) + '</p>' : '') + '</div>';
@@ -3347,7 +3420,13 @@ function inFill() {
 // V52: ربط نتيجة التحليل ببطاقة في الرول — يُحفظ ملخص معتّم بلا أسماء، وتواريخ الشكل، والمبادئ المختارة
 function inSafeSummary() {
   const keep = inResult; const r = JSON.parse(JSON.stringify(inResult || {}));
-  ['appellant', 'appellee', 'worker', 'employer'].forEach(k => r[k] = '■■■');
+  const pa = inParties(r), ord = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع', 'العاشر'];
+  const mk = (n, role) => n > 1 ? Array.from({ length: n }, (_, i) => '■■■ (' + role + ' ' + (ord[i] || (i + 1)) + ')') : n ? ['■■■'] : [];
+  r.appellants = mk(pa.from.length, 'المستأنف'); r.appellees = mk(pa.against.length, 'المستأنف ضده'); delete r.appellant; delete r.appellee;
+  const role = {}; pa.from.forEach((n, i) => role[n] = r.appellants[i]); pa.against.forEach((n, i) => role[n] = r.appellees[i]);
+  const who = n => { n = String(n || '').trim(); return role[n] || (Object.keys(role).find(k => k && (k.includes(n) || n.includes(k))) ? role[Object.keys(role).find(k => k && (k.includes(n) || n.includes(k)))] : '■■■'); };
+  r.relatedAppeals = (r.relatedAppeals || []).map(x => typeof x === 'string' ? x : { appealNo: (x || {}).appealNo || '', appellant: (x || {}).appellant ? who(x.appellant) : '' });
+  ['worker', 'employer'].forEach(k => r[k] = '■■■'); (r.claims || []).forEach(c => { if (c.party) c.party = who(c.party); });
   inResult = r; let t = ''; try { t = inSummary().split('\n').filter(l => !/^المبادئ المختارة/.test(l) && !/^\s*- .*\(الطعن/.test(l)).join('\n'); } finally { inResult = keep; }
   return t.replace(/\n?المبادئ المختارة:[\s\S]*$/, '').trim();
 }
@@ -3370,7 +3449,7 @@ function inLinkBox() {
 function inSummary() {
   const r = inResult; if (!r) return '';
   const a = r.appeal || {}; const fr = r.firstRuling || {};
-  return ['ملخص ملف ' + (r.appealNo || ''), 'الدعوى: ' + (r.caseNo || ''), 'المستأنف: ' + (r.appellant || '') + ' | المستأنف ضده: ' + (r.appellee || ''), 'العامل: ' + (r.worker || '') + ' – ' + (r.profession || '') + ' – أجر ' + (r.wage || '') + ' ' + (r.wageType || '') + ' (' + (r.wageNature || '') + ')', 'العقد: ' + (r.contract || '') + ' | الالتحاق ' + (r.joinDate || '') + ' | الانتهاء ' + (r.endDate || '') + ' | السبب: ' + (r.endCause || ''), 'طلب إدارة العمل: ' + (r.laborOfficeDate || '') + ' | رفع الدعوى: ' + (r.filingDate || ''), 'الطلبات: ' + (r.claims || []).map(c => c.item + (c.amount ? ' (' + c.amount + ')' : '')).join('؛ ') + (r.claimsTotal ? ' — المجموع ' + r.claimsTotal : ''), 'الخبير: ' + ((r.expert || {}).findings || '—') + ((r.expert || {}).amount ? ' — ' + r.expert.amount : ''), 'حكم أول درجة (' + (fr.court || '') + ' ' + (fr.date || '') + '): ' + (fr.dispositive || ''), 'أسبابه: ' + (fr.reasonsSummary || ''), 'الاستئناف (' + (a.filedDate || '') + '): ' + (a.requests || []).join('؛ '), 'أوجه النعي:', ...(a.grounds || []).map(g => '  ' + (g.n || '') + '- [' + (g.type || '') + '] ' + (g.title || '') + ': ' + (g.text || '') + (g.where ? ' (' + g.where + ')' : '')), ...((r.flags || []).length ? ['تنبيهات: ' + r.flags.join('؛ ')] : []), 'المبادئ المختارة:', ...[...inChosen].map(id => { const p = P.find(x => String(x.id) === id); return p ? '  - ' + p.cite_std + ' — ' + (p.keywords || '').slice(0, 120) : ''; })].join('\n');
+  return ['ملخص ملف ' + (r.appealNo || ''), 'الدعوى: ' + (r.caseNo || ''), (() => { const pa = inParties(r); return (pa.from.length > 1 ? 'المستأنفون: ' + pa.from.map((x, i) => (i + 1) + '- ' + x).join('، ') : 'المستأنف: ' + (pa.from[0] || '')) + ' | ' + (pa.against.length > 1 ? 'المستأنف ضدهم: ' + pa.against.map((x, i) => (i + 1) + '- ' + x).join('، ') : 'المستأنف ضده: ' + (pa.against[0] || '')) + (pa.related.length ? ' | استئنافات مرتبطة: ' + pa.related.join('، ') : ''); })(), 'العامل: ' + (r.worker || '') + ' – ' + (r.profession || '') + ' – أجر ' + (r.wage || '') + ' ' + (r.wageType || '') + ' (' + (r.wageNature || '') + ')', 'العقد: ' + (r.contract || '') + ' | الالتحاق ' + (r.joinDate || '') + ' | الانتهاء ' + (r.endDate || '') + ' | السبب: ' + (r.endCause || ''), 'طلب إدارة العمل: ' + (r.laborOfficeDate || '') + ' | رفع الدعوى: ' + (r.filingDate || ''), 'الطلبات: ' + (r.claims || []).map(c => c.item + (c.amount ? ' (' + c.amount + ')' : '') + (c.party ? ' [' + c.party + ']' : '')).join('؛ ') + (r.claimsTotal ? ' — المجموع ' + r.claimsTotal : ''), 'الخبير: ' + ((r.expert || {}).findings || '—') + ((r.expert || {}).amount ? ' — ' + r.expert.amount : ''), 'حكم أول درجة (' + (fr.court || '') + ' ' + (fr.date || '') + '): ' + (fr.dispositive || ''), 'أسبابه: ' + (fr.reasonsSummary || ''), 'الاستئناف (' + (a.filedDate || '') + '): ' + (a.requests || []).join('؛ '), 'أوجه النعي:', ...(a.grounds || []).map(g => '  ' + (g.n || '') + '- [' + (g.type || '') + '] ' + (g.title || '') + ': ' + (g.text || '') + (g.where ? ' (' + g.where + ')' : '')), ...((r.flags || []).length ? ['تنبيهات: ' + r.flags.join('؛ ')] : []), 'المبادئ المختارة:', ...[...inChosen].map(id => { const p = P.find(x => String(x.id) === id); return p ? '  - ' + p.cite_std + ' — ' + (p.keywords || '').slice(0, 120) : ''; })].join('\n');
 }
 async function inSaveCase() {
   const r = inResult; if (!r) return; if (!DBX) { toast('حفظ الملفات غير متاح هنا'); return; }
@@ -3842,14 +3921,25 @@ function weBodyRuns(line, amount) {
   if (amount && amount.trim()) { const a = amount.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); parts = splitBy(parts, new RegExp('(' + a + ')', 'g')); }
   return parts.filter(p => p.t !== '').map(p => ({ t: p.t, hl: p.hl }));
 }
+// V57: تعدد الخصوم والاستئنافات — سطر لكل خصم، وأكثر من رقم استئناف يُصاغ «بالاستئنافين رقمي …»
+function weParties(s) { return String(s || '').replace(/\r/g, '').split('\n').map(l => l.replace(/^\s*(?:[0-9٠-٩]+|[أ-ي])\s*[-–.)]\s*/, '').trim()).filter(Boolean); }
+function weNumbered(arr) { return arr.length > 1 ? arr.map((x, i) => (i + 1) + '- ' + x) : arr; }
+function weAppeals(no) { const a = String(no || '').split(/\s*(?:،|,|\+|&|\s+و\s*)\s*/).map(x => x.trim()).filter(Boolean); return a.length ? a : []; }
+function weTitle(d) {
+  const a = weAppeals(d.appealNo), c = ' ' + (d.circuit || 'عمالي/2');
+  const head = a.length > 2 ? 'بالاستئنافات أرقام ' + a.join(' و') + c : a.length === 2 ? 'بالاستئنافين رقمي ' + a[0] + ' و' + a[1] + c : 'بالاستئناف رقم ' + (a[0] || '.../...') + c;
+  return 'مسودة بأسباب ومنطوق الحكم الصادر ' + head + ' الصادر بجلسة ' + (d.session || '.../.../...');
+}
 function weBuild(d) {
   const paras = [];
   // العنوان (وسط + تحته خط)
-  paras.push(wePara('مسودة بأسباب ومنطوق الحكم الصادر بالاستئناف رقم ' + (d.appealNo || '.../...') + ' ' + (d.circuit || 'عمالي/2') + ' الصادر بجلسة ' + (d.session || '.../.../...'), { jc: 'center', u: true, b: true }));
+  paras.push(wePara(weTitle(d), { jc: 'center', u: true, b: true }));
   paras.push(wePara('', { jc: 'center' }));
-  paras.push(wePara([{ t: 'المقام من: ', b: true }, { t: d.from || '.........' }], { jc: 'center' }));
+  const fr = weNumbered(weParties(d.from)), ag = weNumbered(weParties(d.against));
+  if (fr.length > 1) { paras.push(wePara([{ t: 'المقام من:', b: true }], { jc: 'center' })); fr.forEach(x => paras.push(wePara(x, { jc: 'center' }))); }
+  else paras.push(wePara([{ t: 'المقام من: ', b: true }, { t: fr[0] || '.........' }], { jc: 'center' }));
   paras.push(wePara('ضد', { jc: 'center', b: true }));
-  paras.push(wePara(d.against || '.........', { jc: 'center' }));
+  (ag.length ? ag : ['.........']).forEach(x => paras.push(wePara(x, { jc: 'center' })));
   paras.push(wePara('', { jc: 'center' }));
   paras.push(wePara('بعد الاطلاع على الأوراق وسماع المرافعة والمداولة:', { jc: 'center', b: true }));
   paras.push(wePara('', { jc: 'center' }));
@@ -3900,7 +3990,7 @@ function weFields() { return { appealNo: $('#we_appeal').value.trim(), circuit: 
 const FM_CATS = ['الشكل', 'المصاريف والأتعاب', 'المنطوق', 'الوقائع', 'الأسباب', 'أخرى'];
 let fmCat = '', fmEditId = null;
 function fmList() { RL.fm = RL.fm || []; return RL.fm; }
-function fmFill(t) { const d = weFields(); const m = { 'رقم_الاستئناف': d.appealNo, 'الدائرة': d.circuit, 'الجلسة': d.session, 'المستأنف': d.from, 'المستأنف_ضده': d.against, 'الأتعاب': d.amount };
+function fmFill(t) { const d = weFields(); const m = { 'رقم_الاستئناف': d.appealNo, 'الدائرة': d.circuit, 'الجلسة': d.session, 'المستأنف': weParties(d.from).join(' و'), 'المستأنف_ضده': weParties(d.against).join(' و'), 'المستأنفين': weParties(d.from).join(' و'), 'المستأنف_ضدهم': weParties(d.against).join(' و'), 'الأتعاب': d.amount };
   return String(t).replace(/\{([^{}]+)\}/g, (all, k) => { const v = m[k.trim().replace(/\s+/g, '_')]; return v ? v : '〖' + k.trim().replace(/_/g, ' ') + '〗'; }); }
 function fmInsert(f) {
   const ta = $('#we_body'), t = fmFill(f.text), a = ta.selectionStart != null ? ta.selectionStart : ta.value.length, b = ta.selectionEnd != null ? ta.selectionEnd : a;
@@ -3944,16 +4034,20 @@ function initWord() {
     if (typeof inResult === 'object' && inResult) {
       const r = inResult;
       if (r.appealNo && !$('#we_appeal').value) { $('#we_appeal').value = r.appealNo; filled.push('رقم الاستئناف'); }
-      if (r.appellant && !$('#we_from').value) { $('#we_from').value = r.appellant; filled.push('المقام من'); }
-      if (r.appellee && !$('#we_against').value) { $('#we_against').value = r.appellee; filled.push('المستأنف ضده'); }
+      const pa = inParties(r);
+      if (pa.from.length && !$('#we_from').value) { $('#we_from').value = pa.from.join('\n'); filled.push('المقام من' + (pa.from.length > 1 ? ' (' + pa.from.length + ')' : '')); }
+      if (pa.against.length && !$('#we_against').value) { $('#we_against').value = pa.against.join('\n'); filled.push('المستأنف ضده' + (pa.against.length > 1 ? ' (' + pa.against.length + ')' : '')); }
+      if (pa.related.length && $('#we_appeal').value && !/،|,| و/.test($('#we_appeal').value)) { filled.push('تنبيه: وردت استئنافات مرتبطة (' + pa.related.join('، ') + ') — أضفها لرقم الاستئناف إن ضُمّت'); }
     }
     st.textContent = filled.length ? 'نُقل: ' + filled.join('، ') + '. راجعها.' : 'لا يوجد ما يُنقل (استخدم «فحص المسودة» أو «تحليل الملف» أولًا، أو أدخل يدويًا).';
   };
   $('#we_preview').onclick = () => {
     const d = weFields(); if (!d.body.trim()) { toast('الصق نص الحكم أولًا'); return; }
     const O = $('#we_out'); const esc2 = s => (s || '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    let h = '<div class="wepage"><p class="wetitle">مسودة بأسباب ومنطوق الحكم الصادر بالاستئناف رقم ' + esc2(d.appealNo || '.../...') + ' ' + esc2(d.circuit || 'عمالي/2') + ' الصادر بجلسة ' + esc2(d.session || '.../.../...') + '</p>'
-      + '<p class="wec"><b>المقام من:</b> ' + esc2(d.from || '.........') + '</p><p class="wec"><b>ضد</b></p><p class="wec">' + esc2(d.against || '.........') + '</p>'
+    const fr = weNumbered(weParties(d.from)), ag = weNumbered(weParties(d.against));
+    let h = '<div class="wepage"><p class="wetitle">' + esc2(weTitle(d)) + '</p>'
+      + (fr.length > 1 ? '<p class="wec"><b>المقام من:</b></p>' + fr.map(x => '<p class="wec">' + esc2(x) + '</p>').join('') : '<p class="wec"><b>المقام من:</b> ' + esc2(fr[0] || '.........') + '</p>')
+      + '<p class="wec"><b>ضد</b></p>' + (ag.length ? ag : ['.........']).map(x => '<p class="wec">' + esc2(x) + '</p>').join('')
       + '<p class="wec"><b>بعد الاطلاع على الأوراق وسماع المرافعة والمداولة:</b></p>';
     String(d.body).replace(/\r/g, '').split('\n').map(l => l.trim()).forEach(line => {
       if (!line) return;
@@ -4226,6 +4320,37 @@ function mstCalc(inp) {
   R.items.push({ k: 'notice', title: 'بدل الإنذار (مهلة الإخطار)', amount: nAmt == null ? null : mstRound3(nAmt), cls: nCls, why: nWhy, lines: nL, refs: nRefs, prins: nPr, notes: nNotes });
   R.owed = mstRound3(owedByWorker);
 
+  // ---- 4–6) V57: العمل الإضافي والراحة الأسبوعية والعطل الرسمية (م64، م66، م67، م68) — تُحسب فقط إن أُدخلت
+  const xB = inp.xbase === 't' ? 't' : 'b', xDay = xB === 't' ? dayT : dayB, xLbl = xB === 't' ? 'شامل' : 'أساسي';
+  const otH = Math.max(0, +inp.otH || 0), restD = Math.max(0, +inp.rest || 0), holD = Math.max(0, +inp.hol || 0);
+  const OTP = [110, 97, 49, 325, 356, 592, 9];
+  if (otH) {
+    const hr = xDay / 8, amt = otH * hr * 1.25, on = [];
+    const capH = 180 * Math.max(F, 0);
+    if (F > 0 && otH > capH) on.push('الساعات المدخلة (' + otH + ') تجاوز الحد الأقصى في المادة 66 (180 ساعة سنويًا ≈ ' + mstRound3(capH) + ' ساعة عن مدة الخدمة) — الحد قيد على صاحب العمل؛ أثر تجاوزه على الاستحقاق تقدّره المحكمة.');
+    on.push({ t: 'مناط الاستحقاق: تكليف صاحب العمل بالعمل الإضافي، ويجوز للعامل إثباته بكافة طرق الإثبات؛ والعمل من تلقاء نفسه لا يستحق عنه مقابلًا.', p: [356, 592, 325, 49] });
+    on.push('لا يُشغَّل الحدث ساعات إضافية (م21). ساعات رمضان 36 ساعة أسبوعيًا (م64) — الأداة تقسم على 8 ساعات دائمًا.');
+    R.items.push({ k: 'ot', title: 'مقابل العمل الإضافي', amount: mstRound3(amt), cls: 'ok', why: 'أجر الساعة الإضافية = أجر الساعة العادي + 25% (م66)، وساعات العمل اليومية ثمانٍ (م64).',
+      lines: [['أجر اليوم (' + xLbl + ')', mstRound3(xDay)], ['أجر الساعة', mstRound3(xDay) + ' ÷ 8 = ' + mstRound3(hr)], ['أجر الساعة الإضافية', mstRound3(hr) + ' × 1.25 = ' + mstRound3(hr * 1.25)], ['المقابل', otH + ' ساعة × ' + mstRound3(hr * 1.25) + ' = ' + mstRound3(amt)]],
+      refs: 'م66 عمل 6/2010,م64 عمل 6/2010,م21 عمل 6/2010', prins: OTP, notes: on });
+  }
+  if (restD) {
+    const m = +inp.restM === 0.5 ? 0.5 : 1.5, amt = restD * xDay * m;
+    R.items.push({ k: 'rest', title: 'مقابل العمل في أيام الراحة الأسبوعية', amount: mstRound3(amt), cls: 'ok', why: 'يتقاضى العامل عن يوم راحته 50% على الأقل من أجره إضافة لأجره الأصلي، ويُعوَّض بيوم راحة آخر (م67).',
+      lines: [['أجر اليوم (' + xLbl + ')', mstRound3(xDay)], ['النسبة المختارة', m === 1.5 ? 'أجر اليوم + 50% = 150%' : 'الزيادة وحدها = 50%'], ['المقابل', restD + ' يوم × ' + mstRound3(xDay) + ' × ' + m + ' = ' + mstRound3(amt)]],
+      refs: 'م67 عمل 6/2010', prins: [421, 392, 97, 9], notes: [{ t: 'الراحة الأسبوعية مدفوعة الأجر (أربعة أيام في الشهر)، والعمل فيها لا يشترط أمرًا كتابيًا متى استدعته ظروف العمل.', p: [421, 9] }, 'يوم الراحة البديل حق عيني لا تحسبه الأداة نقدًا — لا يوجد سند في قاعدة التطبيق لتقويمه.'] });
+  }
+  if (holD) {
+    const m = +inp.holM === 1 ? 1 : 2, amt = holD * xDay * m;
+    const hn = [];
+    if (F > 0 && holD > 13 * Math.ceil(F)) hn.push('العطل الرسمية في المادة 68 ثلاثة عشر يومًا في السنة؛ العدد المدخل يجاوز ذلك عن مدة الخدمة — راجع (قد تشمل عطلًا بقرارات أخرى غير واردة في القاعدة).');
+    hn.push({ t: 'العمل في العطل الرسمية لا يشترط أمرًا كتابيًا متى استدعته ظروف العمل، وعلى العامل إثبات تشغيله فيها.', p: [9, 396] });
+    hn.push('اليوم البديل (م68) لا تحسبه الأداة نقدًا — لا يوجد سند في قاعدة التطبيق لتقويمه.');
+    R.items.push({ k: 'hol', title: 'مقابل العمل في العطل الرسمية', amount: mstRound3(amt), cls: 'ok', why: 'إذا استدعت ظروف العمل تشغيل العامل في إحدى العطل الرسمية قُرِّر له أجر مضاعف عنه مع تعويضه بيوم بديل (م68).',
+      lines: [['أجر اليوم (' + xLbl + ')', mstRound3(xDay)], ['النسبة المختارة', m === 2 ? 'أجر مضاعف = 200%' : 'الضعف الإضافي وحده = 100%'], ['المقابل', holD + ' يوم × ' + mstRound3(xDay) + ' × ' + m + ' = ' + mstRound3(amt)]],
+      refs: 'م68 عمل 6/2010', prins: [97, 9, 110], notes: hn });
+  }
+
   // ---- تنبيهات عامة
   if (inp.kuwaiti) R.notes.push({ cls: 'warn', title: 'عامل كويتي مؤمَّن عليه', body: 'يُراعى التقابل بين المكافأة ونظام التأمينات الاجتماعية (م51 وتعديلاتها، م82 تأمينات): في قاعدة التطبيق مبادئ تحسب المكافأة المستحقة مباشرة على ما جاوز السقف التأميني من الأجر. <b>لا تطبق الأداة هذا الأثر</b> — المبلغ المعروض محسوب على كامل الأجر ويجب تعديله بعد مراجعة المبادئ.', refs: 'م51 عمل 6/2010', prins: [255, 389, 111] });
 
@@ -4244,8 +4369,54 @@ function mstPrin(id, contra) {
 }
 function mstPrins(ids, contra) { const h = (ids || []).map(i => mstPrin(i, contra)).join(''); return h ? '<div class="msprins">' + h + '</div>' : ''; }
 function mstNoteLi(n) { return typeof n === 'string' ? '<li>' + esc(n) + '</li>' : '<li>' + esc(n.t) + mstPrins(n.p) + '</li>'; }
+
+// V56: مستحقات العامل المنزلي — القانون 68/2015 ولائحته 22/2022 فقط؛ ما لا نص فيه يُعلَّم ولا يُحسب
+function dmInit() {
+  const g = id => $('#' + id), num = id => Math.max(0, +g(id).value || 0);
+  const tag = (n, law) => '<button type="button" class="dlart" data-art="م' + n + ' ' + law + '">م' + n + (law === 'عمالة منزلية 68/2015' ? '' : ' ' + law.replace('قرار وزاري ', 'لائحة ')) + '</button>';
+  const LW = 'عمالة منزلية 68/2015', LR = 'قرار وزاري 22/2022', L16 = 'قرار وزاري 2302/2016';
+  let last = '';
+  function run() {
+    const w = num('dm_wage'), div = +g('dm_div').value, s = mstParse(g('dm_s').value), e = mstParse(g('dm_e').value), O = g('dm_out');
+    if (!w || !s || !e || e.t < s.t) { O.innerHTML = '<div class="empty"><b>لا حساب بعد</b>أدخل الأجر والتاريخين (الانتهاء بعد البدء).</div>'; last = ''; return; }
+    const D = mstDiff(s, e), yrs = g('dm_frac').value === 'prop' ? D.f : D.y, day = w / div, rows = [], notes = [];
+    const svc = D.y + ' سنة و' + D.m + ' شهر و' + D.d + ' يوم';
+    const eIso = g('dm_e').value;
+    // الحد الأدنى
+    if (eIso >= '2022-04-21' && w < 75) notes.push(['warn', 'الأجر أقل من الحد الأدنى (75 د.ك) المقرر بالمادة 27 من اللائحة 22/2022 ' + tag(27, LR) + ' — الحاسبة تحسب على الأجر المُدخل.']);
+    else if (eIso >= '2016-07-24' && eIso < '2022-04-21' && w < 60) notes.push(['warn', 'الأجر أقل من الحد الأدنى (60 د.ك) المقرر بالمادة 3 من القرار 2302/2016 ' + tag(3, L16) + '.']);
+    // المكافأة
+    const done = g('dm_done').checked, eos = w * yrs;
+    rows.push(['مكافأة نهاية الخدمة', done ? eos : 0, 'أجر شهر عن كل سنة: ' + mstFmt(w) + ' × ' + (g('dm_frac').value === 'prop' ? yrs.toFixed(4) + ' (بالنسبة)' : D.y + ' سنة كاملة') + (done ? '' : ' — غير محسوبة: لم يُؤشَّر على إتمام مدة العقد (' + mstFmt(eos) + ' لو استُحقت)'), [tag(23, LW)]]);
+    const up = num('dm_unpaid'); if (up) rows.push(['أجور لم تُدفع', w * up, up + ' شهر × ' + mstFmt(w), [tag(7, LW), tag(20, LW)]]);
+    const lt = num('dm_late'); if (lt) rows.push(['جزاء التأخر في الوفاء بالأجر', 10 * lt, lt + ' شهر × 10 د.ك (بالإضافة للأجر المستحق)', [tag(27, LW), tag(31, LR)]]);
+    const ot = num('dm_ot'); if (ot) rows.push(['تعويض العمل الإضافي', ot * day / 2, ot + ' يوم × أجر نصف يوم (' + mstFmt(day / 2) + ')، والعمل الإضافي لا يتجاوز ساعتين يوميًا', [tag(30, LR)]]);
+    const total = rows.reduce((a, r) => a + r[1], 0);
+    notes.push(['', 'إذا رفض صاحب العمل التعويض عن العمل الإضافي فللإدارة أن تلزمه بتعويض عادل لا يقل عن ضعف الأجر المتفق عليه ' + tag(28, LW) + ' — لا يُحسب آليًا.']);
+    notes.push(['', 'نقل الجثمان وأجر شهر الوفاة ' + tag(22, LW) + ' ' + tag(26, LR) + '، ومصاريف العودة على آخر صاحب عمل ' + tag(25, LR) + '، والإجازة السنوية (30 يومًا) ' + tag(28, LR) + ' — لم ترد في النصوص المتاحة طريقة لبدلها النقدي، فلا تُحسب.']);
+    let h = '<div class="kc info"><h4><span>مستحقات العامل المنزلي</span><span class="v">' + mstFmt(total) + ' د.ك</span></h4><div class="help">مدة الخدمة: ' + svc + ' — الأجر اليومي: ' + mstFmt(day) + ' (÷' + div + ')</div><table class="dmt"><tr><th>البند</th><th>المبلغ</th><th>الحساب والسند</th></tr>' +
+      rows.map(r => '<tr><td>' + r[0] + '</td><td class="n">' + mstFmt(r[1]) + '</td><td>' + r[2] + ' ' + r[3].join(' ') + '</td></tr>').join('') + '<tr class="tot"><td>المجموع</td><td class="n">' + mstFmt(total) + '</td><td class="why">مسودة حساب تخضع لمراجعة المحكمة</td></tr></table></div>';
+    h += notes.map(n => '<div class="kc ' + (n[0] || '') + '"><p style="margin:0">' + n[1] + '</p></div>').join('');
+    O.innerHTML = h;
+    O.querySelectorAll('[data-art]').forEach(b => b.onclick = () => { if (!openArticleByTag(b.dataset.art)) toast('نص المادة غير متاح'); });
+    const strip = x => x.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    last = ['مستحقات العامل المنزلي (القانون 68/2015 ولائحته 22/2022) — مسودة حساب', 'الأجر الشهري: ' + mstFmt(w) + ' د.ك — مدة الخدمة: ' + svc + ' (من ' + g('dm_s').value + ' إلى ' + eIso + ')', ...rows.map(r => '- ' + r[0] + ': ' + mstFmt(r[1]) + ' د.ك — ' + strip(r[2]) + ' [' + r[3].map(strip).join('، ') + ']'), 'المجموع: ' + mstFmt(total) + ' د.ك', ...notes.map(n => '◆ ' + strip(n[1]))].join('\n');
+  }
+  g('dm_form').addEventListener('input', run); g('dm_form').addEventListener('change', run);
+  g('dm_copy').onclick = () => last ? copy(last, 'نُسخ البيان') : toast('لا بيان مكتمل');
+  g('dm_save').onclick = () => rlSaveResult('ms', last, 'مستحقات العامل المنزلي (68/2015)', g('dm_save').parentElement);
+  g('dm_prin').onclick = () => searchPrinciples('العامل المنزلي');
+  g('dm_reset').onclick = () => { g('dm_form').querySelectorAll('input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); run(); };
+  run();
+}
+function mstMode(m) {
+  document.querySelectorAll('#ms_modesel [data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  $('#ms_pgrid').hidden = m !== 'p'; $('#ms_dgrid').hidden = m !== 'd';
+  try { localStorage.setItem('tm_msmode', m); } catch (e) {}
+}
 function initMst() {
   if (mstInit) return; mstInit = true;
+  document.querySelectorAll('#ms_modesel [data-m]').forEach(b => b.onclick = () => mstMode(b.dataset.m)); dmInit(); let mm = 'p'; try { mm = localStorage.getItem('tm_msmode') || 'p'; } catch (e) {} mstMode(mm);
   const g = id => $('#' + id);
   const REASON_MAIN = ['resign', 'emp', 'expiry'];
   function fillReasons() {
@@ -4265,7 +4436,8 @@ function initMst() {
   }
   function read() {
     return { pay: g('ms_pay').value, div: +g('ms_div').value, contract: g('ms_contract').value, reason: g('ms_reason').value, start: g('ms_start').value, end: g('ms_end').value,
-      total: g('ms_total').value, basic: g('ms_basic').value, notice: g('ms_notice').value, noticeDays: g('ms_ndays').value, used: g('ms_used').value, leaveManual: g('ms_lman').value.trim(), debts: g('ms_debts').value, kuwaiti: g('ms_kw').checked };
+      total: g('ms_total').value, basic: g('ms_basic').value, notice: g('ms_notice').value, noticeDays: g('ms_ndays').value, used: g('ms_used').value, leaveManual: g('ms_lman').value.trim(), debts: g('ms_debts').value, kuwaiti: g('ms_kw').checked,
+      xbase: g('ms_xbase').value, otH: g('ms_oth').value, rest: g('ms_rest').value, restM: g('ms_restm').value, hol: g('ms_hol').value, holM: g('ms_holm').value, who: g('ms_who').value.trim() };
   }
   function card(it) {
     const amt = it.amount == null ? '—' : mstFmt(it.amount) + ' د.ك';
@@ -4291,9 +4463,9 @@ function initMst() {
     if (!started) { out.innerHTML = '<div class="empty"><b>لا حساب بعد</b>أدخل الأجر والتاريخين وسبب الانتهاء.</div>'; mstLast = null; return; }
     const R = mstCalc(inp); mstLast = { inp, R };
     if (!R.ok) { out.innerHTML = '<div class="mswarn">مسودة حسابية — تخضع لمراجعة المحكمة</div>' + R.errors.map(e => '<div class="kc warn"><p>' + esc(e) + '</p></div>').join(''); return; }
-    const name = { eos: 'مكافأة نهاية الخدمة', leave: 'مقابل رصيد الإجازات', notice: 'بدل الإنذار' };
+    const name = { eos: 'مكافأة نهاية الخدمة', leave: 'مقابل رصيد الإجازات', notice: 'بدل الإنذار', ot: 'العمل الإضافي', rest: 'أيام الراحة الأسبوعية', hol: 'العطل الرسمية' };
     let h = '<div class="mswarn">مسودة حسابية داخلية — تخضع لمراجعة المحكمة، وليست ترجيحًا لنتيجة الدعوى.</div>';
-    h += '<div class="mssum"><div class="tt"><b>مجموع المستحقات المحسوبة للعامل</b><span class="big">' + mstFmt(R.total) + ' د.ك</span></div>'
+    h += '<div class="mssum"><div class="tt"><b>مجموع المستحقات المحسوبة ' + (inp.who ? '— ' + esc(inp.who) : 'للعامل') + '</b><span class="big">' + mstFmt(R.total) + ' د.ك</span></div>'
       + '<div class="svc">مدة الخدمة: ' + esc(mstPer(R.svc)) + ' · أجر اليوم الشامل ' + mstFmt(R.meta.dayT) + ' · الأساسي ' + mstFmt(R.meta.dayB) + '</div><table>'
       + R.items.map(it => '<tr><td>' + name[it.k] + '</td><td>' + (it.amount == null ? 'لا يُحسب' : mstFmt(it.amount)) + '</td></tr>').join('')
       + (R.owed ? '<tr class="owed"><td>قد يلتزم به العامل لصاحب العمل (بدل إنذار — خارج المجموع)</td><td>' + mstFmt(R.owed) + '</td></tr>' : '') + '</table></div>';
@@ -4306,7 +4478,7 @@ function initMst() {
     if (!mstLast || !mstLast.R.ok) return '';
     const { inp, R } = mstLast, L = [];
     const cite = id => { const p = P.find(x => x.id === id); return p ? (p.cite_std || p.appeal) : ''; };
-    L.push('بيان حسابي للمستحقات — مسودة عمل داخلية تخضع لمراجعة المحكمة', '');
+    L.push('بيان حسابي للمستحقات' + (inp.who ? ' — ' + inp.who : '') + ' — مسودة عمل داخلية تخضع لمراجعة المحكمة', '');
     L.push('الأجر الشامل: ' + mstFmt(+inp.total) + ' · الأساسي: ' + mstFmt(+inp.basic) + ' (' + (inp.pay === 'm' ? 'شهري' : 'يومي') + '، القسمة على ' + inp.div + ')');
     L.push('الخدمة: من ' + inp.start + ' إلى ' + inp.end + ' = ' + mstPer(R.svc) + ' · العقد: ' + (inp.contract === 'open' ? 'غير محدد المدة' : 'محدد المدة') + ' · السبب: ' + MST_REASONS[inp.reason].t, '');
     R.items.forEach(it => {
@@ -4327,8 +4499,9 @@ function initMst() {
   g('ms_contract').addEventListener('change', () => { fillReasons(); run(); });
   g('ms_form').addEventListener('input', run); g('ms_form').addEventListener('change', run);
   g('ms_copy').onclick = () => { const t = text(); if (!t) { toast('لا بيان مكتمل للنسخ'); return; } const done = () => toast('نُسخ البيان'); if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, () => mstFallbackCopy(t, done)); else mstFallbackCopy(t, done); };
+  g('ms_save').onclick = () => rlSaveResult('ms', text(), 'حساب المستحقات (قانون العمل 6/2010)' + (g('ms_who').value.trim() ? ' — ' + g('ms_who').value.trim() : ''), g('ms_save').parentElement);
   g('ms_print').onclick = () => { if (!mstLast || !mstLast.R.ok) { toast('لا بيان مكتمل للطباعة'); return; } document.body.classList.add('pmst'); setTimeout(() => { window.print(); document.body.classList.remove('pmst'); }, 50); };
-  g('ms_reset').onclick = () => { g('ms_form').querySelectorAll('input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); g('ms_pay').value = 'm'; g('ms_div').value = '26'; g('ms_contract').value = 'open'; g('ms_notice').value = 'none'; fillReasons(); g('ms_reason').value = ''; run(); };
+  g('ms_reset').onclick = () => { g('ms_form').querySelectorAll('input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); g('ms_pay').value = 'm'; g('ms_div').value = '26'; g('ms_contract').value = 'open'; g('ms_notice').value = 'none'; g('ms_xbase').value = 'b'; g('ms_restm').value = '1.5'; g('ms_holm').value = '2'; fillReasons(); g('ms_reason').value = ''; run(); };
   run();
 }
 function mstFallbackCopy(t, done) { const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('تعذّر النسخ'); } a.remove(); }
