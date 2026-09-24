@@ -36,6 +36,8 @@
 @font-face{font-family:'Markazi Text';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/markazi-400.woff2') format('woff2')}
 @font-face{font-family:'Markazi Text';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/markazi-700.woff2') format('woff2')}
 .icsbox{margin-top:10px;padding:12px;border:1px solid var(--line,#ccc);border-radius:12px;background:var(--panel)}.icsbox h4{margin:0 0 8px;font-size:1rem}.icsbox ol{margin:0;padding-inline-start:20px}.icsbox li{margin-bottom:10px;line-height:1.8}.icsbox .row{margin-top:6px}
+.synote{font-size:13px;color:var(--ink2);line-height:1.8;margin:0 0 10px}.sybox{display:grid;gap:8px}.sybox label{display:grid;gap:4px;font-size:13px;color:var(--ink2)}.sybox input[type=password]{width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--bg);color:var(--ink);font-size:15px}.sybtns{display:flex;flex-wrap:wrap;gap:8px}.systat{font-size:13px;line-height:1.9;color:var(--ink2);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 12px}.systat b{color:var(--ink)}.systat .warn{color:var(--warn);font-weight:700}.sydot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warn);margin-inline-start:6px;vertical-align:middle}.sylink{background:none;border:0;color:var(--ink3);font-size:12.5px;text-decoration:underline;cursor:pointer;padding:2px 0;font-family:inherit}
+.inhost{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;line-height:1.9}.inhost ol{margin:6px 0 10px;padding-inline-start:20px}.inhost textarea{width:100%;min-height:120px;border:1px solid var(--line2);border-radius:10px;padding:8px 10px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;margin-bottom:8px}
 </style>
 <style>
 :root{
@@ -1058,7 +1060,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
     <button class="btn primary hidden" id="rl_dist" type="button">إرسال التوزيع</button>
     <span class="spacer"></span>
     <button class="btn" id="rl_cal" type="button" title="أيام الجلسات والعطل وأعضاء الدائرة">التقويم والدائرة</button>
-    <button class="btn" id="rl_exp" type="button" title="حفظ نسخة لنقلها إلى جهاز آخر">تصدير</button>
+    <button class="btn" id="rl_sync" type="button" title="مزامنة مشفّرة بين أجهزتك عبر OneDrive">مزامنة<i class="sydot hidden" id="rl_sydot"></i></button><button class="btn" id="rl_exp" type="button" title="حفظ نسخة لنقلها إلى جهاز آخر">تصدير</button>
     <button class="btn" id="rl_imp" type="button" title="استيراد نسخة محفوظة">استيراد نسخة</button><input type="file" id="rl_file" accept=".json,application/json" hidden>
   </div>
   <div class="rlpanel hidden" id="rl_impbox">
@@ -1297,12 +1299,17 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
       <button type="button" class="drowb" id="dgs"><span>بحث شامل: مادة، طعن، مبدأ، أداة</span><small class="kbd gskbd">Ctrl K</small></button>
       <div class="dinst" id="dinst"><button class="btn hidden" id="installbtn" title="تثبيت التطبيق على جهازك" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg><span style="font-size:12.5px">تثبيت</span></button><p id="dinstt"></p></div>
     </section>
+    <section class="ds" id="dsync"><h3>المزامنة بين أجهزتك</h3>
+      <p class="synote">تُجمع بيانات «رول الجلسة» والمحفوظات في ملف واحد مشفّر برمز تختاره (AES-256)، وتحفظه في OneDrive، ثم تجلبه على الجهاز الآخر فيُدمج. لا يُقرأ الملف دون الرمز، ولا يُرسل شيء إلى أي خادم.</p>
+      <div id="sy_body"></div>
+      <input type="file" id="sy_file" accept=".amali,.json,application/octet-stream,application/json" hidden>
+    </section>
     <section class="ds dkeys"><h3>اختصارات لوحة المفاتيح</h3>
       <p><span class="kbd">Ctrl</span>+<span class="kbd">K</span> بحث شامل · <span class="kbd">/</span> البحث في المبادئ · <span class="kbd">Esc</span> إغلاق اللوحة أو القائمة · <span class="kbd">↑</span><span class="kbd">↓</span> و<span class="kbd">Enter</span> داخل نتائج البحث الشامل</p>
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V49</p>
+      <p class="dver">الإصدار V50.1</p>
     </section>
   </div>
 </div>
@@ -1402,7 +1409,8 @@ P.forEach(indexPrinciple);
 const state = { q: '', source: new Set(), kind: new Set(), topics: new Set(), articles: new Set(), outcome: new Set(), defects: new Set(), headings: new Set(), laws: new Set(), years: new Set(), misc: new Set(), sort: 'rel', shown: 40 };
 let bookmarks = new Set();
 try { bookmarks = new Set(JSON.parse(localStorage.getItem('tm_bm') || '[]')); } catch (e) {}
-const saveBm = () => { try { localStorage.setItem('tm_bm', JSON.stringify([...bookmarks])); } catch (e) {} };
+let BMT = {}; try { BMT = JSON.parse(localStorage.getItem('tm_bm_t') || '{}') || {}; } catch (e) {}
+const saveBm = () => { try { localStorage.setItem('tm_bm', JSON.stringify([...bookmarks])); localStorage.setItem('tm_bm_t', JSON.stringify(BMT)); localStorage.setItem('tm_chg', String(Date.now())); } catch (e) {} };
 let fs = 17; try { fs = +localStorage.getItem('tm_fs') || 17; } catch (e) {}
 document.documentElement.style.setProperty('--fs', fs + 'px');
 
@@ -1599,7 +1607,7 @@ function renderList() {
   if (results.length > state.shown) { const b = el('button', 'btn', 'عرض المزيد (' + (results.length - state.shown) + ' متبقية)'); b.type = 'button'; b.onclick = () => { state.shown += 40; renderList(); }; m.appendChild(b); }
 }
 function toggleBm(p, btn) {
-  bookmarks.has(p.id) ? bookmarks.delete(p.id) : bookmarks.add(p.id); saveBm();
+  bookmarks.has(p.id) ? bookmarks.delete(p.id) : bookmarks.add(p.id); BMT[p.id] = [bookmarks.has(p.id) ? 1 : 0, Date.now()]; saveBm();
   document.querySelectorAll('.card .bm').forEach(() => {});
   if (btn) { btn.classList.toggle('on', bookmarks.has(p.id)); btn.textContent = bookmarks.has(p.id) ? '★ محفوظ' : '☆ حفظ'; }
   toast(bookmarks.has(p.id) ? 'حُفظ في المحفوظات' : 'أُزيل من المحفوظات');
@@ -2216,9 +2224,11 @@ function rlWho(t) {
 }
 const RL_KEY = 'tm_roll';
 let RL = { v: 2, circuit: '', cards: [], cal: { off: [], on: [] }, members: {} }, RL_MEM = false, rlInit = false, rlEdit = null, rlWarned = false, rlFocus = null, rlMode = 'roll', rlDaySel = '', rlImp = null, rlDecOpen = null;
-(function rlLoad() { try { const s = localStorage.getItem(RL_KEY); if (s) { const j = JSON.parse(s); if (j && Array.isArray(j.cards)) RL = { v: 2, circuit: j.circuit || '', cards: j.cards, cal: j.cal || { off: [], on: [] }, members: j.members || {} }; } localStorage.setItem(RL_KEY + '_t', '1'); localStorage.removeItem(RL_KEY + '_t'); } catch (e) { RL_MEM = true; } })();
+(function rlLoad() { try { const s = localStorage.getItem(RL_KEY); if (s) { const j = JSON.parse(s); if (j && Array.isArray(j.cards)) RL = { v: 2, circuit: j.circuit || '', cards: j.cards, cal: j.cal || { off: [], on: [] }, members: j.members || {}, del: j.del || {}, st: j.st || 0 }; } localStorage.setItem(RL_KEY + '_t', '1'); localStorage.removeItem(RL_KEY + '_t'); } catch (e) { RL_MEM = true; } })();
 { let mg = 0; RL.cards.forEach(c => { if (RL_RES.includes(c.stage) && !c.resAt && c.src === 'kashf' && !(c.hist || []).length && c.next && c.stage !== 'مد أجل النطق') { c.resAt = c.next; c.next = rlNextSessions(c.next, 2, RL.cal, false)[1] || c.next; mg++; } }); if (mg) rlSave(); }
-function rlSave() { if (RL_MEM) return; try { localStorage.setItem(RL_KEY, JSON.stringify(RL)); } catch (e) { RL_MEM = true; rlStoreNote(); toast('تعذّر الحفظ على الجهاز — صدّر البطاقات'); } }
+var RL_SH = null; function rlSetHash() { return JSON.stringify([RL.circuit || '', RL.members || {}, RL.cal || {}]); }
+function rlSave() { const h = rlSetHash(); if (RL_SH !== null && h !== RL_SH) RL.st = Date.now(); RL_SH = h; try { localStorage.setItem('tm_chg', String(Date.now())); } catch (e) {} try { syDot(); } catch (e) {} if (RL_MEM) return; try { localStorage.setItem(RL_KEY, JSON.stringify(RL)); } catch (e) { RL_MEM = true; rlStoreNote(); toast('تعذّر الحفظ على الجهاز — صدّر البطاقات'); } }
+RL_SH = rlSetHash();
 function rlToday() { const d = new Date(); return rlIso(d.getFullYear(), d.getMonth() + 1, d.getDate()); }
 function rlDays(iso) { if (!iso) return null; const [y, m, d] = iso.split('-').map(Number); const [a, b, c] = rlToday().split('-').map(Number); return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(a, b - 1, c)) / 864e5); }
 function rlFmt(iso) { if (!iso) return ''; const [y, m, d] = iso.split('-'); return +d + '/' + +m + '/' + y; }
@@ -2337,7 +2347,7 @@ function rlCard(c, mode) {
   if (q('undo')) q('undo').onclick = () => rlUndo(c);
   q('edit').onclick = () => rlOpenForm(c);
   if (q('cites')) q('cites').onclick = () => copy(prs.map(p => p.cite_std).join('\n'), 'نُسخت ' + prs.length + ' إحالة');
-  q('del').onclick = () => { const b = q('del'); if (b.dataset.sure) { RL.cards = RL.cards.filter(x => x.id !== c.id); rlSave(); rlRender(); toast('حُذفت البطاقة'); } else { b.dataset.sure = '1'; b.textContent = 'تأكيد الحذف؟'; setTimeout(() => { b.textContent = 'حذف'; delete b.dataset.sure; }, 3500); } };
+  q('del').onclick = () => { const b = q('del'); if (b.dataset.sure) { RL.cards = RL.cards.filter(x => x.id !== c.id); RL.del = RL.del || {}; RL.del[c.id] = Date.now(); rlSave(); rlRender(); toast('حُذفت البطاقة'); } else { b.dataset.sure = '1'; b.textContent = 'تأكيد الحذف؟'; setTimeout(() => { b.textContent = 'حذف'; delete b.dataset.sure; }, 3500); } };
   return d;
 }
 // ---- العرض
@@ -2537,6 +2547,105 @@ function rlImportBackup(file) {
   };
   r.readAsText(file);
 }
+
+// ---- V50: المزامنة المشفّرة بين الأجهزة (ملف واحد في OneDrive أو أي مجلد سحابي)
+const SY = { key: null, salt: null, handle: null, pass: null, ask: null, merged: false };
+const SY_ITER = 310000, SY_NAME = 'عمالي-بيانات.amali';
+const syB64 = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+const syUnb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+function syIdb() { return new Promise((res, rej) => { const r = indexedDB.open('amali_sync', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function syGet(k) { try { const db = await syIdb(); return await new Promise(res => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(undefined); }); } catch (e) { return undefined; } }
+async function sySet(k, v) { try { const db = await syIdb(); await new Promise(res => { const t = db.transaction('kv', 'readwrite'); if (v === undefined) t.objectStore('kv').delete(k); else t.objectStore('kv').put(v, k); t.oncomplete = res; t.onerror = res; }); } catch (e) {} }
+async function syDerive(pass, salt) { const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']); return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: SY_ITER }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']); }
+const syMeta = () => { try { return JSON.parse(localStorage.getItem('tm_sync') || '{}') || {}; } catch (e) { return {}; } };
+function syMark(k) { const m = syMeta(); m[k] = Date.now(); try { localStorage.setItem('tm_sync', JSON.stringify(m)); } catch (e) {} syDot(); }
+function syDirty() { const m = syMeta(); let c = 0; try { c = +localStorage.getItem('tm_chg') || 0; } catch (e) {} return !!SY.key && c > (m.pushed || 0); }
+function syDot() { const d = $('#rl_sydot'); if (d) d.classList.toggle('hidden', !syDirty()); }
+const syCanFS = () => !!(window.showSaveFilePicker && window.showOpenFilePicker) && !IS_IOS;
+async function syPerm(h) { try { if ((await h.queryPermission({ mode: 'readwrite' })) === 'granted') return true; return (await h.requestPermission({ mode: 'readwrite' })) === 'granted'; } catch (e) { return false; } }
+function syPayload() { return { app: 'amali-data', v: 1, saved: Date.now(), roll: RL, bm: [...bookmarks], bmt: BMT }; }
+async function syEncrypt(obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, SY.key, new TextEncoder().encode(JSON.stringify(obj)))); return JSON.stringify({ app: 'amali-sync', v: 1, kdf: { name: 'PBKDF2', hash: 'SHA-256', iter: SY_ITER, salt: syB64(SY.salt) }, cipher: 'AES-GCM-256', iv: syB64(iv), ct: syB64(ct) }); }
+async function syDecrypt(j, key) { const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: syUnb64(j.iv) }, key, syUnb64(j.ct)); return JSON.parse(new TextDecoder().decode(pt)); }
+function syMerge(d) {
+  const r = d.roll || {}; let add = 0, upd = 0;
+  RL.del = RL.del || {}; const rd = r.del || {};
+  Object.keys(rd).forEach(id => { if (!RL.del[id] || rd[id] > RL.del[id]) RL.del[id] = rd[id]; });
+  (r.cards || []).forEach(c => { if (!c || !c.id || !c.code) return; const cur = RL.cards.find(x => x.id === c.id); if (!cur) { RL.cards.push(c); add++; } else if ((c.updated || 0) > (cur.updated || 0)) { Object.keys(cur).forEach(k => delete cur[k]); Object.assign(cur, c); upd++; } });
+  const n0 = RL.cards.length; RL.cards = RL.cards.filter(c => !(RL.del[c.id] && RL.del[c.id] >= (c.updated || 0))); let del = n0 - RL.cards.length;
+  const best = {}; RL.cards.forEach(c => { const b = best[c.code]; if (!b || (c.updated || 0) > (b.updated || 0)) best[c.code] = c; });
+  RL.cards = RL.cards.filter(c => { if (best[c.code] === c) return true; RL.del[c.id] = Math.max(Date.now(), c.updated || 0); if (add) add--; return false; });
+  if ((r.st || 0) > (RL.st || 0)) { RL.circuit = r.circuit || ''; RL.members = r.members || {}; RL.cal = r.cal || { off: [], on: [] }; RL.st = r.st; if (rlInit) { $('#rl_circ').value = RL.circuit; ['p', 'r', 'l', 'd'].forEach(k => { const i = $('#rm_' + k); if (i) i.value = RL.members[k] || ''; }); } }
+  const T = d.bmt || {}; (d.bm || []).forEach(id => { if (!T[id]) T[id] = [1, 0]; }); bookmarks.forEach(id => { if (!BMT[id]) BMT[id] = [1, 0]; });
+  Object.keys(T).forEach(id => { if (!BMT[id] || T[id][1] > BMT[id][1]) BMT[id] = T[id]; });
+  const bm0 = bookmarks.size; bookmarks.clear(); Object.keys(BMT).forEach(id => { if (BMT[id][0]) bookmarks.add(isNaN(+id) ? id : +id); });
+  RL_SH = rlSetHash(); rlSave(); saveBm(); if (rlInit) rlRender(); if (typeof rlHomeAlert === 'function') rlHomeAlert(); try { run(); } catch (e) {}
+  return { add, upd, del, bm: bookmarks.size - bm0 };
+}
+async function syApply(txt, handle) {
+  let j; try { j = JSON.parse(txt); } catch (e) { toast('الملف ليس ملف بيانات من عمّالي'); return; }
+  if (j && j.app === 'amali-roll') { rlImportBackup(new File([txt], 'x.json')); return; }
+  if (!j || j.app !== 'amali-sync' || !j.kdf || !j.ct) { toast('الملف ليس ملف مزامنة من عمّالي'); return; }
+  const salt = syUnb64(j.kdf.salt); let key = null;
+  if (SY.key && SY.salt && syB64(SY.salt) === j.kdf.salt) key = SY.key;
+  else if (SY.pass) { try { key = await syDerive(SY.pass, salt); } catch (e) {} }
+  let d = null; if (key) { try { d = await syDecrypt(j, key); } catch (e) { d = null; } }
+  if (!d) { SY.ask = { txt, handle }; syRender(); toast(key ? 'الرمز لا يفتح هذا الملف — اكتب رمزه' : 'اكتب رمز المزامنة لفتح الملف'); return; }
+  if (key !== SY.key) { SY.key = key; SY.salt = salt; await sySet('key', key); await sySet('salt', salt); }
+  if (handle) { SY.handle = handle; await sySet('handle', handle); }
+  SY.ask = null; const r = syMerge(d); syMark('pulled'); SY.merged = true;
+  toast('دُمج: ' + r.add + ' جديدة، ' + r.upd + ' محدَّثة' + (r.del ? '، ' + r.del + ' محذوفة' : '')); syRender();
+}
+async function syPull() {
+  if (syCanFS()) {
+    let h = SY.handle || await syGet('handle');
+    try { if (!h) { [h] = await window.showOpenFilePicker({ types: [{ description: 'بيانات عمّالي المشفّرة', accept: { 'application/octet-stream': ['.amali'] } }] }); } if (await syPerm(h)) { const f = await h.getFile(); await syApply(await f.text(), h); return true; } } catch (e) { if (e && e.name === 'AbortError') return false; }
+  }
+  $('#sy_file').click(); return false;
+}
+async function syPush() {
+  if (!SY.key) { toast('اعتمد رمز المزامنة أولًا'); return; }
+  const txt = await syEncrypt(syPayload());
+  if (syCanFS()) {
+    try { let h = SY.handle || await syGet('handle'); if (!h || !(await syPerm(h))) { h = await window.showSaveFilePicker({ suggestedName: SY_NAME, types: [{ description: 'بيانات عمّالي المشفّرة', accept: { 'application/octet-stream': ['.amali'] } }] }); }
+      const w = await h.createWritable(); await w.write(txt); await w.close(); SY.handle = h; await sySet('handle', h); syMark('pushed'); SY.merged = false; syRender(); toast('حُفظت النسخة المشفّرة في «' + h.name + '»'); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const f = new File([txt], SY_NAME, { type: 'application/octet-stream' });
+  if (IS_IOS && navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); syMark('pushed'); SY.merged = false; syRender(); toast('اختر «حفظ في الملفات» ثم OneDrive، واستبدل الملف القديم'); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+  const b = new Blob([txt], { type: 'application/octet-stream' });
+  if (DLX) { try { await DLX.save({ filename: SY_NAME, data: b }); syMark('pushed'); syRender(); } catch (e) {} return; }
+  const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = SY_NAME; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); syMark('pushed'); SY.merged = false; syRender(); toast('نُزّل الملف — انقله إلى مجلد OneDrive واستبدل القديم');
+}
+async function sySyncNow() { const ok = await syPull(); if (ok && !SY.ask) await syPush(); }
+const syWhen = t => t ? new Date(t).toLocaleString('ar-KW-u-nu-latn', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+function syRender() {
+  const b = $('#sy_body'); if (!b) return;
+  if (!window.crypto || !crypto.subtle) { b.innerHTML = '<p class="synote">التشفير غير متاح في هذه النافذة. افتح التطبيق من موقعه.</p>'; return; }
+  const m = syMeta();
+  if (SY.ask) {
+    b.innerHTML = '<div class="sybox"><div class="systat">هذا الملف مشفّر برمز غير المعتمد على هذا الجهاز.</div><label>رمز الملف<input type="password" id="sy_ap" autocomplete="current-password"></label><div class="sybtns"><button type="button" class="btn primary" id="sy_aok">فتح ودمج</button><button type="button" class="btn" id="sy_ax">إلغاء</button></div></div>';
+    $('#sy_aok').onclick = async () => { const v = $('#sy_ap').value; if (!v) return; SY.pass = v; const a = SY.ask; SY.ask = null; await syApply(a.txt, a.handle); };
+    $('#sy_ax').onclick = () => { SY.ask = null; syRender(); }; return;
+  }
+  if (!SY.key) {
+    b.innerHTML = '<div class="sybox"><label>رمز المزامنة (6 أحرف فأكثر)<input type="password" id="sy_p1" autocomplete="new-password"></label><label>تأكيد الرمز<input type="password" id="sy_p2" autocomplete="new-password"></label><div class="sybtns"><button type="button" class="btn primary" id="sy_set">اعتماد الرمز</button></div><p class="synote">استعمل الرمز نفسه على كل أجهزتك. لا يُحفظ الرمز نفسه؛ ولا يمكن فتح الملف إن نُسي، لكن بياناتك على هذا الجهاز تبقى كما هي.</p></div>';
+    $('#sy_set').onclick = async () => { const a = $('#sy_p1').value, c = $('#sy_p2').value; if (a.length < 6) { toast('الرمز 6 أحرف فأكثر'); return; } if (a !== c) { toast('الرمزان غير متطابقين'); return; }
+      SY.pass = a; SY.salt = crypto.getRandomValues(new Uint8Array(16)); SY.key = await syDerive(a, SY.salt); await sySet('key', SY.key); await sySet('salt', SY.salt); try { localStorage.setItem('tm_chg', String(Date.now())); } catch (e) {} syRender(); syDot(); toast('اعتُمد الرمز على هذا الجهاز'); };
+    return;
+  }
+  const dirty = syDirty(), fs = syCanFS();
+  b.innerHTML = '<div class="sybox"><div class="systat">' + (SY.handle ? 'الملف: <b>' + esc(SY.handle.name) + '</b><br>' : '') + 'آخر حفظ: <b>' + syWhen(m.pushed) + '</b> · آخر جلب: <b>' + syWhen(m.pulled) + '</b>' + (dirty ? '<br><span class="warn">تغييرات على هذا الجهاز لم تُحفظ في الملف بعد</span>' : '') + '</div>' +
+    '<div class="sybtns">' + (fs ? '<button type="button" class="btn primary" id="sy_now">مزامنة الآن</button>' : '') + '<button type="button" class="btn' + (fs ? '' : ' primary') + '" id="sy_pull">جلب ودمج</button><button type="button" class="btn' + (!fs && SY.merged ? ' primary' : '') + '" id="sy_push">' + (fs ? 'حفظ فقط' : 'حفظ النسخة المشفّرة') + '</button></div>' +
+    '<p class="synote">' + (fs ? 'أول مرة: «حفظ فقط» واختر مجلد OneDrive على الحاسوب. بعدها «مزامنة الآن» يجلب التغييرات من الجهاز الآخر ويدمجها ثم يحفظ.' : 'على الآيفون والآيباد: «جلب ودمج» واختر الملف من OneDrive، ثم «حفظ النسخة المشفّرة» ← «حفظ في الملفات» ← OneDrive واستبدل الملف القديم.') + '</p>' +
+    '<div class="sybtns"><button type="button" class="sylink" id="sy_chg">تغيير الرمز</button>' + (SY.handle ? '<button type="button" class="sylink" id="sy_unh">اختيار ملف آخر</button>' : '') + '<button type="button" class="sylink" id="sy_forget">نسيان الرمز على هذا الجهاز</button></div></div>';
+  if (fs) $('#sy_now').onclick = sySyncNow;
+  $('#sy_pull').onclick = syPull; $('#sy_push').onclick = syPush;
+  $('#sy_chg').onclick = async () => { SY.key = null; SY.salt = null; SY.pass = null; await sySet('key'); await sySet('salt'); syRender(); toast('اكتب الرمز الجديد، ثم احفظ؛ وعلى الأجهزة الأخرى اكتب الرمز الجديد عند الجلب'); };
+  const u = $('#sy_unh'); if (u) u.onclick = async () => { SY.handle = null; await sySet('handle'); syRender(); };
+  $('#sy_forget').onclick = async () => { SY.key = null; SY.salt = null; SY.pass = null; await sySet('key'); await sySet('salt'); syRender(); syDot(); toast('نُسي الرمز على هذا الجهاز؛ البيانات باقية'); };
+}
+$('#sy_file').onchange = async e => { const f = e.target.files[0]; e.target.value = ''; if (f) await syApply(await f.text()); };
+(async () => { SY.key = await syGet('key') || null; SY.salt = await syGet('salt') || null; SY.handle = await syGet('handle') || null; if (!SY.key) SY.salt = null; syRender(); syDot(); })();
+
 function initRoll() {
   if (!rlInit) {
     rlInit = true;
@@ -2553,6 +2662,7 @@ function initRoll() {
     $('#rl_dist').onclick = rlDistOpen;
     $('#rl_icss').onclick = () => rlIcs('s'); $('#rl_icsj').onclick = () => rlIcs('j');
     $('#rl_exp').onclick = rlExport;
+    $('#rl_sync').onclick = () => { openDrawer(); setTimeout(() => { const d = $('#dsync'); if (d) d.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 280); };
     $('#rl_imp').onclick = () => $('#rl_file').click();
     $('#rl_file').onchange = e => { const f = e.target.files[0]; if (f) rlImportBackup(f); e.target.value = ''; };
     $('#rl_circ').onchange = () => { RL.circuit = $('#rl_circ').value.trim(); rlSave(); };
@@ -3052,16 +3162,32 @@ function inThumbs() {
   $('#in_thumbs').innerHTML = inFiles.map((f, i) => '<figure><img src="' + URL.createObjectURL(f.blob) + '" alt=""><figcaption>' + esc(f.name) + '</figcaption></figure>').join('');
   $('#in_fileinfo').textContent = inFiles.length ? inFiles.length + ' صورة' : 'لا ملفات'; $('#in_clearfiles').hidden = !inFiles.length; $('#in_ocr').hidden = !inFiles.length;
 }
+// V50.1: خارج claude.ai — يُنسخ الطلب مع النص المعتّم ليُلصق في Claude، ثم يُلصق الرد فتُعرض البطاقة
+function inHosted() {
+  const raw = $('#in_text').value.trim();
+  const body = raw.slice(0, 45000) + (raw.includes('[قراءة ضوئية]') ? IN_OCR_NOTE : '');
+  const prompt = IN_PROMPT.replace('أجب بكائن JSON واحد فقط بهذه المفاتيح:', 'أجب بكائن JSON واحد فقط داخل كتلة شيفرة واحدة، دون أي شرح قبله أو بعده، بهذه المفاتيح:') + body;
+  copy(prompt, 'نُسخ طلب التحليل مع النص المعتّم');
+  $('#in_out').innerHTML = '<div class="inhost"><b>التحليل عبر Claude</b><ol><li>نُسخ طلب التحليل مع النص المعتّم. الصقه في محادثة جديدة في Claude — ويُفضّل داخل مشروع «الدائرة العمالية».</li><li>انسخ رد Claude كاملًا (زر النسخ أسفل الرد).</li><li>الصقه في المربع التالي ثم اضغط «عرض البطاقة».</li></ol><textarea id="in_paste" rows="6" placeholder="الصق رد Claude هنا…"></textarea><div class="row"><button type="button" class="btn primary" id="in_pshow">عرض البطاقة</button><button type="button" class="btn" id="in_recopy">نسخ الطلب مرة أخرى</button></div><p class="help">النص المنسوخ هو النص المعتّم الظاهر في المربع فقط؛ الصور لا تُرسل.</p></div>';
+  $('#in_status').textContent = 'نُسخ الطلب — الصقه في Claude.';
+  $('#in_recopy').onclick = () => copy(prompt, 'نُسخ الطلب مرة أخرى');
+  $('#in_pshow').onclick = () => {
+    const t = $('#in_paste').value, i = t.indexOf('{'), j = t.lastIndexOf('}'); let r = null;
+    if (i >= 0 && j > i) { try { r = JSON.parse(t.slice(i, j + 1)); } catch (e) { r = null; } }
+    if (!r || typeof r !== 'object' || Array.isArray(r)) { toast('لم أجد بيانات صالحة في الرد — انسخ رد Claude كاملًا'); return; }
+    inResult = r; inChosen = new Set(); inRender(); $('#in_status').textContent = 'تم. راجع البطاقة وصحّح ما يلزم (الحقول قابلة للتحرير).';
+  };
+}
 function initIntake() {
   if (inInit) return; inInit = true;
   const st = $('#in_status');
-  if (!SAMPLEX) { st.textContent = 'التحليل يعمل عند فتح التطبيق من الرابط داخل claude.ai (مسجَّلًا الدخول).'; $('#in_go').disabled = true; }
+  if (!SAMPLEX) { $('#in_go').textContent = 'حلّل عبر Claude'; st.textContent = 'في هذه النسخة يُنسخ النص المعتّم مع طلب التحليل لتلصقه في Claude، ثم تلصق الرد هنا فتظهر البطاقة.'; }
   $('#in_files').onchange = async e => {
     for (const f of [...e.target.files]) {
       if (f.type === 'application/pdf') { st.textContent = 'جارٍ تحويل PDF إلى صور…'; try { const r = await inPdfToImages(f); inFiles.push(...r.images); if (r.text) $('#in_text').value += (($('#in_text').value ? '\n\n' : '') + '— ' + f.name + ' —\n' + r.text); } catch (err) { toast('تعذّر قراءة PDF'); } st.textContent = ''; }
       else if (f.type.startsWith('image/')) inFiles.push({ blob: f, name: f.name });
     }
-    e.target.value = ''; inOcrDone = false; inTextOnly = false; inThumbs(); if (!SAMPLEX) st.textContent = inFiles.length ? 'في هذه النسخة لا يُرسل شيء: زر «حلّل الملف» يعمل فقط داخل claude.ai. لاختبار القراءة اضغط «قراءة ضوئية على جهازك».' : 'التحليل يعمل عند فتح التطبيق من الرابط داخل claude.ai (مسجَّلًا الدخول).';
+    e.target.value = ''; inOcrDone = false; inTextOnly = false; inThumbs(); if (!SAMPLEX && inFiles.length) st.textContent = 'اضغط «قراءة ضوئية على جهازك» لاستخراج النص، ثم «حلّل عبر Claude».';
   };
   $('#in_clearfiles').onclick = () => { inFiles = []; inOcrDone = false; inTextOnly = false; inThumbs(); };
   $('#in_ocr').onclick = async () => {
@@ -3070,13 +3196,13 @@ function initIntake() {
     const t0 = Date.now(); let t = '';
     try { t = await inOcr(inFiles, st, ctl.signal); }
     catch (e) { st.textContent = 'تعذّرت القراءة الضوئية على هذا الجهاز' + (e && e.message === 'ocr-timeout' ? ' (انتهت المهلة)' : '') + '.'; }
-    finally { $('#in_ocr').disabled = false; $('#in_stop').disabled = true; $('#in_go').disabled = !SAMPLEX; inCtl = null; }
+    finally { $('#in_ocr').disabled = false; $('#in_stop').disabled = true; $('#in_go').disabled = false; inCtl = null; }
     if (ctl.signal.aborted) { st.textContent = 'أُوقفت القراءة.'; return; }
     if (t && t.trim()) {
       const wasSafe = !$('#in_text').value.trim() || MSK_SAFE.get('in_text') === $('#in_text').value.trim();
       $('#in_text').value = ($('#in_text').value.trim() ? $('#in_text').value.trim() + '\n' : '') + t; inOcrDone = true; inTextOnly = true;
       if (wasSafe && inFiles.length && inFiles.every(f => f.masked)) MSK_SAFE.set('in_text', $('#in_text').value.trim());
-      st.textContent = 'تمت القراءة على جهازك في ' + Math.round((Date.now() - t0) / 1000) + ' ثانية، ولم يُرسل شيء. قارن النص بالأصل: الأسماء والأرقام والتواريخ والمبالغ.' + (SAMPLEX ? ' عند «حلّل الملف» سيُرسل النص وحده دون الصور.' : '');
+      st.textContent = 'تمت القراءة على جهازك في ' + Math.round((Date.now() - t0) / 1000) + ' ثانية، ولم يُرسل شيء. قارن النص بالأصل: الأسماء والأرقام والتواريخ والمبالغ.' + (SAMPLEX ? ' عند «حلّل الملف» سيُرسل النص وحده دون الصور.' : ' ثم اضغط «حلّل عبر Claude».');
       $('#in_out').innerHTML = '<div class="inlocal"><b>قراءة محلية — لم يُرسل شيء.</b> النص المقروء في المربع. هذه تجربة لدقة القراءة الضوئية على أوراقك؛ صحّح الأخطاء قبل أي استعمال.</div>';
       $('#in_text').scrollTop = 0;
     } else st.textContent = 'لم يُستخرج نص من الصور.';
@@ -3090,6 +3216,7 @@ function initIntake() {
   $('#in_go').onclick = async () => {
     const text = $('#in_text').value.trim();
     if (!text && !inFiles.length) { toast('الصق النص أو ارفع الصور أولًا'); return; }
+    if (!SAMPLEX) { if (!text) { toast('اضغط «قراءة ضوئية على جهازك» أولًا، أو الصق النص'); return; } if (!mskGuardIntake(() => $('#in_go').click())) return; inHosted(); return; }
     if ((SAMPLEX || window.__guardTest) && !mskGuardIntake(() => $('#in_go').click())) return;   /* التعتيم الإجباري (V41) */
     let lim = null; try { lim = await SAMPLEX.limits(); } catch (e) {}
     let imgs = inTextOnly ? [] : inFiles.map(f => f.blob);
@@ -4200,7 +4327,7 @@ function initMask() {
     if (!MSK.res) return; const bl = await mskFinalBlobs();
     inFiles = bl.map(b => ({ blob: b.blob, name: b.name, masked: true })); inOcrDone = false; inTextOnly = false;
     setView('i'); inThumbs();
-    $('#in_status').textContent = SAMPLEX ? 'أُضيفت ' + bl.length + ' صفحة معتّمة. راجعها ثم اضغط «حلّل الملف».' : 'أُضيفت الصفحات المعتّمة. التحليل يعمل داخل claude.ai فقط.';
+    $('#in_status').textContent = SAMPLEX ? 'أُضيفت ' + bl.length + ' صفحة معتّمة. راجعها ثم اضغط «حلّل الملف».' : 'أُضيفت الصفحات المعتّمة. اضغط «قراءة ضوئية على جهازك» ثم «حلّل عبر Claude».';
   };
   reset();
 }
