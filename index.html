@@ -1329,8 +1329,9 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
       <div class="toolvis" id="toolvis"></div>
     </section>
     <section class="ds" id="dkn"><h3>ملف المعرفة لمشروع Claude</h3>
-      <p class="synote">ملف نصي بالمبادئ بإحالاتها الحرفية (ومعه نصوص القوانين إن شئت)، ترفعه مرة واحدة إلى «معرفة المشروع» في مشروع الدائرة العمالية؛ فيستند Claude هناك إلى قاعدة عمّالي نفسها.</p>
+      <p class="synote">ملف نصي بالمبادئ بإحالاتها الحرفية (ومعه نصوص القوانين إن شئت)، ترفعه مرة واحدة إلى «معرفة المشروع» في مشروع الدائرة العمالية؛ فيستند Claude هناك إلى قاعدة عمّالي نفسها. إن كبر المحتوى قُسّم تلقائيًا إلى ملفات صغيرة داخل ملف مضغوط واحد؛ فكّه وارفع الملفات كلها.</p>
       <div class="sybox"><label>المبادئ<select id="kn_scope" class="sel"><option value="all">كل المبادئ</option><option value="res">نتائج البحث الحالية</option><option value="bm">المحفوظات ★ فقط</option></select></label>
+      <label>المحتوى<select id="kn_mode" class="sel"><option value="full">كامل: العنوان والموجز والقاعدة (نحو 3.9 م.ب)</option><option value="short">مختصر: العنوان والموجز والإحالة (نحو 1 م.ب)</option></select></label>
       <div class="knlaws"><label class="mskopt"><input type="checkbox" data-law="عمل 6/2010" checked> قانون العمل 6/2010</label><label class="mskopt"><input type="checkbox" data-law="مرافعات"> المرافعات</label><label class="mskopt"><input type="checkbox" data-law="إثبات"> الإثبات</label><label class="mskopt"><input type="checkbox" data-law="خبرة"> الخبرة</label><label class="mskopt"><input type="checkbox" data-law="عمالة منزلية 68/2015,قرار وزاري 22/2022,قرار وزاري 2302/2016,قرار وزاري 2194/2016" checked> العمالة المنزلية (68/2015 ولوائحه)</label><label class="mskopt"><input type="checkbox" data-law="قرار إداري 842/2015,قرار إداري 378/2016,قرار إداري 680/2026,قرار وزاري 3/2024"> قرارات الهيئة (842/2015 وتعديلاته، 3/2024)</label></div>
       <div class="sybtns"><button type="button" class="btn primary" id="kn_go">إنشاء الملف</button></div><p class="synote" id="kn_note"></p></div>
     </section>
@@ -1344,7 +1345,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V54</p>
+      <p class="dver">الإصدار V54.1</p>
     </section>
   </div>
 </div>
@@ -2603,36 +2604,78 @@ function rlImportBackup(file) {
 
 
 // ---- V52: ملف المعرفة لمشروع Claude (مبادئ عمّالي + نصوص القوانين المختارة) — نصوص القاعدة كما هي
-function knBuild(scope, laws) {
+const KN_MAX = 300 * 1024;   // حد حجم الجزء الواحد (بايت) — ليقبله «معرفة المشروع»
+const knBytes = t => new TextEncoder().encode(t).length;
+function knHead(n, extra) { return ['# مبادئ عمّالي — الدائرة العمالية' + (extra ? ' — ' + extra : ''), '', 'المصدر: ' + ((DATA.meta || {}).source || 'قاعدة تطبيق عمّالي') + ' — تاريخ الإنشاء: ' + rlFmt(rlToday()), '',
+  'تعليمات الاستعمال: كل مبدأ أدناه مقرون بإحالته الحرفية (رقم الطعن وتاريخ الجلسة). لا يُنسب إلى محكمة التمييز إلا ما ورد في ملفات «مبادئ عمّالي» أو في أوراق القضية بإحالته كما هي. وإن لم يوجد سند لمسألة فيُقال ذلك صراحة.', ''].join('\n'); }
+function knPrin(p, short) {
+  const L = ['## ' + p.cite_std];
+  const meta = [p.topics && p.topics.length ? 'الموضوعات: ' + p.topics.join('، ') : '', p.articles && p.articles.length ? 'المواد: ' + p.articles.join('، ') : '', p.outcome ? 'النتيجة: ' + p.outcome : '', p.source ? 'المصدر: ' + p.source : ''].filter(Boolean);
+  if (meta.length) L.push(meta.join(' | '));
+  if (p.keywords) L.push('العنوان: ' + p.keywords);
+  if (p.summary && p.summary.length) { L.push('الموجز:'); p.summary.forEach(x => L.push('- ' + x)); }
+  if (p.reas && !short) { L.push('القاعدة:'); L.push(p.reas); }
+  if (p.also && p.also.length) L.push('وفي المعنى ذاته: ' + p.also.join(' · '));
+  L.push(''); return L.join('\n');
+}
+function knLawBlocks(law) {
+  const A = ARTS.filter(a => a.law === law); if (!A.length) return null;
+  const head = '# نص ' + law + (A[0].lawname ? ' — ' + A[0].lawname : '') + '\n\nالمصدر: ' + (A[0].src || '') + '\n';
+  let ch = ''; const arts = A.map(a => { let t = ''; if (a.chapter && a.chapter !== ch) { ch = a.chapter; t += '### ' + ch + '\n'; } return t + '**' + (/^\d+$/.test(a.num) ? 'مادة (' + a.num + ')' : a.num.replace('القرار-', 'مادة القرار ')) + ' — ' + law + '**\n' + a.text + '\n'; });
+  return { head, arts };
+}
+function knBuild(scope, laws, short) {
   const list = scope === 'res' ? results.slice() : scope === 'bm' ? P.filter(p => bookmarks.has(p.id)) : P.slice();
-  const L = ['# مبادئ عمّالي — الدائرة العمالية', '', 'المصدر: ' + ((DATA.meta || {}).source || 'قاعدة تطبيق عمّالي') + ' — عدد المبادئ في هذا الملف: ' + list.length + ' — تاريخ الإنشاء: ' + rlFmt(rlToday()), '',
-    'تعليمات الاستعمال: كل مبدأ أدناه مقرون بإحالته الحرفية (رقم الطعن وتاريخ الجلسة). لا يُنسب إلى محكمة التمييز إلا ما ورد هنا أو في أوراق القضية بإحالته كما هي. وإن لم يوجد سند لمسألة فيُقال ذلك صراحة.', ''];
-  list.forEach(p => {
-    L.push('## ' + p.cite_std);
-    const meta = [p.topics && p.topics.length ? 'الموضوعات: ' + p.topics.join('، ') : '', p.articles && p.articles.length ? 'المواد: ' + p.articles.join('، ') : '', p.outcome ? 'النتيجة: ' + p.outcome : '', p.source ? 'المصدر: ' + p.source : ''].filter(Boolean);
-    if (meta.length) L.push(meta.join(' | '));
-    if (p.keywords) L.push('العنوان: ' + p.keywords);
-    if (p.summary && p.summary.length) { L.push('الموجز:'); p.summary.forEach(x => L.push('- ' + x)); }
-    if (p.reas) { L.push('القاعدة:'); L.push(p.reas); }
-    if (p.also && p.also.length) L.push('وفي المعنى ذاته: ' + p.also.join(' · '));
-    L.push('');
+  const files = [];
+  // المبادئ: أجزاء متتابعة لا يتجاوز كلٌّ منها KN_MAX
+  let cur = [], size = 0, from = 1;
+  const flushP = (to) => { if (!cur.length) return; files.push({ kind: 'p', from, to, body: cur.join('\n') }); cur = []; size = 0; from = to + 1; };
+  list.forEach((p, i) => { const t = knPrin(p, short), b = knBytes(t); if (size + b > KN_MAX - 4096 && cur.length) flushP(i); cur.push(t); size += b; });
+  flushP(list.length);
+  // القوانين: كل قانون في ملف، ويُقسَّم إن كبر
+  laws.forEach(law => { const L = knLawBlocks(law); if (!L) return; let part = [], sz = knBytes(L.head), k = 1; const out = [];
+    L.arts.forEach(t => { const b = knBytes(t); if (sz + b > KN_MAX - 4096 && part.length) { out.push(part); part = []; sz = knBytes(L.head); } part.push(t); sz += b; });
+    if (part.length) out.push(part);
+    out.forEach((pt, j) => files.push({ kind: 'l', law, body: L.head + (out.length > 1 ? '(الجزء ' + (j + 1) + ' من ' + out.length + ')\n' : '') + '\n' + pt.join('\n') })); });
+  return { files, n: list.length };
+}
+function knFileName(f, i, total, tag) {
+  const nn = String(i + 1).padStart(2, '0');
+  return 'مبادئ-عمالي' + tag + (total > 1 ? '-' + nn : '') + (f.kind === 'p' ? (total > 1 ? '-مبادئ-' + f.from + '-' + f.to : '') : '-' + f.law.replace(/[\/\\:*?"<>|]/g, '-')) + '.md';
+}
+// ZIP بلا ضغط (store) — ملف واحد يضم الأجزاء، بلا مكتبات خارجية
+const KN_CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function knCrc(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = KN_CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function knZip(entries) {
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+  const d = new Date(), dt = ((d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1)) & 0xFFFF, dd = (((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()) & 0xFFFF;
+  entries.forEach(e => {
+    const name = enc.encode(e.name), data = enc.encode(e.text), crc = knCrc(data);
+    const h = new DataView(new ArrayBuffer(30)); h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, dt, true); h.setUint16(12, dd, true); h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true); h.setUint16(28, 0, true);
+    parts.push(new Uint8Array(h.buffer), name, data);
+    const c = new DataView(new ArrayBuffer(46)); c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, dt, true); c.setUint16(14, dd, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    central.push(new Uint8Array(c.buffer), name); off += 30 + name.length + data.length;
   });
-  laws.forEach(law => {
-    const A = ARTS.filter(a => a.law === law); if (!A.length) return;
-    L.push('# نص ' + law + (A[0].lawname ? ' — ' + A[0].lawname : ''), '', 'المصدر: ' + (A[0].src || ''), ''); let ch = '';
-    A.forEach(a => { if (a.chapter && a.chapter !== ch) { ch = a.chapter; L.push('### ' + ch); } L.push('**' + (/^\d+$/.test(a.num) ? 'مادة (' + a.num + ')' : a.num.replace('القرار-', 'مادة القرار ')) + ' — ' + law + '**'); L.push(a.text); L.push(''); });
-  });
-  return { text: L.join('\n'), n: list.length };
+  const csize = central.reduce((a, x) => a + x.length, 0);
+  const e = new DataView(new ArrayBuffer(22)); e.setUint32(0, 0x06054b50, true); e.setUint16(8, entries.length, true); e.setUint16(10, entries.length, true); e.setUint32(12, csize, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...central, new Uint8Array(e.buffer)], { type: 'application/zip' });
+}
+async function knSave(name, blob, type) {
+  if (IS_IOS) { const f = new File([blob], name, { type }); if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e && e.name === 'AbortError') return; } } }
+  if (DLX) { try { await DLX.save({ filename: name, data: blob }); } catch (e) {} return; }
+  const u = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
 }
 async function knExport() {
   const scope = $('#kn_scope').value, laws = [].concat(...[...document.querySelectorAll('#dkn [data-law]')].filter(x => x.checked).map(x => x.dataset.law.split(',')));
   if (scope === 'res' && !results.length) { toast('لا نتائج بحث حالية — ابحث في «المبادئ» أولًا'); return; }
   if (scope === 'bm' && !bookmarks.size) { toast('لا محفوظات ★ بعد'); return; }
-  const r = knBuild(scope, laws); const name = 'مبادئ-عمالي' + (scope === 'all' ? '' : scope === 'bm' ? '-المحفوظات' : '-نتائج') + '.md';
-  const b = new Blob([r.text], { type: 'text/markdown' }); $('#kn_note').textContent = r.n + ' مبدأ' + (laws.length ? ' + ' + laws.length + ' من القوانين والقرارات' : '') + ' — ' + Math.round(b.size / 1024) + ' ك.ب';
-  if (IS_IOS) { const f = new File([r.text], name, { type: 'text/markdown' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); return; } catch (e) { if (e && e.name === 'AbortError') return; } } }
-  if (DLX) { try { await DLX.save({ filename: name, data: b }); } catch (e) {} return; }
-  const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('نُزّل ' + name + ' — ارفعه إلى معرفة المشروع');
+  const short = $('#kn_mode').value === 'short'; const r = knBuild(scope, laws, short), tag = (scope === 'all' ? '' : scope === 'bm' ? '-المحفوظات' : '-نتائج') + (short ? '-مختصر' : ''), total = r.files.length;
+  if (!total) { toast('لا محتوى'); return; }
+  const entries = r.files.map((f, i) => ({ name: knFileName(f, i, total, tag), text: knHead(r.n, total > 1 ? 'الملف ' + (i + 1) + ' من ' + total + (f.kind === 'p' ? ' (المبادئ ' + f.from + '–' + f.to + ')' : ' (' + f.law + ')') : '') + '\n' + f.body }));
+  const kb = Math.round(entries.reduce((a, e) => a + knBytes(e.text), 0) / 1024);
+  $('#kn_note').textContent = r.n + ' مبدأ' + (laws.length ? ' + ' + laws.length + ' من القوانين والقرارات' : '') + ' — ' + kb + ' ك.ب' + (total > 1 ? ' في ' + total + ' ملفات (كلٌّ أقل من ' + Math.round(KN_MAX / 1024) + ' ك.ب) داخل ملف مضغوط واحد' : '');
+  if (total === 1) { await knSave(entries[0].name, new Blob([entries[0].text], { type: 'text/markdown' }), 'text/markdown'); toast('أُنشئ ' + entries[0].name); return; }
+  await knSave('مبادئ-عمالي' + tag + '.zip', knZip(entries), 'application/zip'); toast('أُنشئ ملف مضغوط فيه ' + total + ' ملفات — فكّه وارفع الملفات كلها إلى معرفة المشروع');
 }
 $('#kn_go').onclick = knExport;
 
