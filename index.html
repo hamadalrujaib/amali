@@ -700,6 +700,7 @@ main{min-width:0;max-width:100%;overflow:hidden}
 .rlpanel label.btn{cursor:pointer}
 .rlmem{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.rlmem label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink2);font-weight:600}.rlmem input{padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-size:14px;color:var(--ink);min-width:0}
 @media (max-width:700px){.rlmem{grid-template-columns:1fr}}
+.rlpanel .rlday{display:flex;flex-wrap:wrap;width:100%;gap:6px}.rlpanel .rlday input{flex:1 1 200px;min-width:0;max-width:100%;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);font-size:14px;color:var(--ink)}
 .calm{margin-bottom:10px}.calm b{display:block;font-size:13px;margin-bottom:6px;color:var(--ink2)}
 #rl_imprev .h{font-size:13.5px;margin:10px 0 6px;color:var(--ink)}
 .rw{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0;font-size:13px;color:var(--ink2)}
@@ -2395,7 +2396,7 @@ function rlPrint() {
   if (rlMode === 'res' && RL.cards.some(c => c.resAt)) {
     const ds = [...new Set(RL.cards.map(c => c.resAt).filter(Boolean))].sort().reverse().slice(0, 4);
     h = '<h2>توزيع القضايا المحجوزة للحكم' + circ + '</h2><table><thead><tr><th>جلسة</th>' + Object.keys(RL_W).map(k => '<th>' + RL_LT[k] + '</th>').join('') + '</tr></thead><tbody>'
-      + ds.map(d => { const D = rlDistData(d); return '<tr><td><b>' + rlAI(rlFmt(d)) + '</b>' + (D.judg.length ? '<div class="nt">النطق ' + D.judg.map(x => rlAI(rlFmt(x))).join('، ') + '</div>' : '') + '</td>' + Object.keys(RL_W).map(k => '<td class="dist">' + D.by[k].map(e => '<div>' + rlAI(e) + '</div>').join('') + '</td>').join('') + '</tr>'; }).join('') + '</tbody></table><p class="ft">(أ) الرئيس · (ب) العضو اليمين · (ج) العضو اليسار · مسودة عمل داخلية.</p>';
+      + ds.map(d => { const D = rlDistData(d); return '<tr><td><b>' + rlDAI(d) + '</b>' + (D.judg.length ? '<div class="nt">النطق ' + D.judg.map(x => rlDAI(x)).join('، ') + '</div>' : '') + '</td>' + Object.keys(RL_W).map(k => '<td class="dist">' + D.by[k].map(e => '<div>' + rlAI(e) + '</div>').join('') + '</td>').join('') + '</tr>'; }).join('') + '</tbody></table><p class="ft">(أ) الرئيس · (ب) العضو اليمين · (ج) العضو اليسار · مسودة عمل داخلية.</p>';
   } else if (rlMode === 'res') {
     const R = rlResList(''); if (!R.length) { toast('لا قضايا محجوزة'); return; }
     h = '<h2>توزيع القضايا المحجوزة للحكم' + circ + '</h2><table><thead><tr><th>م</th><th>جلسة النطق</th><th>رقم القضية</th><th>الرقم الآلي</th><th>كاتب الحكم</th><th>ملاحظات</th></tr></thead><tbody>';
@@ -2413,7 +2414,7 @@ function rlPrint() {
     h += '<p class="ft">للنظر: ' + L.length + (R.length ? ' · للنطق: ' + R.length : '') + ' · الإعلان غير تام: ' + L.filter(c => rlAnnOk(c) === false).length + ' · مسودة عمل داخلية.</p>';
   }
   $('#rl_sheetout').innerHTML = h;
-  document.body.classList.add('prl'); setTimeout(() => { window.print(); document.body.classList.remove('prl'); }, 60);
+  rlOut(h);
 }
 // ---- التقويم
 function rlCalRender() {
@@ -2565,6 +2566,7 @@ const RL_JS = ['لم يبدأ', 'حُمّلت المستندات', 'قيد ال�
 const RL_DOCS = ['حكم أول درجة', 'صحيفة الاستئناف', 'تقرير الخبير', 'محاضر الجلسات', 'المذكرات', 'حوافظ المستندات'];
 let rlMine = false;
 const rlAI = s => String(s).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const rlDAI = iso => { if (!iso) return ''; const [y, m, d] = iso.split('-'); return [+d, +m, y].map(rlAI).join('\u200F/') + '\u200F'; };   // اليوم يمينًا والسنة يسارًا
 function rlJsIdx(c) { const i = RL_JS.indexOf(c.js || 'لم يبدأ'); return i < 0 ? 0 : i; }
 function rlMinePending() { return RL.cards.filter(c => c.writer === 'p' && RL_RES.includes(c.stage) && rlJsIdx(c) < 3).sort((a, b) => (a.next || '9').localeCompare(b.next || '9')); }
 // عناصر التوزيع: القضايا المتقابلة (الرقم الآلي نفسه) لدى الكاتب نفسه تُكتب معًا «٧٨١ + ٨١٣ / ٢٠٢٦»
@@ -2579,7 +2581,7 @@ function rlDistData(resAt) {
   return { resAt, n: L.length, by, judg };
 }
 function rlDistText(D) {
-  let t = 'توزيع القضايا المحجوزة للحكم' + (RL.circuit ? ' — ' + RL.circuit : '') + '\nجلسة ' + rlAI(rlFmt(D.resAt)) + (D.judg.length ? ' — النطق ' + D.judg.map(d => rlAI(rlFmt(d))).join('، ') : '') + '\n';
+  let t = 'توزيع القضايا المحجوزة للحكم' + (RL.circuit ? ' — ' + RL.circuit : '') + '\nجلسة ' + rlDAI(D.resAt) + (D.judg.length ? ' — النطق ' + D.judg.map(d => rlDAI(d)).join('، ') : '') + '\n';
   Object.keys(RL_W).forEach(k => { if (D.by[k].length) t += '\n(' + RL_LT[k] + ')  ' + D.by[k].map(rlAI).join('\n        '); });
   if (D.by[''].length) t += '\n\nغير موزّعة: ' + D.by[''].map(rlAI).join('، ');
   return t;
@@ -2594,13 +2596,13 @@ async function rlDistCanvas(D) {
   const cv = document.createElement('canvas'); cv.width = W * 2; cv.height = H * 2; const g = cv.getContext('2d'); g.scale(2, 2);
   g.fillStyle = '#fff'; g.fillRect(0, 0, W, H); g.fillStyle = '#111'; g.textAlign = 'center'; g.direction = 'rtl'; g.textBaseline = 'middle';
   g.font = '700 30px ' + ff; g.fillText('توزيع القضايا المحجوزة للحكم' + (RL.circuit ? ' — ' + RL.circuit : ''), W / 2, 50);
-  g.font = '500 22px ' + ff; g.fillStyle = '#444'; g.fillText(D.judg.length ? 'جلسة النطق: ' + D.judg.map(d => rlAI(rlFmt(d))).join('، ') : '', W / 2, 98);
+  g.font = '500 22px ' + ff; g.fillStyle = '#444'; g.fillText(D.judg.length ? 'جلسة النطق: ' + D.judg.map(d => rlDAI(d)).join('، ') : '', W / 2, 98);
   let x = W - 30; g.strokeStyle = '#222'; g.lineWidth = 2;
   cols.forEach(c => {
     const x0 = x - c.w; g.fillStyle = '#eee'; g.fillRect(x0, top, c.w, headH); g.strokeRect(x0, top, c.w, headH); g.strokeRect(x0, top + headH, c.w, rowH);
     g.fillStyle = '#111'; g.font = '700 30px ' + ff; g.fillText(c.h, x0 + c.w / 2, top + headH / 2);
     g.font = '600 25px ' + ff;
-    if (!c.k) g.fillText(rlAI(rlFmt(D.resAt)), x0 + c.w / 2, top + headH + pad + lineH / 2);
+    if (!c.k) g.fillText(rlDAI(D.resAt), x0 + c.w / 2, top + headH + pad + lineH / 2);
     else D.by[c.k].forEach((e, i) => g.fillText(rlAI(e), x0 + c.w / 2, top + headH + pad + lineH / 2 + i * lineH));
     x = x0;
   });
@@ -2627,6 +2629,15 @@ async function rlDistOpen() {
   $('#rl_dpng').onclick = dl;
   $('#rl_dx').onclick = () => box.classList.add('hidden');
 }
+
+// الطباعة: في المتصفح عادي؛ وفي تطبيق الشاشة الرئيسية على iPhone/iPad (حيث لا تعمل الطباعة) تُفتح الورقة صفحةً مستقلة عبر المشاركة
+function rlOut(h) {
+  if (!(IS_IOS && isStandalone())) { document.body.classList.add('prl'); setTimeout(() => { window.print(); document.body.classList.remove('prl'); }, 60); return; }
+  const doc = '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ورقة الجلسة</title><style>body{font-family:-apple-system,Arial,"Noto Naskh Arabic",sans-serif;margin:14px;color:#000;background:#fff}h2{text-align:center;font-size:18px}h3{font-size:15px;margin:14px 0 6px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid #000;padding:5px;vertical-align:top;text-align:right}th{background:#eee}td.ck,td.dist{text-align:center}td.dist{font-size:14px;line-height:1.9}ul{margin:0;padding-right:14px}.nt{font-size:11px;color:#333;margin-top:3px}.ft{font-size:10px;margin-top:8px}.pb{text-align:center;margin:0 0 12px}.pb button{font-size:16px;padding:8px 22px;border-radius:10px;border:1px solid #0E6B66;background:#0E6B66;color:#fff}@media print{.pb{display:none}body{margin:0}}</style></head><body><div class="pb"><button onclick="window.print()">طباعة</button></div>' + h + '</body></html>';
+  const f = new File([doc], 'ورقة الجلسة.html', { type: 'text/html' });
+  if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f] }).catch(() => {}); toast('اختر «طباعة» من نافذة المشاركة، أو احفظه في الملفات'); return; }
+  const u = URL.createObjectURL(new Blob([doc], { type: 'text/html' })); window.open(u, '_blank'); setTimeout(() => URL.revokeObjectURL(u), 60000);
+}
 // ملف تقويم: الجلسات (تنبيه 7 مساءً قبلها بيوم) ومواعيد نطق أحكامي (قبل 3 أيام وقبل يوم)
 function rlIcs(kind) {
   const esc2 = s => String(s).replace(/\\/g, '\\\\').replace(/[,;]/g, m => '\\' + m).replace(/\n/g, '\\n');
@@ -2641,7 +2652,12 @@ function rlIcs(kind) {
     Object.keys(byD).forEach(d => { L = L.concat(ev('j' + d.replace(/-/g, ''), d, 'نطق أحكامي (' + byD[d].length + '): ' + byD[d].join('، '), ['-P3DT13H', '-PT13H'])); }); if (!Object.keys(byD).length) { toast('لا أحكام معلّقة لك بموعد نطق قادم'); return; } }
   L.push('END:VCALENDAR');
   const ics = L.map(fold).join('\r\n') + '\r\n'; const name = kind === 'j' ? 'أحكامي.ics' : 'جلسات الدائرة.ics';
-  if (IS_IOS) { location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); return; }
+  if (IS_IOS) {
+    const f = new File([ics], name, { type: 'text/calendar' });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f] }).then(() => toast('افتح الملف من «الملفات» ثم «إضافة الكل»')).catch(() => {}); return; }
+    if (!isStandalone()) { location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); return; }
+    toast('افتح الموقع في Safari لإضافة التقويم'); return;
+  }
   const b = new Blob([ics], { type: 'text/calendar' }); if (DLX) { DLX.save({ filename: name, data: b }).catch(() => {}); return; }
   const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); toast('نُزّل ملف التقويم — افتحه لإضافته');
 }
