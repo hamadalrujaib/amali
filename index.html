@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="amali-build" content="20260924171012">
+<meta name="amali-build" content="20260924181512">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -111,7 +111,31 @@ html.locked #lockscr .lkform{display:flex}
 #updbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:900;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;max-width:calc(100% - 24px);background:var(--panel);color:var(--ink);border:1.5px solid var(--accent);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px;font-size:14px}
 #updbar .btn{padding:6px 14px}
 @media (max-width:700px){#updbar{bottom:calc(var(--bnh) + 12px + env(safe-area-inset-bottom,0px))}}
-@media print{#lockscr,#updbar{display:none!important}html.locked body>*,html.cover body>*{visibility:visible}}
+@media print{#lockscr,#updbar,#tour{display:none!important}html.locked body>*,html.cover body>*{visibility:visible}}
+/* V61: جولة أول تشغيل */
+#tour{position:fixed;inset:0;z-index:9500;background:rgba(20,20,19,.55);display:flex;align-items:center;justify-content:center;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+#tour.hidden{display:none}
+.tourbox{position:relative;width:100%;max-width:400px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 20px 18px;text-align:center}
+.tourx{position:absolute;top:12px;left:14px;background:none;border:0;color:var(--ink3);font-size:13px;cursor:pointer;font-family:inherit;text-decoration:underline}
+.tourico{width:60px;height:60px;margin:4px auto 10px;border-radius:16px;background:var(--accent-soft);color:var(--accent-soft-ink);display:grid;place-items:center}
+.tourico svg{width:30px;height:30px}
+.tourbox h2{margin:0 0 8px;font-size:19px}
+.tourbox>p{margin:0 0 12px;font-size:14.5px;line-height:1.8;color:var(--ink2)}
+#tour_extra:not(:empty){margin:0 0 12px}
+.tourmode{display:flex;flex-direction:column;gap:8px}
+.tourmode .btn{justify-content:center;padding:11px;font-size:14.5px}
+.tourmode .mnote{font-size:12.5px;color:var(--ink3);line-height:1.7}
+.tourdots{display:flex;gap:6px;justify-content:center;margin:6px 0 12px}
+.tourdots i{width:7px;height:7px;border-radius:999px;background:var(--line2)}
+.tourdots i.on{background:var(--accent);width:18px}
+.tourrow{display:flex;gap:8px}.tourrow .btn{flex:1;justify-content:center}
+.tile.app{position:relative}
+.aibadge{position:absolute;top:7px;inset-inline-start:7px;font-size:9.5px;font-weight:700;letter-spacing:.3px;background:var(--mix-soft);color:var(--mix);border-radius:6px;padding:1px 6px}
+.tmodes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tmodes .chip.cst{background:var(--warn-soft);color:var(--warn);border-color:var(--warn)}
+.tvlist{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}
+@media (max-width:600px){.tvlist{grid-template-columns:1fr}}
+.aitag{color:var(--mix);font-weight:700;font-size:10.5px;background:var(--mix-soft);border-radius:5px;padding:0 5px}
 
 /* ---------- app bar */
 .bar{min-width:0;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 16px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"brand search tools" "seg seg seg";gap:10px 14px;align-items:center;max-width:100%;overflow:hidden}
@@ -881,6 +905,16 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
   </form>
 </div></div>
 
+<div id="tour" class="hidden" role="dialog" aria-modal="true" aria-label="جولة تعريفية بالتطبيق"><div class="tourbox">
+  <button type="button" class="tourx" id="tour_x">تخطّي</button>
+  <div class="tourico" id="tour_ico" aria-hidden="true"></div>
+  <h2 id="tour_t"></h2>
+  <p id="tour_p"></p>
+  <div id="tour_extra"></div>
+  <div class="tourdots" id="tour_dots" aria-hidden="true"></div>
+  <div class="tourrow"><button type="button" class="btn" id="tour_prev">السابق</button><button type="button" class="btn primary" id="tour_next">التالي</button></div>
+</div></div>
+
 <header class="bar">
   <div class="brand">
     <div class="seal" aria-hidden="true"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><radialGradient id="sealbg" cx="30%" cy="22%" r="95%"><stop offset="0" stop-color="#2B4674"/><stop offset=".55" stop-color="#172A4A"/><stop offset="1" stop-color="#0C1628"/></radialGradient>
@@ -1452,10 +1486,11 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     <section class="ds"><h3>أدوات</h3>
       <button type="button" class="drowb" id="bmv"><span>★ عرض المحفوظات فقط</span><small id="bmvs"></small></button>
       <button type="button" class="drowb" id="dgs"><span>بحث شامل: مادة، طعن، مبدأ، أداة</span><small class="kbd gskbd">Ctrl K</small></button>
+      <button type="button" class="drowb" id="dtour"><span>جولة تعريفية سريعة</span><small>تعريف بالتطبيق</small></button>
       <div class="dinst" id="dinst"><button class="btn hidden" id="installbtn" title="تثبيت التطبيق على جهازك" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg><span style="font-size:12.5px">تثبيت</span></button><p id="dinstt"></p></div>
     </section>
     <section class="ds" id="dtools"><h3>الأدوات الظاهرة</h3>
-      <p class="synote">أخفِ ما لا تستعمله فتخفّ الرئيسية وشريط الأدوات؛ ويبقى المخفي متاحًا من «بحث شامل». الإعداد لهذا الجهاز.</p>
+      <p class="synote"><b>كامل:</b> كل الأدوات. <b>بلا أدوات الذكاء:</b> يخفي أدوات Claude (تحليل الملف، فحص المسودة، الخط الزمني، المساعد) لمن لا اشتراك له. أو أخفِ ما تشاء يدويًا. المخفي يبقى في «بحث شامل». الإعداد لهذا الجهاز.</p>
       <div class="toolvis" id="toolvis"></div>
     </section>
     <section class="ds" id="dkn"><h3>ملف المعرفة لمشروع Claude</h3>
@@ -1479,7 +1514,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V60</p>
+      <p class="dver">الإصدار V61</p>
     </section>
   </div>
 </div>
@@ -1985,14 +2020,21 @@ function rlHomeAlert() {
 }
 let TOOL_HIDE = new Set(); try { TOOL_HIDE = new Set(JSON.parse(localStorage.getItem('tm_hide') || '[]')); } catch (e) {}
 function toolVisApply() { document.querySelectorAll('#seg button[data-v]').forEach(b => b.classList.toggle('hidden', TOOL_HIDE.has(b.dataset.v))); }
+// V61: أدوات الذكاء (تعمل عبر Claude) — يوسَم بها، ووضع «بلا أدوات الذكاء» يخفيها لمن لا اشتراك له
+const AI_TOOLS = new Set(HOME_TILES.filter(t => (t[6] || '').includes('Claude')).map(t => t[0]));
+function toolSave() { try { localStorage.setItem('tm_hide', JSON.stringify([...TOOL_HIDE])); } catch (e) {} toolVisApply(); if (document.body.classList.contains('home')) renderHome(); }
+function toolMode() { const h = [...TOOL_HIDE].sort().join(','); return !h ? 'full' : h === [...AI_TOOLS].sort().join(',') ? 'noai' : 'custom'; }
+function setToolMode(m) { TOOL_HIDE = m === 'noai' ? new Set(AI_TOOLS) : new Set(); toolSave(); toolVisRender(); toast(m === 'noai' ? 'وضع بلا أدوات الذكاء — أُخفيت أدوات Claude' : 'الوضع الكامل — كل الأدوات ظاهرة'); }
 function toolVisRender() {
-  const box = $('#toolvis'); if (!box) return;
-  box.innerHTML = HOME_TILES.map(t => '<label class="mskopt"><input type="checkbox" data-tv="' + t[0] + '"' + (TOOL_HIDE.has(t[0]) ? '' : ' checked') + '> ' + t[1] + '</label>').join('');
-  box.querySelectorAll('[data-tv]').forEach(i => i.onchange = () => { if (i.checked) TOOL_HIDE.delete(i.dataset.tv); else TOOL_HIDE.add(i.dataset.tv); try { localStorage.setItem('tm_hide', JSON.stringify([...TOOL_HIDE])); } catch (e) {} toolVisApply(); if (document.body.classList.contains('home')) renderHome(); });
+  const box = $('#toolvis'); if (!box) return; const m = toolMode();
+  box.innerHTML = '<div class="tmodes"><button type="button" class="chip' + (m === 'full' ? ' on' : '') + '" data-tm="full">كامل</button><button type="button" class="chip' + (m === 'noai' ? ' on' : '') + '" data-tm="noai">بلا أدوات الذكاء</button>' + (m === 'custom' ? '<span class="chip cst">مخصّص</span>' : '') + '</div>'
+    + '<div class="tvlist">' + HOME_TILES.map(t => '<label class="mskopt"><input type="checkbox" data-tv="' + t[0] + '"' + (TOOL_HIDE.has(t[0]) ? '' : ' checked') + '> ' + t[1] + (AI_TOOLS.has(t[0]) ? ' <small class="aitag">يتطلب Claude</small>' : '') + '</label>').join('') + '</div>';
+  box.querySelectorAll('[data-tm]').forEach(b => b.onclick = () => setToolMode(b.dataset.tm));
+  box.querySelectorAll('[data-tv]').forEach(i => i.onchange = () => { if (i.checked) TOOL_HIDE.delete(i.dataset.tv); else TOOL_HIDE.add(i.dataset.tv); toolSave(); toolVisRender(); });
 }
 function renderHome() {
   try { rlHomeAlert(); } catch (e) {}
-  const tile = t => '<button type="button" class="tile app ' + t[4] + '" data-go="' + t[0] + '" title="' + esc(t[2]) + '" aria-label="' + esc(t[1]) + '"><span class="ic">' + t[5] + '</span><b>' + t[1] + '</b></button>';
+  const tile = t => '<button type="button" class="tile app ' + t[4] + '" data-go="' + t[0] + '" title="' + esc(t[2]) + '" aria-label="' + esc(t[1]) + '">' + (AI_TOOLS.has(t[0]) ? '<span class="aibadge" title="يتطلب اشتراكك في Claude">Claude</span>' : '') + '<span class="ic">' + t[5] + '</span><b>' + t[1] + '</b></button>';
   $('#tiles').innerHTML = NAV_GROUPS.map(G => { const vs = G.views.filter(v => !TOOL_HIDE.has(v)); return vs.length ? '<section class="tgroup" data-g="' + G.g + '" style="--n:' + vs.length + '"><h3 class="tgh">' + G.name + '<small>' + G.sub + '</small></h3><div class="tiles">' + vs.map(v => HOME_TILES.find(t => t[0] === v)).filter(Boolean).map(tile).join('') + '</div></section>' : ''; }).join('');
   $('#tiles').querySelectorAll('[data-go]').forEach(b => b.onclick = () => setView(b.dataset.go));
 }
@@ -5237,6 +5279,43 @@ $('#upd_x').onclick = () => $('#updbar').classList.add('hidden');
   navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'amali-update' && e.data.build !== AMALI_BUILD) updShow(); });
   const f = await caches.match('./__amali_update'); if (f) { const j = await f.json(); if (j.build && j.build !== AMALI_BUILD) updShow(); else { const ks = await caches.keys(); for (const k of ks) (await caches.open(k)).delete('./__amali_update'); } }
 } catch (e) {} })();
+// ---- V61: جولة تعريفية (أول تشغيل، وتُعاد من الإعدادات) — لا تُظهر أثناء الاختبار الآلي
+var TOUR_ICO = {
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>',
+  roll: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M7 14h4M7 17h7"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  calc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M8 15h2M12 15h2M8 18h6"/></svg>',
+  ai: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4z"/><path d="M8 8h8M8 11.5h5"/></svg>'
+};
+var TOUR = [
+  { ico: 'home', t: 'مرحبًا بك في «عمّالي»', p: 'منضدة عمل الدائرة العمالية: مبادئ محكمة التمييز، والتشريعات، وإدارة رول الجلسة، وحساب المستحقات والمواعيد، وإخراج الحكم — كلها على جهازك وتعمل دون اتصال.' },
+  { ico: 'roll', t: 'رول الجلسة — قلب التطبيق', p: 'استورد كشف الجلسة، وراجع الإعلان وتنفيذ القرار السابق، وسجّل قرار الجلسة، ووزّع المحجوزة للحكم على الأعضاء، واطبع ورقة المراجعة. لا يُحفظ اسم خصم.' },
+  { ico: 'search', t: 'البحث والتشريعات', p: 'ابحث في المبادئ بالكلمة أو رقم الطعن، واطّلع على قانون العمل والمرافعات بنصهما. و«بحث شامل» (⌘K) يجمع المادة والطعن والأداة في نافذة واحدة.' },
+  { ico: 'calc', t: 'الحسابات والمواعيد', p: 'حاسبة المستحقات (وحاسبة العامل المنزلي) تحسب المكافأة والإجازات وبدل الإخطار خطوة بخطوة، وحاسبة المواعيد الإجرائية تحسب الميعاد بحساب م17 وامتداد العطلة. كلها مسودات تُراجَع.' },
+  { ico: 'ai', t: 'أدوات الذكاء (اختيارية)', p: 'أدوات تحليل الملف وفحص المسودة والمساعد تعمل عبر Claude، وتُوسَم بشارة «Claude». إن لم يكن لديك اشتراك، اختر الوضع «بلا أدوات الذكاء» فتُخفى، ويبقى جوهر التطبيق كاملًا. اختر الآن:', mode: true }
+];
+var tourI = 0;
+function tourRender() {
+  var st = TOUR[tourI];
+  $('#tour_ico').innerHTML = TOUR_ICO[st.ico] || '';
+  $('#tour_t').textContent = st.t; $('#tour_p').textContent = st.p;
+  $('#tour_dots').innerHTML = TOUR.map(function (_, i) { return '<i class="' + (i === tourI ? 'on' : '') + '"></i>'; }).join('');
+  $('#tour_prev').style.visibility = tourI ? 'visible' : 'hidden';
+  var ex = $('#tour_extra'), last = tourI === TOUR.length - 1;
+  if (st.mode) {
+    ex.innerHTML = '<div class="tourmode"><button type="button" class="btn primary" data-m="full">أستعمل Claude — الوضع الكامل</button><button type="button" class="btn" data-m="noai">بلا أدوات الذكاء</button><span class="mnote">يمكنك تغيير ذلك في أي وقت من الإعدادات ← «الأدوات الظاهرة».</span></div>';
+    ex.querySelectorAll('[data-m]').forEach(function (b) { b.onclick = function () { try { setToolMode(b.dataset.m); } catch (e) {} tourEnd(); }; });
+    $('#tour_next').textContent = 'إنهاء'; $('#tour_next').classList.add('hidden');
+  } else { ex.innerHTML = ''; $('#tour_next').textContent = last ? 'ابدأ' : 'التالي'; $('#tour_next').classList.remove('hidden'); }
+}
+function tourShow(from) { tourI = 0; $('#tour').classList.remove('hidden'); tourRender(); if (from) try { closeDrawer(); } catch (e) {} }
+function tourEnd() { $('#tour').classList.add('hidden'); try { localStorage.setItem('tm_onboarded', '1'); } catch (e) {} }
+$('#tour_x').onclick = tourEnd;
+$('#tour_prev').onclick = function () { if (tourI) { tourI--; tourRender(); } };
+$('#tour_next').onclick = function () { if (tourI < TOUR.length - 1) { tourI++; tourRender(); } else tourEnd(); };
+if ($('#dtour')) $('#dtour').onclick = function () { tourShow(true); };
+try { if (!localStorage.getItem('tm_onboarded') && !navigator.webdriver) setTimeout(function () { if (!lkIsLocked()) tourShow(false); }, 400); } catch (e) {}
+
 
 (function(){
   try {
