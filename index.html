@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="amali-build" content="20260925190547">
+<meta name="amali-build" content="20260925231848">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -836,6 +836,12 @@ html.noscroll,html.noscroll body{overflow:hidden;overscroll-behavior:none;touch-
 .rlc .h{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .rlc .h b{font-size:16px}
 .rlc .stg{background:var(--accent-soft);color:var(--accent-soft-ink);font-weight:600}
+.rlc .mstat{font-weight:700;border:1px solid currentColor;background:transparent}
+.rlc .mstat.rdy{color:var(--accent)}
+.rlc .mstat.prn{color:var(--warn)}
+.rlc .mstat.sig{color:var(--ok)}
+.rlc .mstat.dep{color:var(--gold)}
+.rlc.mrdy{border-right-color:var(--ok)}
 .rlc .subj{color:var(--ink2);font-size:13.5px}
 .rlc .ln{font-size:13.5px;margin-top:6px;line-height:1.8}
 .rlc .k{color:var(--ink3)}
@@ -1679,7 +1685,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V75</p>
+      <p class="dver">الإصدار V77</p>
     </section>
   </div>
 </div>
@@ -2761,14 +2767,25 @@ function rlDecBox(c) {
 }
 function rlUndo(c) { const h = (c.hist || []).pop(); if (!h) return; if (h.prev) Object.assign(c, { stage: h.prev.stage, next: h.prev.next, writer: h.prev.writer, exec: h.prev.exec, await: h.prev.await }, 'vd' in h.prev ? { vd: h.prev.vd } : {}); c.updated = Date.now(); rlFocus = c.id; rlSave(); rlRender(); toast('أُلغي آخر قرار'); }
 // ---- البطاقة
+function rlDraftBadge(c) {
+  if (c.stage === 'صدر الحكم') return '';
+  if (!(RL_RES.includes(c.stage) && c.writer === 'p')) return '';
+  const i = rlJsIdx(c);
+  if (i >= 6) return '<span class="tag mstat dep" title="أُودع أصل الحكم">✓ أُودعت</span>';
+  if (i >= 5) return '<span class="tag mstat sig" title="وُقّع الحكم">✍ موقّعة</span>';
+  if (i >= 4) return '<span class="tag mstat prn" title="طُبع الحكم">🖶 طُبعت</span>';
+  if (i >= 3) return '<span class="tag mstat rdy" title="اكتملت كتابة المسودة">✓ مسودة جاهزة</span>';
+  return '';
+}
 function rlCard(c, mode) {
   const n = rlDays(c.next), done = RL_DONE.includes(c.stage), late = !done && n != null && n < 0;
   const prs = (c.pids || []).map(rlPrin).filter(Boolean), ok = rlAnnOk(c), adj = rlAnnAdj(c);
   const sibs = rlSibs(c);
-  const d = el('article', 'rlc' + (done ? ' done' : '') + (late ? ' late' : '') + (sibs.length ? ' lk' : '') + (rlFocus === c.id ? ' hi' : '')); d.id = 'rl-' + c.id;
+  const d = el('article', 'rlc' + (done ? ' done' : '') + (late ? ' late' : '') + (sibs.length ? ' lk' : '') + (rlFocus === c.id ? ' hi' : '') + (RL_RES.includes(c.stage) && c.writer === 'p' && !done && rlJsIdx(c) >= 3 ? ' mrdy' : '')); d.id = 'rl-' + c.id;
   let h = '<div class="h">' + (c.ord && mode === 'roll' ? '<span class="ordn">' + c.ord + '</span>' : '') + '<b>' + esc(c.code) + '</b>' + (c.auto ? '<span class="auto">آلي ' + esc(c.auto) + '</span>' : '') + '<span class="tag stg">' + esc(c.stage || '') + '</span>'
     + (c.stage === 'صدر الحكم' && c.vd ? '<span class="tag vd" title="منطوق الحكم">' + esc(c.vd) + '</span>' : '')
     + (c.stage !== 'صدر الحكم' && c.vdSuggested ? '<span class="tag" title="منطوق مقترح من مسودة الدائرة — يُثبَّت عند صدور الحكم">مقترح: ' + esc(c.vdSuggested) + '</span>' : '')
+    + rlDraftBadge(c)
     + (c.ann ? '<span class="ann ' + (ok ? 'ok' : 'no') + '" title="الإعلانات التي تمت / المطلوبة">الإعلان ' + rlAnnTxt(c.ann) + (ok ? ' ✓' : ' ✗') + '</span>' : '')
     + (c.writer && RL_RES.includes(c.stage) ? '<span class="tag wr">' + RL_W[c.writer] + '</span>' : '') + (c.subj ? '<span class="subj">' + esc(c.subj) + '</span>' : '')
     + (sibs.length ? '<span class="tag lnk" title="استئنافات مرتبطة — اضغط الرقم للانتقال إليه">مضموم: ' + sibs.map(s => '<button type="button" data-sib="' + s.id + '">' + esc(s.code) + '</button>').join('، ') + '</span>' : '') + '</div>';
@@ -3227,7 +3244,8 @@ function syDirty() { const m = syMeta(); let c = 0; try { c = +localStorage.getI
 function syDot() { const d = $('#rl_sydot'); if (d) d.classList.toggle('hidden', !syDirty()); }
 const syCanFS = () => !!(window.showSaveFilePicker && window.showOpenFilePicker) && !IS_IOS;
 async function syPerm(h) { try { if ((await h.queryPermission({ mode: 'readwrite' })) === 'granted') return true; return (await h.requestPermission({ mode: 'readwrite' })) === 'granted'; } catch (e) { return false; } }
-function syPayload() { return { app: 'amali-data', v: 1, saved: Date.now(), roll: RL, bm: [...bookmarks], bmt: BMT }; }
+function syPayload() { return { app: 'amali-data', v: 1, saved: Date.now(), roll: RL, cases: { items: CASES, del: CS_DEL }, bm: [...bookmarks], bmt: BMT }; }
+window.syPayload = syPayload; window.csPut = csPut; window.csDel = csDel;
 async function syEncrypt(obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, SY.key, new TextEncoder().encode(JSON.stringify(obj)))); return JSON.stringify({ app: 'amali-sync', v: 1, kdf: { name: 'PBKDF2', hash: 'SHA-256', iter: SY_ITER, salt: syB64(SY.salt) }, cipher: 'AES-GCM-256', iv: syB64(iv), ct: syB64(ct) }); }
 async function syDecrypt(j, key) { const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: syUnb64(j.iv) }, key, syUnb64(j.ct)); return JSON.parse(new TextDecoder().decode(pt)); }
 function syMerge(d) {
@@ -3242,6 +3260,7 @@ function syMerge(d) {
   const T = d.bmt || {}; (d.bm || []).forEach(id => { if (!T[id]) T[id] = [1, 0]; }); bookmarks.forEach(id => { if (!BMT[id]) BMT[id] = [1, 0]; });
   Object.keys(T).forEach(id => { if (!BMT[id] || T[id][1] > BMT[id][1]) BMT[id] = T[id]; });
   const bm0 = bookmarks.size; bookmarks.clear(); Object.keys(BMT).forEach(id => { if (BMT[id][0]) bookmarks.add(isNaN(+id) ? id : +id); });
+  { const rc = d.cases || {}, rci = rc.items || {}, rcd = rc.del || {}; Object.keys(rcd).forEach(id => { if (!CS_DEL[id] || rcd[id] > CS_DEL[id]) CS_DEL[id] = rcd[id]; }); Object.keys(rci).forEach(id => { const c = rci[id]; if (!c) return; if (!c.id) c.id = id; const cur = CASES[id]; if (!cur || (c.updated || 0) > (cur.updated || 0)) CASES[id] = c; }); Object.keys(CASES).forEach(id => { if (CS_DEL[id] && CS_DEL[id] >= (CASES[id].updated || 0)) delete CASES[id]; }); casesSave(); try { if (document.getElementById('casewrap') && document.getElementById('casewrap').classList.contains('show')) renderCases(); } catch (e) {} }
   RL_SH = rlSetHash(); rlSave(); saveBm(); if (rlInit) rlRender(); if (typeof rlHomeAlert === 'function') rlHomeAlert(); try { run(); } catch (e) {}
   return { add, upd, del, bm: bookmarks.size - bm0 };
 }
@@ -3774,6 +3793,14 @@ function initCheck() {
 
 // ---- live layer: db, notes, tags, cases, extra principles
 let DBX = null, USERX = null, SAMPLEX = null, DLX = null, NOTES = {}, TAGS = {}, CASES = {}, LIVE_READY = false;
+// V77: ملفات القضايا محليًّا + مزامنة عبر OneDrive (كالرول) — بلا اعتماد على قاعدة الـArtifact
+const CS_KEY = 'tm_cases'; var CS_DEL = {};
+function casesLoad() { try { const j = JSON.parse(localStorage.getItem(CS_KEY) || 'null'); if (j) { if (j.items) { CASES = j.items; CS_DEL = j.del || {}; } else { CASES = j; } } } catch (e) {} Object.keys(CASES).forEach(id => { if (CASES[id] && !CASES[id].id) CASES[id].id = id; }); }
+function casesSave() { try { localStorage.setItem(CS_KEY, JSON.stringify({ items: CASES, del: CS_DEL })); localStorage.setItem('tm_chg', String(Date.now())); } catch (e) {} try { syDot(); } catch (e) {} }
+function csId() { return 'cs' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function csPut(c) { if (!c.id) c.id = csId(); if (!c.created) c.created = Date.now(); c.updated = Date.now(); CASES[c.id] = c; casesSave(); return c; }
+function csDel(id) { CS_DEL[id] = Date.now(); delete CASES[id]; casesSave(); }
+casesLoad();
 const TAXN = ['الاختصاص والإجراءات', 'الإثبات والخبرة وسلطة محكمة الموضوع', 'عقد العمل والأجر وملحقاته', 'إنهاء العقد والفصل', 'مكافأة نهاية الخدمة والإجازات', 'التعويض وإصابات العمل', 'التأمينات الاجتماعية والتقاعد', 'الطعن بالتمييز وتسبيب الأحكام', 'القانون الواجب التطبيق وتفسيره'];
 function applyTag(p, t) { if (!t) return; if (t.articles) p.articles = t.articles; if (t.topics) p.topics = t.topics; if (t.outcome !== undefined) p.outcome = t.outcome || null; if (t.keywords) { p.keywords = t.keywords; p.kw_suggested = false; } p.na = norm(p.articles.join(' ')); p.nk = norm(p.keywords); }
 async function bootLive() {
@@ -3785,7 +3812,7 @@ async function bootLive() {
     const [ns, ts, cs, xs] = await Promise.all([DBX.collection('notes').limit(1000).get(), DBX.collection('tags').limit(1000).get(), DBX.collection('cases').limit(500).get(), DBX.collection('extra').limit(1000).get()]);
     ns.docs.forEach(d => { NOTES[d.id] = d.data(); });
     ts.docs.forEach(d => { TAGS[d.id] = d.data(); });
-    cs.docs.forEach(d => { CASES[d.id] = d.data(); });
+    let csMig = false; cs.docs.forEach(d => { const id = d.id; if (!CASES[id] && !CS_DEL[id]) { const x = d.data() || {}; CASES[id] = Object.assign({ id, created: x.created || Date.now(), updated: x.created || Date.now() }, x); csMig = true; } }); if (csMig) casesSave();
     let maxId = Math.max(...P.map(p => +p.id || 0));
     xs.docs.forEach(d => { const x = d.data(); if (!x || !x.keywords && !x.reasoning) return; const p = Object.assign({}, x, { id: 'x_' + d.id, extra: true, source: x.source || 'إضافات لاحقة', kind: x.kind || 'حكم', match: 'num', review: false, court: x.court || 'عمالي' }); indexPrinciple(p); P.push(p); });
     P.forEach(p => applyTag(p, TAGS[p.id]));
@@ -3794,9 +3821,10 @@ async function bootLive() {
   } catch (e) { console.warn('live layer', e); }
 }
 function liveBoxHtml(p) {
-  if (!DBX) return '<div class="livebox"><h5>الملاحظات وملفات القضايا</h5><p style="margin:0;color:var(--ink3);font-size:13px">تتاح عند فتح التطبيق من الرابط وأنت مسجل الدخول.</p></div>';
-  const n = NOTES[p.id] || {}; const t = TAGS[p.id] || {};
   const cases = Object.entries(CASES).sort((a, b) => (b[1].created || 0) - (a[1].created || 0));
+  const casesBox = '<div class="livebox"><h5>ملفات القضايا</h5><div class="row"><select id="lv_case"><option value="">اختر ملفًا…</option>' + cases.map(([id, c]) => '<option value="' + esc(id) + '">' + esc(c.name) + (c.pids && c.pids.includes(p.id) ? ' ✓' : '') + '</option>').join('') + '</select><button class="btn primary" id="lv_addcase" type="button">إضافة إلى الملف</button><input type="text" id="lv_newcase" placeholder="أو اسم ملف جديد" style="max-width:220px"></div></div>';
+  if (!DBX) return casesBox;
+  const n = NOTES[p.id] || {}; const t = TAGS[p.id] || {};
   return '<div class="livebox"><h5>ملاحظتي على هذا المبدأ' + (n.updated ? '<span class="tag">' + new Date(n.updated).toLocaleDateString('ar-KW') + '</span>' : '') + '</h5>'
     + '<textarea id="lv_note" placeholder="مثال: طبقته في الاستئناف 880/2026؛ الدائرة الأولى تخالفه…">' + esc(n.text || '') + '</textarea>'
     + '<div class="row"><button class="btn primary" id="lv_savenote" type="button">حفظ الملاحظة</button>' + (n.text ? '<button class="btn" id="lv_delnote" type="button">حذف</button>' : '') + '</div></div>'
@@ -3806,11 +3834,18 @@ function liveBoxHtml(p) {
     + '<div style="font-size:12.5px;color:var(--ink3);margin-top:6px">الموضوعات</div><div class="tchips">' + TAXN.map(x => '<label class="' + (p.topics.includes(x) ? 'on' : '') + '"><input type="checkbox" hidden data-topic="' + esc(x) + '"' + (p.topics.includes(x) ? ' checked' : '') + '>' + esc(x) + '</label>').join('') + '</div>'
     + '<div class="row"><label style="font-size:12.5px;color:var(--ink3)">مآل النعي <select id="lv_out"><option value="">غير محدد</option>' + ['تمييز الحكم', 'تمييز جزئي', 'رفض النعي', 'مختلط'].map(o => '<option' + (p.outcome === o ? ' selected' : '') + '>' + o + '</option>').join('') + '</select></label>'
     + '<button class="btn primary" id="lv_approve" type="button">اعتماد الوسوم</button>' + (t.approved ? '<button class="btn" id="lv_unapprove" type="button">إلغاء الاعتماد</button>' : '') + '</div></div>'
-    + '<div class="livebox"><h5>ملفات القضايا</h5><div class="row"><select id="lv_case"><option value="">اختر ملفًا…</option>' + cases.map(([id, c]) => '<option value="' + esc(id) + '">' + esc(c.name) + (c.pids && c.pids.includes(p.id) ? ' ✓' : '') + '</option>').join('') + '</select><button class="btn primary" id="lv_addcase" type="button">إضافة إلى الملف</button><input type="text" id="lv_newcase" placeholder="أو اسم ملف جديد" style="max-width:220px"></div></div>';
+    + casesBox;
 }
 function wireLiveBox(p) {
-  if (!DBX) return;
   const b = $('#pb');
+  { const ac = b.querySelector('#lv_addcase'); if (ac) ac.onclick = () => {
+    let id = b.querySelector('#lv_case').value; const nn = b.querySelector('#lv_newcase').value.trim();
+    if (!id && nn) { const c = csPut({ name: nn, pids: [], note: '' }); id = c.id; }
+    if (!id) { toast('اختر ملفًا أو اكتب اسمًا جديدًا'); return; }
+    const c = CASES[id]; if (!c) { toast('تعذّر'); return; } c.pids = c.pids || []; if (!c.pids.includes(p.id)) c.pids.push(p.id);
+    csPut(c); toast('أُضيف إلى «' + c.name + '»'); openPanel(p);
+  }; }
+  if (!DBX) return;
   b.querySelector('#lv_savenote').onclick = async () => { const text = b.querySelector('#lv_note').value.trim(); try { if (text) { NOTES[p.id] = { text, updated: Date.now() }; await DBX.doc('notes/' + p.id).set(NOTES[p.id]); } else { delete NOTES[p.id]; await DBX.doc('notes/' + p.id).delete(); } toast('حُفظت الملاحظة'); renderList(); renderFacets(); openPanel(p); } catch (e) { toast('تعذّر الحفظ: ' + (e.code || '')); } };
   const dn = b.querySelector('#lv_delnote'); if (dn) dn.onclick = async () => { try { delete NOTES[p.id]; await DBX.doc('notes/' + p.id).delete(); toast('حُذفت'); renderList(); renderFacets(); openPanel(p); } catch (e) { toast('تعذّر الحذف'); } };
   b.querySelectorAll('.tchips label').forEach(l => l.onclick = e => { e.preventDefault(); const c = l.querySelector('input'); c.checked = !c.checked; l.classList.toggle('on', c.checked); });
@@ -3823,15 +3858,6 @@ function wireLiveBox(p) {
     try { TAGS[p.id] = t; await DBX.doc('tags/' + p.id).set(t); applyTag(p, t); toast('اعتُمدت الوسوم'); run(); openPanel(p); } catch (e) { toast('تعذّر الحفظ: ' + (e.code || '')); }
   };
   const un = b.querySelector('#lv_unapprove'); if (un) un.onclick = async () => { try { delete TAGS[p.id]; await DBX.doc('tags/' + p.id).delete(); toast('أُلغي الاعتماد — تُستعاد الوسوم الآلية عند إعادة الفتح'); openPanel(p); } catch (e) { toast('تعذّر'); } };
-  b.querySelector('#lv_addcase').onclick = async () => {
-    let id = b.querySelector('#lv_case').value; const nn = b.querySelector('#lv_newcase').value.trim();
-    try {
-      if (!id && nn) { const ref = await DBX.collection('cases').add({ name: nn, created: Date.now(), pids: [], note: '' }); id = ref.id; CASES[id] = { name: nn, created: Date.now(), pids: [], note: '' }; }
-      if (!id) { toast('اختر ملفًا أو اكتب اسمًا جديدًا'); return; }
-      const c = CASES[id]; c.pids = c.pids || []; if (!c.pids.includes(p.id)) c.pids.push(p.id);
-      await DBX.doc('cases/' + id).set(c); toast('أُضيف إلى «' + c.name + '»'); openPanel(p);
-    } catch (e) { toast('تعذّر: ' + (e.code || '')); }
-  };
 }
 // ---- cases view
 function memoHtml(c) {
@@ -3845,7 +3871,6 @@ function memoHtml(c) {
 }
 function renderCases() {
   const L = $('#caselist'); L.innerHTML = '';
-  if (!DBX) { L.innerHTML = '<div class="empty"><b>غير متاح في هذه النافذة</b>افتح التطبيق من الرابط وأنت مسجل الدخول لتظهر ملفاتك.</div>'; return; }
   const cases = Object.entries(CASES).sort((a, b) => (b[1].created || 0) - (a[1].created || 0));
   if (!cases.length) { L.innerHTML = '<div class="empty"><b>لا ملفات بعد</b>أنشئ ملفًا باسم الاستئناف، ثم أضف إليه المبادئ من لوحة قراءة أي مبدأ.</div>'; return; }
   cases.forEach(([id, c]) => {
@@ -3855,11 +3880,11 @@ function renderCases() {
       + '<div class="items">' + items.map(p => '<div class="it"><span class="t" data-open="' + p.id + '">' + esc(p.keywords || p.appeal).slice(0, 180) + '<span class="c">' + esc(p.cite_std) + '</span></span><button class="mini" data-rm="' + p.id + '" type="button">✕</button></div>').join('') + '</div>'
       + '<textarea data-note placeholder="ملاحظات الملف: المسألة المطروحة، الدفوع، ما استُند إليه…">' + esc(c.note || '') + '</textarea><div class="rel"><button class="mini" data-a="savenote" type="button">حفظ الملاحظات</button></div>';
     d.querySelectorAll('[data-open]').forEach(t => t.onclick = () => { const p = P.find(x => String(x.id) === t.dataset.open); if (p) openPanel(p); });
-    d.querySelectorAll('[data-rm]').forEach(x => x.onclick = async () => { c.pids = (c.pids || []).filter(i => String(i) !== x.dataset.rm); try { await DBX.doc('cases/' + id).set(c); renderCases(); } catch (e) { toast('تعذّر'); } });
+    d.querySelectorAll('[data-rm]').forEach(x => x.onclick = async () => { c.pids = (c.pids || []).filter(i => String(i) !== x.dataset.rm); csPut(c); renderCases(); });
     d.querySelector('[data-a=copy]').onclick = () => copy(items.map(p => p.cite_std).filter(Boolean).join('\n'), 'نُسخت الإحالات');
-    d.querySelector('[data-a=savenote]').onclick = async () => { c.note = d.querySelector('[data-note]').value; try { await DBX.doc('cases/' + id).set(c); toast('حُفظت'); } catch (e) { toast('تعذّر'); } };
-    d.querySelector('[data-a=ren]').onclick = async () => { const n = prompt('الاسم الجديد', c.name); if (n && n.trim()) { c.name = n.trim(); try { await DBX.doc('cases/' + id).set(c); renderCases(); } catch (e) { toast('تعذّر'); } } };
-    d.querySelector('[data-a=del]').onclick = async () => { if (!confirm('حذف الملف «' + c.name + '»؟ لا يحذف المبادئ نفسها.')) return; try { await DBX.doc('cases/' + id).delete(); delete CASES[id]; renderCases(); } catch (e) { toast('تعذّر'); } };
+    d.querySelector('[data-a=savenote]').onclick = async () => { c.note = d.querySelector('[data-note]').value; csPut(c); toast('حُفظت'); };
+    d.querySelector('[data-a=ren]').onclick = async () => { const n = prompt('الاسم الجديد', c.name); if (n && n.trim()) { c.name = n.trim(); csPut(c); renderCases(); } };
+    d.querySelector('[data-a=del]').onclick = async () => { if (!confirm('حذف الملف «' + c.name + '»؟ لا يحذف المبادئ نفسها.')) return; csDel(id); renderCases(); };
     d.querySelector('[data-a=memo]').onclick = async () => {
       const html = memoHtml(c); const fn = 'مذكرة_إسناد_' + c.name.replace(/[\\/:*?"<>|]+/g, '-') + '.doc';
       if (DLX) { try { await DLX.save({ filename: fn, data: new Blob(['\ufeff' + html], { type: 'application/msword' }) }); toast('صُدّرت المذكرة'); } catch (e) { if (e.code !== 'cancelled' && e.code !== 'declined') { copy(html.replace(/<[^>]+>/g, ''), 'تعذّر الحفظ؛ نُسخ النص بدلًا منه'); } } }
@@ -3868,7 +3893,7 @@ function renderCases() {
     L.appendChild(d);
   });
 }
-$('#casecreate').onclick = async () => { const n = $('#casenew').value.trim(); if (!n) return; if (!DBX) { toast('غير متاح هنا'); return; } try { const ref = await DBX.collection('cases').add({ name: n, created: Date.now(), pids: [], note: '' }); CASES[ref.id] = { name: n, created: Date.now(), pids: [], note: '' }; $('#casenew').value = ''; renderCases(); } catch (e) { toast('تعذّر: ' + (e.code || '')); } };
+$('#casecreate').onclick = () => { const n = $('#casenew').value.trim(); if (!n) return; csPut({ name: n, pids: [], note: '' }); $('#casenew').value = ''; renderCases(); };
 
 // ---- محلل الملف (Case intake)
 let inInit = false, inCtl = null, inFiles = [], inResult = null, inChosen = new Set();
@@ -4038,9 +4063,9 @@ function inSummary() {
   return ['ملخص ملف ' + (r.appealNo || ''), 'الدعوى: ' + (r.caseNo || ''), '— بوابة الشكل (تُبحث قبل الموضوع):', ...gate.map(l => '  ' + l), ...numLines, '—', (() => { const pa = inParties(r); return (pa.from.length > 1 ? 'المستأنفون: ' + pa.from.map((x, i) => (i + 1) + '- ' + x).join('، ') : 'المستأنف: ' + (pa.from[0] || '')) + ' | ' + (pa.against.length > 1 ? 'المستأنف ضدهم: ' + pa.against.map((x, i) => (i + 1) + '- ' + x).join('، ') : 'المستأنف ضده: ' + (pa.against[0] || '')) + (pa.related.length ? ' | استئنافات مرتبطة: ' + pa.related.join('، ') : ''); })(), 'العامل: ' + (r.worker || '') + ' – ' + (r.profession || '') + ' – أجر ' + (r.wage || '') + ' ' + (r.wageType || '') + ' (' + (r.wageNature || '') + ')', 'العقد: ' + (r.contract || '') + ' | الالتحاق ' + (r.joinDate || '') + ' | الانتهاء ' + (r.endDate || '') + ' | السبب: ' + (r.endCause || ''), 'طلب إدارة العمل: ' + (r.laborOfficeDate || '') + ' | رفع الدعوى: ' + (r.filingDate || ''), 'الطلبات: ' + (r.claims || []).map(c => c.item + (c.amount ? ' (' + c.amount + ')' : '') + (c.party ? ' [' + c.party + ']' : '')).join('؛ ') + (r.claimsTotal ? ' — المجموع ' + r.claimsTotal : ''), 'الخبير: ' + ((r.expert || {}).findings || '—') + ((r.expert || {}).amount ? ' — ' + r.expert.amount : ''), 'حكم أول درجة (' + (fr.court || '') + ' ' + (fr.date || '') + '): ' + (fr.dispositive || ''), 'أسبابه: ' + (fr.reasonsSummary || ''), 'الاستئناف (' + (a.filedDate || '') + '): ' + (a.requests || []).join('؛ '), 'أوجه النعي:', ...(a.grounds || []).map(g => '  ' + (g.n || '') + '- [' + (g.type || '') + '] ' + (g.title || '') + ': ' + (g.text || '') + (g.where ? ' (' + g.where + ')' : '')), ...((r.flags || []).length ? ['تنبيهات: ' + r.flags.join('؛ ')] : []), 'المبادئ المختارة:', ...[...inChosen].map(id => { const p = P.find(x => String(x.id) === id); return p ? '  - ' + p.cite_std + ' — ' + (p.keywords || '').slice(0, 120) : ''; })].join('\n');
 }
 async function inSaveCase() {
-  const r = inResult; if (!r) return; if (!DBX) { toast('حفظ الملفات غير متاح هنا'); return; }
+  const r = inResult; if (!r) return;
   const name = (r.appealNo ? 'استئناف ' + r.appealNo : 'دعوى ' + (r.caseNo || 'بلا رقم')) + (r.worker ? ' – ' + r.worker : '');
-  try { const doc = { name, created: Date.now(), pids: [...inChosen], note: inSummary(), intake: r }; const ref = await DBX.collection('cases').add(doc); CASES[ref.id] = doc; toast('حُفظ الملف «' + name + '»'); renderCases(); } catch (e) { toast('تعذّر الحفظ: ' + (e.code || '')); }
+  csPut({ name, pids: [...inChosen], note: inSummary(), intake: r }); toast('حُفظ الملف «' + name + '»'); if (typeof renderCases === 'function') renderCases();
 }
 async function inPdfToImages(file) {
   if (!window.pdfjsLib) {
@@ -4201,7 +4226,7 @@ function initIntake() {
 }
 // ---- فاحص المسودة (Draft checker)
 let drInit = false, drCtl = null, drLast = null;
-const DR_CLAIM = /من المقرر|المستقر عليه|مستقر في قضاء|جرى قضاء|قضاء (?:هذه )?المحكمة|محكمة التمييز|من المقر|لما كان من المقرر|النص في المادة|مفاد (?:نص|ذلك)|مؤدى (?:نص|ذلك)/;
+const DR_CLAIM = /من المقرر|المستقر عليه|مستقر في قضاء|جرى قضاء|قضاء (?:هذه )?المحكمة|محكمة التمييز|من المقر|لما كان من المقرر|النص في المادة|مفاد (?:نص|ذلك)|مؤدى (?:نص|ذلك)|قضاء التمييز|المستقر بقضاء|المقرر بقضاء|المستقر في قضاء/;
 const AR2EN = s => (s || '').replace(/[٠-٩]/g, d => AR.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 function drParas(t) {
   return t.replace(/\r/g, '').split(/\n+/).flatMap(l => l.split(/(?=(?:^|\s)(?:وحيث إنه?|وحيث أنه?|ولما كان|لما كان ذلك|وحيث إن))/)).map(s => s.trim()).filter(s => s.length > 30);
@@ -4216,13 +4241,15 @@ function drCites(t) {
   return out;
 }
 function drArticles(t) {
-  const out = []; const re = /(?<![\u0600-\u06ff])(?:المادة|مادة|م)\s*\(?\s*([\d٠-٩۰-۹]{1,3})\s*\)?(?:\s*(?:مكررا?ً?|مكرر))?\s*([^.،؛\n]{0,40})/g; let m;
+  const out = []; const re = /(?<![\u0600-\u06ff])(?:المواد|مواد|المادتين|المادة|مادة|م)\s*(?:رقم[يا]?|أرقام)?\s*\(?\s*([\d٠-٩۰-۹]{1,3}(?:\s*[،,و]\s*\(?\s*[\d٠-٩۰-۹]{1,3})*)\s*\)?(?:\s*(?:مكررا?ً?|مكرر))?\s*([^.،؛\n]{0,40})/g; let m;
   while ((m = re.exec(t))) {
-    const num = AR2EN(m[1]); const ctx = m[2] || ''; let law = 'عمل 6/2010';
+    const nums = AR2EN(m[1]).split(/[^\d]+/).filter(Boolean); const ctx = m[2] || ''; let law = 'عمل 6/2010';
     if (/مرافعات/.test(ctx)) law = 'مرافعات'; else if (/إثبات|الإثبات/.test(ctx)) law = 'إثبات'; else if (/خبرة|الخبرة/.test(ctx)) law = 'خبرة'; else if (/38\s*لسنة\s*1964|1964/.test(ctx)) law = 'عمل 38/1964'; else if (/28\s*لسنة\s*1969|النفط/.test(ctx)) law = 'نفط 28/1969';
-    const a = ARTS.find(x => x.num === num && x.law === law);
-    const key = 'م' + num + (law === 'عمل 6/2010' ? '' : ' ' + law);
-    if (!out.some(o => o.key === key)) out.push({ key, num, law, art: a, text: m[0].trim().slice(0, 60), rel: P.filter(p => p.articles.includes(key)).length });
+    nums.forEach(num => {
+      const a = ARTS.find(x => x.num === num && x.law === law);
+      const key = 'م' + num + (law === 'عمل 6/2010' ? '' : ' ' + law);
+      if (!out.some(o => o.key === key)) out.push({ key, num, law, art: a, text: m[0].trim().slice(0, 60), rel: P.filter(p => p.articles.includes(key)).length });
+    });
   }
   return out;
 }
@@ -4263,6 +4290,7 @@ function drLint(t) {
 function drAnalyze(t) {
   const paras = drParas(t);
   const cut = t.search(/فلهذه\s+الأسباب|حكمت\s+المحكمة/); const reasons = cut > 0 ? t.slice(0, cut) : t; const disp = cut > 0 ? t.slice(cut) : '';
+  const formalDisp = /عدم جواز|بعدم جواز|عدم قبول الاستئناف|بعدم قبول الاستئناف|سقوط (?:الحق في )?الاستئناف|عدم الاختصاص|بطلان (?:صحيفة )?الاستئناف|اعتبار الاستئناف كأن لم يكن/.test(disp || t);
   const claims = paras.map((p, i) => { const isClaim = DR_CLAIM.test(p); const sg = isClaim ? inSuggest(p, 6) : null; const seen = new Set(); const hits = (sg && sg.hits ? sg.hits : []).filter(x => { const k = x.cite_std || x.id; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 4); return { i, text: p, isClaim, hits, cites: drCites(p) }; });
   const cites = drCites(t); const arts = drArticles(t);
   const amR = drAmounts(reasons), amD = drAmounts(disp); const dtR = drDates(reasons), dtD = drDates(disp);
@@ -4279,7 +4307,7 @@ function drAnalyze(t) {
   const bad = DR_BAD.filter(([re]) => re.test(t)).map(([re, msg]) => { const m = t.match(re); return [m ? m[0] : '', msg]; });
   const unknownCites = cites.filter(c => !c.hits.length);
   const claimsCov = drClaimsCov(($('#dr_claims') || {}).value || '', disp, t), lint = drLint(t);
-  return { paras, claims, cites, unknownCites, arts, amounts: allAm, amountIssues, near, dates: allDt, dnear, checks, links, bad, reasons, disp, claimsCov, lint };
+  return { paras, claims, cites, unknownCites, arts, amounts: allAm, amountIssues, near, dates: allDt, dnear, checks, links, bad, reasons, disp, formalDisp, claimsCov, lint };
 }
 function drRender(r) {
   const O = $('#dr_out'); let h = '';
@@ -4312,8 +4340,10 @@ function drRender(r) {
     + '<div class="why">المطابقة هنا داخل نص المسودة فقط؛ مطابقتها بتقرير الخبير والأوراق تبقى عليك.</div></div>';
   // checklist
   h += '<div class="kc"><h4><span>قائمة التحقق الإلزامية</span></h4><table class="intbl">' + r.checks.map(([l, v]) => '<tr><td>' + esc(l) + '</td><td>' + (v === true ? '<span style="color:var(--ok)">✔ ورد</span>' : v === false ? '<span style="color:var(--warn)">⚠ لم يرد ذكره</span>' : v === null ? '<span style="color:var(--bad)">✘ جهة حكومية دون «بصفته»</span>' : '<span style="color:var(--warn)">⚠ للتذكير: هل تحقق أن الطاعن وحده لا يضار بطعنه؟</span>') + '</td></tr>').join('') + '</table><div class="why">غياب الذكر لا يعني بذاته خللًا — بعض البنود لا يلزم إلا إذا أُثير.</div></div>';
-  // V70: شمول الطلبات
-  if (r.claimsCov && r.claimsCov.length) {
+  // V70: شمول الطلبات — V76: تُخطّى عند الحكم الشكليّ
+  if (r.claimsCov && r.claimsCov.length && r.formalDisp) {
+    h += '<div class="kc info"><h4><span>شمول المنطوق للطلبات</span><span class="tag">حكم شكليّ</span></h4><p>المنطوق شكليّ (عدم جواز / عدم قبول أو ما في حكمه)، فلم تُبحث الطلبات الموضوعية ولا يلزم ظهورها في المنطوق. تحقّق فقط من استيفاء بحث الشكل (النصاب / الميعاد / الصفة / المصلحة).</p><div class="why">تُخطّى مطابقة الطلبات الموضوعية عند الحكم الشكليّ — والتحقق من الشكل يبقى عليك.</div></div>';
+  } else if (r.claimsCov && r.claimsCov.length) {
     const miss = r.claimsCov.filter(c => !c.inAll).length;
     h += '<div class="kc ' + (miss ? 'warn' : 'ok') + '"><h4><span>شمول المنطوق للطلبات</span><span class="tag">تذكير آلي — يُراجع</span></h4><table class="intbl">'
       + r.claimsCov.map(c => '<tr><td>' + esc(c.claim) + '</td><td>' + (c.inDisp ? '<span style="color:var(--ok)">✔ يظهر ما يقابله في المنطوق</span>' : c.inAll ? '<span style="color:var(--warn)">⚠ ورد في الأسباب دون المنطوق — تحقق من الفصل فيه</span>' : '<span style="color:var(--bad)">✘ لم يظهر ما يقابله — راجع شموله</span>') + '</td></tr>').join('')
