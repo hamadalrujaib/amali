@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="amali-build" content="20260925111611">
+<meta name="amali-build" content="20260925115307">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -1293,7 +1293,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     <span class="spacer"></span>
     <button class="btn" id="rl_cal" type="button" title="أيام الجلسات والعطل وأعضاء الدائرة">التقويم والدائرة</button>
     <button class="btn" id="rl_sync" type="button" title="مزامنة مشفّرة بين أجهزتك عبر OneDrive">مزامنة<i class="sydot hidden" id="rl_sydot"></i></button><button class="btn" id="rl_exp" type="button" title="حفظ نسخة لنقلها إلى جهاز آخر">تصدير</button>
-    <button class="btn" id="rl_imp" type="button" title="استيراد نسخة محفوظة">استيراد نسخة</button><input type="file" id="rl_file" accept=".json,application/json" hidden>
+    <button class="btn" id="rl_imp" type="button" title="استيراد نسخة محفوظة">استيراد نسخة</button><input type="file" id="rl_file" hidden>
   </div>
   <div class="rlpanel hidden" id="rl_impbox">
     <h3>استيراد كشف الجلسة من نظام الاطلاع</h3>
@@ -2946,7 +2946,7 @@ function rlImpShow(res, how) {
 // ---- تصدير/استيراد نسخة
 async function rlExport() {
   const blob = new Blob([JSON.stringify({ app: 'amali-roll', v: 2, exported: new Date().toISOString(), circuit: RL.circuit, cal: RL.cal, members: RL.members, cards: RL.cards }, null, 1)], { type: 'application/json' });
-  const fname = 'رول الجلسة ' + rlToday() + '.json';
+  const fname = 'amali-roll-' + rlToday() + '.json';
   if (DLX) { try { await DLX.save({ filename: fname, data: blob }); toast('أُنشئ الملف؛ أكّد الحفظ'); } catch (e) { toast('تعذّر الحفظ'); } return; }
   try { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = fname; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); toast('نُزّل ملف الرول (' + RL.cards.length + ' بطاقة)'); } catch (e) { toast('تعذّر التنزيل في هذه النافذة'); }
 }
