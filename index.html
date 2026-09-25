@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="amali-build" content="20260925125009">
+<meta name="amali-build" content="20260925135244">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -464,6 +464,8 @@ body.home .search{visibility:hidden}
 .inbox h3{margin:0;font-size:15px;color:var(--ink2)}
 .inbox.drop{outline:2px dashed var(--accent);outline-offset:-6px}
 .inbox textarea{width:100%;min-height:260px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);padding:10px;font-size:14px;font-family:var(--ui);line-height:1.7;resize:vertical}
+.drclaimsl{display:block;margin:8px 0 0;font-size:12.5px;color:var(--ink2)}
+.drclaimsl textarea{min-height:56px;margin-top:4px}
 .inbox .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .thumbs{display:flex;flex-wrap:wrap;gap:6px}
 .thumbs figure{margin:0;width:64px;padding:0;border:0;background:none;border-radius:0}.thumbs img{width:64px;height:84px;object-fit:cover;border:1px solid var(--line);border-radius:6px}.thumbs figcaption{font-size:10px;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1392,6 +1394,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     <section class="inbox">
       <h3>المسودة</h3>
       <textarea id="dr_text" placeholder="الصق هنا نص الأسباب والمنطوق (من «بعد الاطلاع على الأوراق…» إلى نهاية «حكمت المحكمة…»)"></textarea>
+      <label class="drclaimsl">طلبات الاستئناف <small>(للتحقق من شمول المنطوق لها — سطر لكل طلب، اختياري)</small><textarea id="dr_claims" rows="2" placeholder="مثال:&#10;مكافأة نهاية الخدمة&#10;رصيد الإجازات&#10;بدل الإنذار"></textarea></label>
       <div class="row">
         <button class="btn primary" id="dr_go" type="button">افحص المسودة</button>
         <button class="btn" id="dr_crit" type="button" title="يستهلك رصيد حسابك">نقد معمّق (5)</button>
@@ -1564,6 +1567,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
       <h3 style="margin-top:6px">نص الحكم (الوقائع والأسباب والمنطوق)</h3>
       <textarea id="we_body" placeholder="الصق النص من «حيث إن وقائع الدعوى…» حتى «حكمت المحكمة: …». ضع أي موضع يحتاج قرارك بين 〖 〗 ليظهر بالأصفر."></textarea>
       <div class="row">
+        <button class="btn" id="we_skeleton" type="button" title="إدراج هيكل الحكم بعناوينه — إطار تملؤه بنفسك">هيكل الحكم</button>
         <button class="btn" id="we_prefill" type="button">تعبئة من فحص المسودة / تحليل الملف</button>
         <button class="btn" id="we_preview" type="button">معاينة</button>
         <button class="btn primary" id="we_export" type="button">تنزيل Word</button>
@@ -1650,7 +1654,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V69</p>
+      <p class="dver">الإصدار V70</p>
     </section>
   </div>
 </div>
@@ -4129,6 +4133,24 @@ const DR_CHECKS = [
 ];
 const DR_LINKS = ['لما كان ذلك', 'وحيث إنه عن', 'ولا ينال من ذلك', 'حري بـ', 'مما يتعين معه', 'من المقرر أن', 'بعد الاطلاع على الأوراق وسماع المرافعة والمداولة', 'فلهذه الأسباب', 'حكمت المحكمة'];
 const DR_BAD = [[/بناء(?:اً|ً) على ما تقدم|وترتيبا على ما تقدم|وبناء عليه/, 'وصلة غير معتمدة في أحكامك السابقة — البديل: «لما كان ذلك» / «مما يتعين معه»'], [/يتضح|من الواضح|واضح جلي/, 'صياغة تقريرية غير معتادة في التسبيب'], [/لا شك|بلا شك|من المؤكد/, 'تعبيرات جزم تُستبدل بالإسناد إلى الثابت بالأوراق']];
+// V70: شمول الطلبات + تنقيح لغوي خفيف (محلي، تذكير لا حكم)
+const DR_STOP = new Set('من في على الى إلى عن مع او أو ثم قد لا ما هذا هذه ذلك التي الذي به بها له لها الحكم المستأنف المحكمة الاستئناف الدعوى بشأن بطلب طلب مبلغ عن نهاية'.split(/\s+/));
+function drWords(s) { return norm(s).split(/\s+/).filter(w => w.length >= 3 && !DR_STOP.has(w)); }
+function drClaimsCov(txt, disp, full) {
+  const lines = String(txt || '').split('\n').map(l => l.trim()).filter(Boolean);
+  const nd = norm(disp || ''), nf = norm(full || '');
+  return lines.map(l => { const ws = drWords(l); const inDisp = ws.length && ws.some(w => nd.includes(w)); const inAll = ws.length && ws.some(w => nf.includes(w)); return { claim: l, inDisp, inAll }; });
+}
+function drLint(t) {
+  const out = [];
+  const dbl = (t.match(/ {2,}/g) || []).length; if (dbl) out.push('مسافات مزدوجة (' + dbl + ') — يُفضّل دمجها في مسافة واحدة');
+  const sp = (t.match(/[ \t]+[،.؛:؟!]/g) || []).length; if (sp) out.push('مسافة قبل علامة ترقيم (' + sp + ')');
+  const noSp = (t.match(/[،؛:](?=[^\s\d])/g) || []).length; if (noSp) out.push('علامة ترقيم بلا مسافة بعدها (' + noSp + ')');
+  const rep = []; let m; const rre = /([؀-ۿ]{3,})\s+\1(?![؀-ۿ])/g; while ((m = rre.exec(t)) && rep.length < 8) rep.push(m[1]); if (rep.length) out.push('تكرار كلمة متتالية: ' + rep.join('، '));
+  const blanks = (t.match(/\n[ \t]*\n[ \t]*\n/g) || []).length; if (blanks) out.push('أسطر فارغة متعددة متتالية (' + blanks + ')');
+  const paren = (t.match(/\(/g) || []).length - (t.match(/\)/g) || []).length; if (paren) out.push('أقواس غير متوازنة (فرق ' + Math.abs(paren) + ')');
+  return out;
+}
 function drAnalyze(t) {
   const paras = drParas(t);
   const cut = t.search(/فلهذه\s+الأسباب|حكمت\s+المحكمة/); const reasons = cut > 0 ? t.slice(0, cut) : t; const disp = cut > 0 ? t.slice(cut) : '';
@@ -4147,7 +4169,8 @@ function drAnalyze(t) {
   const links = DR_LINKS.map(l => [l, t.includes(l)]);
   const bad = DR_BAD.filter(([re]) => re.test(t)).map(([re, msg]) => { const m = t.match(re); return [m ? m[0] : '', msg]; });
   const unknownCites = cites.filter(c => !c.hits.length);
-  return { paras, claims, cites, unknownCites, arts, amounts: allAm, amountIssues, near, dates: allDt, dnear, checks, links, bad, reasons, disp };
+  const claimsCov = drClaimsCov(($('#dr_claims') || {}).value || '', disp, t), lint = drLint(t);
+  return { paras, claims, cites, unknownCites, arts, amounts: allAm, amountIssues, near, dates: allDt, dnear, checks, links, bad, reasons, disp, claimsCov, lint };
 }
 function drRender(r) {
   const O = $('#dr_out'); let h = '';
@@ -4180,9 +4203,18 @@ function drRender(r) {
     + '<div class="why">المطابقة هنا داخل نص المسودة فقط؛ مطابقتها بتقرير الخبير والأوراق تبقى عليك.</div></div>';
   // checklist
   h += '<div class="kc"><h4><span>قائمة التحقق الإلزامية</span></h4><table class="intbl">' + r.checks.map(([l, v]) => '<tr><td>' + esc(l) + '</td><td>' + (v === true ? '<span style="color:var(--ok)">✔ ورد</span>' : v === false ? '<span style="color:var(--warn)">⚠ لم يرد ذكره</span>' : v === null ? '<span style="color:var(--bad)">✘ جهة حكومية دون «بصفته»</span>' : '<span style="color:var(--warn)">⚠ للتذكير: هل تحقق أن الطاعن وحده لا يضار بطعنه؟</span>') + '</td></tr>').join('') + '</table><div class="why">غياب الذكر لا يعني بذاته خللًا — بعض البنود لا يلزم إلا إذا أُثير.</div></div>';
+  // V70: شمول الطلبات
+  if (r.claimsCov && r.claimsCov.length) {
+    const miss = r.claimsCov.filter(c => !c.inAll).length;
+    h += '<div class="kc ' + (miss ? 'warn' : 'ok') + '"><h4><span>شمول المنطوق للطلبات</span><span class="tag">تذكير آلي — يُراجع</span></h4><table class="intbl">'
+      + r.claimsCov.map(c => '<tr><td>' + esc(c.claim) + '</td><td>' + (c.inDisp ? '<span style="color:var(--ok)">✔ يظهر ما يقابله في المنطوق</span>' : c.inAll ? '<span style="color:var(--warn)">⚠ ورد في الأسباب دون المنطوق — تحقق من الفصل فيه</span>' : '<span style="color:var(--bad)">✘ لم يظهر ما يقابله — راجع شموله</span>') + '</td></tr>').join('')
+      + '</table><div class="why">مطابقة بالكلمات المفتاحية فقط — تذكير بعدم إغفال طلب، لا حكم على صواب الفصل فيه.</div></div>';
+  }
   // links
   h += '<div class="kc"><h4><span>القالب والوصلات اللغوية</span></h4><div class="kvs">' + r.links.map(([l, v]) => '<div class="kv"><span>' + esc(l) + '</span><b>' + (v ? '✔' : '—') + '</b></div>').join('') + '</div>'
     + (r.bad.length ? '<ul>' + r.bad.map(([m, msg]) => '<li>⚠ «' + esc(m) + '»: ' + esc(msg) + '</li>').join('') + '</ul>' : '') + '</div>';
+  // V70: تنقيح لغوي خفيف (ميكانيكي)
+  h += '<div class="kc ' + (r.lint && r.lint.length ? 'warn' : 'ok') + '"><h4><span>تنقيح لغوي خفيف</span><span class="tag">اقتراحات ميكانيكية</span></h4>' + (r.lint && r.lint.length ? '<ul>' + r.lint.map(x => '<li>⚠ ' + esc(x) + '</li>').join('') + '</ul>' : '<p style="color:var(--ok)">✔ لا ملاحظات ميكانيكية ظاهرة</p>') + '<div class="why">فحص شكلي للمسافات والترقيم والتكرار فقط — ليس تدقيقًا إملائيًّا كاملًا، والتطبيق منها بيدك.</div></div>';
   h += '<div class="rel inacts"><button class="btn" id="dr_copy" type="button">نسخ تقرير الفحص</button></div>';
   O.innerHTML = h;
   O.querySelectorAll('[data-open]').forEach(x => x.onclick = () => { const p = P.find(y => String(y.id) === x.dataset.open); if (p) openPanel(p); });
@@ -4479,6 +4511,15 @@ function fmInsert(f) {
   ta.value = before + pre + t + post + after; const pos = (before + pre + t).length; ta.focus(); try { ta.setSelectionRange(pos, pos); } catch (e) {}
   f.used = (f.used || 0) + 1; rlSave(); toast('أُدرجت: ' + f.title);
 }
+// V70: هيكل الحكم — إطار بنيوي بعناوينه ومواضع تعبئة [[…]]؛ لا نصّ ولا أسباب (أداة تنسيق لا صياغة)
+const WE_SKELETON = 'مسودة بأسباب ومنطوق الحكم الصادر بالاستئناف رقم {رقم_الاستئناف} {الدائرة} الصادر بجلسة {الجلسة}\n\nالمقام من: {المستأنف}\n\nضد\n\n{المستأنف_ضده}\n\nبعد الاطلاع على الأوراق وسماع المرافعة والمداولة:\n\nوحيث إن وقائع الدعوى حسبما يبين من مطالعة الحكم المستأنف وسائر الأوراق تتحصل في أن [[سرد الوقائع: تاريخ الالتحاق، المهنة، الأجر (أساسي/شامل)، تاريخ الانتهاء وسببه، الطلبات، خلاصة تقرير الخبير، ومنطوق حكم أول درجة وأسبابه]].\n\nوحيث إن الطاعن طعن على القضاء المتقدم بالاستئناف الماثل بصحيفة أودعت إدارة الكتاب بتاريخ [[تاريخ الإيداع]]، وطلب في ختامها أولًا: بقبول الاستئناف شكلًا، وثانيًا: [[الطلبات الموضوعية]]، ونعى على الحكم المستأنف [[أوجه النعي]].\n\nوحيث إن الاستئناف استوفى أوضاعه الشكلية؛ ومن ثم فهو مقبول شكلًا.\n\n[[الدفوع الشكلية إن وُجدت — كل دفع في فقرة مستقلة]]\n\nوحيث إنه عن الموضوع، فإنه [[حلقات الاستدلال والردّ على أوجه النعي — من مادتك أنت]].\n\nفلهذه الأسباب\n\nحكمت المحكمة: بقبول الاستئناف شكلًا، وفي الموضوع بـ[[المنطوق]]، وألزمت [[الطرف الخاسر]] بالمصروفات ومبلغ {الأتعاب} مقابل أتعاب المحاماة الفعلية.\n';
+function weSkeleton() {
+  const ta = $('#we_body'); if (!ta) return;
+  const t = fmFill(WE_SKELETON);
+  if (!ta.value.trim()) { ta.value = t; } else { const a = ta.selectionStart != null ? ta.selectionStart : ta.value.length, b = ta.selectionEnd != null ? ta.selectionEnd : a; const before = ta.value.slice(0, a), after = ta.value.slice(b); ta.value = before + (before && !/\n$/.test(before) ? '\n' : '') + t + after; }
+  ta.focus(); try { ta.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+  toast('أُدرج هيكل الحكم — املأ المواضع بين [[ ]]');
+}
 function fmRender() {
   const L = fmList();
   $('#fm_cats').innerHTML = ['', ...FM_CATS].filter(c => !c || L.some(f => f.cat === c)).map(c => '<button type="button" data-c="' + esc(c) + '"' + (c === fmCat ? ' class="on"' : '') + '>' + (c || 'الكل') + (c ? ' (' + L.filter(f => f.cat === c).length + ')' : '') + '</button>').join('');
@@ -4519,6 +4560,7 @@ function initWord() {
   if (weInit) { fmRender(); return; } weInit = true; fmInit();
   const st = $('#we_status');
   // ملء تلقائي من فاحص المسودة أو تحليل الملف إن توفّر
+  $('#we_skeleton').onclick = weSkeleton;
   $('#we_prefill').onclick = () => {
     let filled = [];
     const dr = $('#dr_text') && $('#dr_text').value.trim();
