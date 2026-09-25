@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="amali-build" content="20260925091040">
+<meta name="amali-build" content="20260925111611">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -252,7 +252,7 @@ html.locked #lockscr .lkform{display:flex}
 .lawhead select{max-width:100%;min-width:0;width:auto}
 .lawhead input{flex:1 1 200px;min-width:0;width:auto;padding:9px 12px;border:1.5px solid var(--line2);border-radius:10px;background:var(--panel);font-size:15px}
 .lawlist{display:flex;flex-direction:column;gap:12px}
-.artc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.artc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;content-visibility:auto;contain-intrinsic-size:auto 240px}
 .artc.hi{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
 .artc .h{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
 .artc .num{font-weight:700;font-size:17px;color:var(--accent)}
@@ -775,6 +775,10 @@ html.noscroll,html.noscroll body{overflow:hidden;overscroll-behavior:none;touch-
 .rlwrap{max-width:1100px;margin:0 auto;padding:18px 16px 80px;display:none}
 .rlwrap.show{display:block}
 .rlbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.archctl #arch_q{flex:1 1 200px;min-width:0;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:14px}
+.archctl .sel{flex:0 1 auto;min-width:0}
+.archtbl td .stgo{font-weight:700}
+.arcount{margin:6px 2px;font-weight:600}
 .rlbar .spacer{flex:1}
 .rlbar input[type=search],.rlbar input[type=text]{flex:1 1 170px;min-width:0;padding:8px 12px;border:1.5px solid var(--line2);border-radius:10px;background:var(--panel);font-size:14.5px}
 .rlbar2{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px}
@@ -879,7 +883,7 @@ table.imp select{padding:4px;border:1px solid var(--line2);border-radius:6px;bac
 .rlc details.hist{margin-top:6px;font-size:13px}
 .rlc details.hist summary{cursor:pointer;color:var(--ink2);font-weight:600}
 .rlc details.hist ol{margin:4px 0 0;padding-right:20px;line-height:1.8}
-.rlst .sttiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:4px 0 14px}
+.rlst .sttiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:4px 0 14px}
 .rlst .stt{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .rlst .stt b{font-size:24px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.3}
 .rlst .stt span{font-size:12.5px;color:var(--ink2)}
@@ -1280,7 +1284,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
 <div class="rlwrap" id="rlwrap">
   <div class="note">القضايا بأرقامها من كشف النظام، محفوظة على هذا الجهاز وحده ولا يُحفظ أي اسم. <button type="button" class="more" data-help>المزيد</button></div>
   <div id="rl_store"></div>
-  <div class="rlmodes" id="rl_modes" role="tablist"><button type="button" data-m="roll" class="on">رول الجلسة</button><button type="button" data-m="res">المحجوزة للحكم</button><button type="button" data-m="all">كل القضايا</button><button type="button" data-m="stat">الإحصاءات</button></div>
+  <div class="rlmodes" id="rl_modes" role="tablist"><button type="button" data-m="roll" class="on">رول الجلسة</button><button type="button" data-m="res">المحجوزة للحكم</button><button type="button" data-m="all">كل القضايا</button><button type="button" data-m="arch">الأرشيف</button><button type="button" data-m="stat">الإحصاءات</button></div>
   <div class="rlbar">
     <button class="btn primary" id="rl_kashf" type="button">استيراد كشف الجلسة</button>
     <button class="btn" id="rl_new" type="button">＋ قضية</button>
@@ -1626,7 +1630,7 @@ table.sttbl th.mo,table.sttbl td.mo{text-align:center;min-width:44px}
     </section>
     <section class="ds"><h3>عن التطبيق</h3>
       <p>كل ما يُنتجه التطبيق مسودة عمل داخلية تُراجع على الأوراق. البحث والفحص المحلي لا يرسلان شيئًا خارج المتصفح؛ الميزات المعلَّمة بـ«Claude» ترسل النص إلى Claude وتشارك حد استخدام حسابك. أدوات الذكاء تعتمد على بيانات التطبيق وحدها، وتقول «لا يوجد سند في قاعدة التطبيق» عند غيابه، ولا ترجّح نتيجة قضية.</p>
-      <p class="dver">الإصدار V67</p>
+      <p class="dver">الإصدار V68</p>
     </section>
   </div>
 </div>
@@ -2733,6 +2737,7 @@ function rlSummary() {
     s.innerHTML = L.length || R.length ? '<b>' + L.length + '</b> قضية للنظر' + (R.length ? ' · <b>' + R.length + '</b> للنطق' : '') + ' · الإعلان غير تام: <b class="' + (bad ? 'bad' : '') + '">' + bad + '</b>' + (un ? ' · غير مسجّل: ' + un : '') + ' · نُفّذ القرار السابق: <b>' + ex + '/' + L.length + '</b>' : 'لا قضايا مسجّلة لهذه الجلسة — استورد كشف الجلسة من النظام.'; }
   else if (rlMode === 'res') { const R = rlResList(''), U = rlUnits(R); const cnt = k => rlUnits(R.filter(c => (c.writer || '') === k)); s.innerHTML = '<b>' + R.length + '</b> محجوزة للحكم' + (U < R.length ? ' (<b>' + U + '</b> حكمًا — المرتبطة حكم واحد)' : '') + ' · ' + Object.keys(RL_W).filter(k => k !== 'd' || cnt(k)).map(k => RL_W[k] + ': <b>' + cnt(k) + '</b>').join(' · ') + (cnt('') ? ' · <b class="bad">غير موزّعة: ' + cnt('') + '</b>' : ''); }
   else if (rlMode === 'stat') s.innerHTML = 'محسوبة من بيانات الرول حتى ' + rlDay(rlToday()) + ' ' + rlFmt(rlToday()) + ' · <b>' + RL.cards.length + '</b> بطاقة';
+  else if (rlMode === 'arch') { const d = RL.cards.filter(c => c.stage === 'صدر الحكم'); s.innerHTML = '<b>' + rlUnits(d) + '</b> حكمًا صادرًا' + (rlUnits(d) < d.length ? ' (' + d.length + ' قضية)' : '') + ' · أرشيف قابل للبحث والتصفية'; }
   else s.innerHTML = '<b>' + RL.cards.length + '</b> بطاقة';
 }
 function rlDays4() {
@@ -2750,7 +2755,7 @@ function rlRender() {
   document.querySelectorAll('#rl_modes [data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === rlMode));
   $('#rl_dayrow').classList.toggle('hidden', rlMode !== 'roll');
   $('#rl_filters').classList.toggle('hidden', rlMode !== 'all');
-  $('#rl_sheet').textContent = rlMode === 'res' ? 'طباعة التوزيع' : rlMode === 'stat' ? 'طباعة الإحصاءات' : 'طباعة ورقة المراجعة';
+  $('#rl_sheet').textContent = rlMode === 'res' ? 'طباعة التوزيع' : rlMode === 'stat' ? 'طباعة الإحصاءات' : rlMode === 'arch' ? 'طباعة الأرشيف' : 'طباعة ورقة المراجعة';
   $('#rl_dist').classList.toggle('hidden', rlMode !== 'res'); $('#rl_kashf').classList.toggle('primary', rlMode !== 'res'); if (rlMode !== 'res') $('#rl_distbox').classList.add('hidden');
   if (rlMode === 'roll') rlDays4();
   const L = $('#rl_list'); L.innerHTML = '';
@@ -2770,6 +2775,26 @@ function rlRender() {
   } else if (rlMode === 'stat') {
     const w = el('div', 'rlst'); w.innerHTML = rlStatHtml(rlStats(), false); L.appendChild(w);
     w.querySelectorAll('[data-card]').forEach(b => b.onclick = () => rlGoCard(b.dataset.card));
+  } else if (rlMode === 'arch') {
+    const done = RL.cards.filter(c => c.stage === 'صدر الحكم');
+    if (!done.length) { L.innerHTML = '<div class="empty"><b>لا أحكام صادرة بعد</b>عند تسجيل «صدر الحكم» لقضية تظهر هنا في أرشيف قابل للبحث والتصفية.</div>'; rlSummary(); return; }
+    const vds = RL_VD_ALL.filter(v => done.some(c => c.vd === v)), mons = [...new Set(done.map(c => (rlJudgedAt(c) || '').slice(0, 7)).filter(Boolean))].sort().reverse();
+    const wrap = el('div', 'rlarch');
+    wrap.innerHTML = '<div class="rlbar archctl"><input type="search" id="arch_q" placeholder="ابحث برقم القضية أو الرقم الآلي…" autocomplete="off"><select class="sel" id="arch_w"><option value="">كل الكتّاب</option>' + Object.keys(RL_W).map(k => '<option value="' + k + '">' + RL_W[k] + '</option>').join('') + '</select><select class="sel" id="arch_vd"><option value="">كل المنطوق</option>' + vds.map(v => '<option>' + esc(v) + '</option>').join('') + '</select><select class="sel" id="arch_mon"><option value="">كل الأشهر</option>' + mons.map(m => '<option value="' + m + '">' + rlMonLabel(m) + '</option>').join('') + '</select></div><div id="rl_archlist"></div>';
+    L.appendChild(wrap);
+    const draw = () => {
+      const q = norm($('#arch_q').value), w = $('#arch_w').value, vd = $('#arch_vd').value, mon = $('#arch_mon').value;
+      let list = done.filter(c => (!w || c.writer === w) && (!vd || c.vd === vd) && (!mon || (rlJudgedAt(c) || '').slice(0, 7) === mon) && (!q || norm(c.code + ' ' + (c.auto || '') + ' ' + (c.subj || '')).includes(q)));
+      list = rlAdj(list).sort((a, b) => (rlJudgedAt(b) || '').localeCompare(rlJudgedAt(a) || '') || a.code.localeCompare(b.code, 'ar', { numeric: true }));
+      const box = $('#rl_archlist');
+      if (!list.length) { box.innerHTML = '<div class="empty"><b>لا أحكام مطابقة</b>غيّر البحث أو المرشّحات.</div>'; return; }
+      box.innerHTML = '<p class="k arcount">' + list.length + ' حكمًا</p><div class="tblw"><table class="sttbl archtbl"><thead><tr><th>القضية</th><th>الآلي</th><th>تاريخ الصدور</th><th>الكاتب</th><th>المنطوق</th><th>مسار التقاضي</th></tr></thead><tbody>'
+        + list.map(c => { const sib = rlSibs(c), code = esc(c.code) + (sib.length ? ' <span class="k">+' + sib.map(s => esc(s.code)).join('،') + '</span>' : ''), path = [c.d1 ? 'أول درجة: ' + esc(c.d1) : '', c.tm ? 'تمييز: ' + esc(c.tm) : ''].filter(Boolean).join(' · '); return '<tr><td><button type="button" class="stgo" data-card="' + c.id + '">' + code + '</button></td><td class="num">' + esc(c.auto || '—') + '</td><td class="num">' + (rlJudgedAt(c) ? rlFmt(rlJudgedAt(c)) : '—') + '</td><td>' + (RL_W[c.writer] || '—') + '</td><td>' + (c.vd ? '<span class="tag vd">' + esc(c.vd) + '</span>' : '—') + '</td><td class="k">' + (path || '—') + '</td></tr>'; }).join('')
+        + '</tbody></table></div>';
+      box.querySelectorAll('[data-card]').forEach(b => b.onclick = () => rlGoCard(b.dataset.card));
+    };
+    ['#arch_q', '#arch_w', '#arch_vd', '#arch_mon'].forEach(id => { const e = $(id); e.oninput = draw; e.onchange = draw; });
+    draw();
   } else {
     const q = norm($('#rl_q').value), st = $('#rl_stage').value;
     const cards = RL.cards.filter(c => (!st || c.stage === st) && (!q || norm(c.code + ' ' + (c.auto || '') + ' ' + (c.subj || '') + ' ' + (c.await || '') + ' ' + (c.note || '')).includes(q)));
@@ -2789,6 +2814,15 @@ function rlPrint() {
   if (rlMode === 'stat') {
     if (!RL.cards.length) { toast('لا قضايا في الرول'); return; }
     h = '<h2>إحصاءات الدائرة' + circ + ' — حتى ' + rlFmt(rlToday()) + '</h2>' + rlStatHtml(rlStats(), true) + '<p class="ft">من بيانات رول الجلسة على هذا الجهاز · مسودة عمل داخلية.</p>';
+  } else if (rlMode === 'arch') {
+    const done = RL.cards.filter(c => c.stage === 'صدر الحكم'); if (!done.length) { toast('لا أحكام صادرة'); return; }
+    const q = norm(($('#arch_q') || {}).value || ''), w = ($('#arch_w') || {}).value || '', vd = ($('#arch_vd') || {}).value || '', mon = ($('#arch_mon') || {}).value || '';
+    let list = done.filter(c => (!w || c.writer === w) && (!vd || c.vd === vd) && (!mon || (rlJudgedAt(c) || '').slice(0, 7) === mon) && (!q || norm(c.code + ' ' + (c.auto || '') + ' ' + (c.subj || '')).includes(q)));
+    list = rlAdj(list).sort((a, b) => (rlJudgedAt(b) || '').localeCompare(rlJudgedAt(a) || '') || a.code.localeCompare(b.code, 'ar', { numeric: true }));
+    if (!list.length) { toast('لا أحكام مطابقة'); return; }
+    h = '<h2>أرشيف الأحكام الصادرة' + circ + (mon ? ' — ' + rlMonLabel(mon) : '') + '</h2><table><thead><tr><th>م</th><th>رقم القضية</th><th>الرقم الآلي</th><th>تاريخ الصدور</th><th>كاتب الحكم</th><th>المنطوق</th><th>مسار التقاضي</th></tr></thead><tbody>'
+      + list.map((c, i) => { const sib = rlSibs(c), path = [c.d1 ? 'أول درجة: ' + cell(c.d1) : '', c.tm ? 'تمييز: ' + cell(c.tm) : ''].filter(Boolean).join(' · '); return '<tr' + (sib.length ? ' class="lk"' : '') + '><td>' + (i + 1) + '</td><td><b>' + cell(c.code) + '</b>' + (sib.length ? '<div class="nt">+ ' + sib.map(s => cell(s.code)).join('، ') + '</div>' : '') + '</td><td>' + cell(c.auto) + '</td><td>' + (rlJudgedAt(c) ? rlFmt(rlJudgedAt(c)) : '—') + '</td><td>' + (RL_W[c.writer] || '—') + '</td><td>' + cell(c.vd || '—') + '</td><td>' + (path || '—') + '</td></tr>'; }).join('')
+      + '</tbody></table><p class="ft">' + rlUnits(list) + ' حكمًا · مسودة عمل داخلية.</p>';
   } else if (rlMode === 'res' && RL.cards.some(c => c.resAt)) {
     const ds = [...new Set(RL.cards.map(c => c.resAt).filter(Boolean))].sort().reverse().slice(0, 4);
     let tb = '';
@@ -3451,6 +3485,7 @@ function rlReg(c) { return c.reg ? { d: c.reg, src: '' } : c.an && c.an.form && 
 function rlAgeD(iso) { const n = rlDays(iso); return n == null ? null : Math.max(0, -n); }
 function rlAgeTxt(d) { if (d == null) return '—'; const m = Math.floor(d / 30.44); if (m < 1) return d + (d > 2 && d <= 10 ? ' أيام' : d === 1 ? ' يوم' : d === 2 ? ' يومان' : ' يومًا'); if (m < 12) return m === 1 ? 'شهر' : m === 2 ? 'شهران' : m + (m <= 10 ? ' أشهر' : ' شهرًا'); const y = Math.floor(m / 12), r = m % 12; return (y === 1 ? 'سنة' : y === 2 ? 'سنتان' : y + ' سنوات') + (r ? ' و' + (r === 1 ? 'شهر' : r === 2 ? 'شهران' : r + (r <= 10 ? ' أشهر' : ' شهرًا')) : ''); }
 function rlJudgedAt(c) { const h = (c.hist || []).filter(x => x.a === 'صدر الحكم').slice(-1)[0]; return h ? h.d : c.stage === 'صدر الحكم' ? c.next || '' : ''; }
+function rlMonLabel(m) { const p = (m || '').split('-'); if (p.length < 2) return m || ''; try { return new Date(+p[0], +p[1] - 1, 1).toLocaleDateString('ar-KW-u-nu-latn', { month: 'long', year: 'numeric' }); } catch (e) { return m; } }
 const RL_AGEB = [[0, 90, 'أقل من 3 أشهر'], [90, 180, 'من 3 إلى 6 أشهر'], [180, 365, 'من 6 أشهر إلى سنة'], [365, 1e9, 'أكثر من سنة']];
 function rlStats() {
   const T = rlToday(), open = RL.cards.filter(c => !RL_DONE.includes(c.stage)), R = rlResList('');
@@ -3469,14 +3504,17 @@ function rlStats() {
   // V67: توزيع المنطوق — المرتبطة حكم واحد (عدّ حسب المجموعة)
   const vdSeen = new Set(), vdAgg = {}, vdW = {};
   judged.forEach(c => { if (!c.vd) return; const g = c.grp || c.id; if (vdSeen.has(g)) return; vdSeen.add(g); vdAgg[c.vd] = (vdAgg[c.vd] || 0) + 1; const wk = (c.writer && RL_W[c.writer]) ? c.writer : ''; (vdW[wk] = vdW[wk] || {})[c.vd] = (vdW[wk][c.vd] || 0) + 1; });
-  return { T, open, R, ages, med, buckets, withReg, months, load, ann, stages, units: rlUnits(R), vdAgg, vdW, vdTotal: vdSeen.size };
+  // V68: مؤشرات اللوحة — أقرب نطق لأحكامي، والصادر هذا الشهر
+  const mp = rlMinePending(), myNext = mp.length && mp[0].next ? { next: mp[0].next, d: rlDays(mp[0].next) } : null;
+  const curMon = months[months.length - 1].k, issuedMonth = rlUnits(judged.filter(c => (rlJudgedAt(c) || '').slice(0, 7) === curMon));
+  return { T, open, R, ages, med, buckets, withReg, months, load, ann, stages, units: rlUnits(R), vdAgg, vdW, vdTotal: vdSeen.size, myNext, issuedMonth };
 }
 function rlStatHtml(S, pr) {
   const e = esc, bar = (n, max) => pr ? '' : '<span class="sttrack"><i style="width:' + (max ? Math.round(n / max * 100) : 0) + '%"></i></span>';
   const go = (c, t) => pr ? '<b>' + e(c.code) + '</b>' : '<button type="button" class="stgo" data-card="' + c.id + '">' + e(c.code) + '</button>' + (t || '');
   let h = '';
-  if (!pr) h += '<div class="sttiles"><div class="stt"><b>' + S.open.length + '</b><span>قضية مفتوحة</span></div><div class="stt"><b>' + S.units + '</b><span>حكمًا محجوزًا' + (S.units < S.R.length ? ' (' + S.R.length + ' قضية)' : '') + '</span></div><div class="stt"><b>' + rlAgeTxt(S.med) + '</b><span>وسيط العمر في الرول</span></div><div class="stt' + (S.ann.length ? ' warn' : '') + '"><b>' + S.ann.length + '</b><span>أُجّلت للإعلان مرتين فأكثر</span></div></div>';
-  else h += '<p>القضايا المفتوحة: <b>' + S.open.length + '</b> · المحجوزة للحكم: <b>' + S.units + '</b> حكمًا' + (S.units < S.R.length ? ' (' + S.R.length + ' قضية)' : '') + ' · وسيط العمر في الرول: <b>' + rlAgeTxt(S.med) + '</b> · أُجّلت للإعلان مرتين فأكثر: <b>' + S.ann.length + '</b></p>';
+  if (!pr) h += '<div class="sttiles"><div class="stt"><b>' + S.open.length + '</b><span>قضية مفتوحة</span></div><div class="stt"><b>' + S.units + '</b><span>حكمًا محجوزًا' + (S.units < S.R.length ? ' (' + S.R.length + ' قضية)' : '') + '</span></div><div class="stt"><b>' + S.issuedMonth + '</b><span>صدرت هذا الشهر</span></div><div class="stt' + (S.myNext && S.myNext.d != null && S.myNext.d <= 3 ? ' warn' : '') + '"><b>' + (S.myNext ? rlRel(S.myNext.d) : '—') + '</b><span>أقرب نطق لأحكامك</span></div><div class="stt"><b>' + rlAgeTxt(S.med) + '</b><span>وسيط العمر في الرول</span></div><div class="stt' + (S.ann.length ? ' warn' : '') + '"><b>' + S.ann.length + '</b><span>أُجّلت للإعلان مرتين فأكثر</span></div></div>';
+  else h += '<p>القضايا المفتوحة: <b>' + S.open.length + '</b> · المحجوزة للحكم: <b>' + S.units + '</b> حكمًا' + (S.units < S.R.length ? ' (' + S.R.length + ' قضية)' : '') + ' · صدرت هذا الشهر: <b>' + S.issuedMonth + '</b> · أقرب نطق لأحكامك: <b>' + (S.myNext ? rlRel(S.myNext.d) : '—') + '</b> · وسيط العمر في الرول: <b>' + rlAgeTxt(S.med) + '</b> · أُجّلت للإعلان مرتين فأكثر: <b>' + S.ann.length + '</b></p>';
   // عبء الأعضاء
   const mx = Math.max(1, ...S.load.map(r => r.res));
   h += '<section class="stsec"><h3>عبء أعضاء الدائرة <small>بعدد الأحكام — المرتبطة والمتقابلة حكم واحد</small></h3><div class="tblw"><table class="sttbl"><thead><tr><th>الكاتب</th><th>المحجوزة الآن</th><th>فات موعد نطقها</th><th>مُدّ أجلها</th>' + S.months.map(m => '<th class="mo">' + e(m.lab) + '</th>').join('') + '</tr></thead><tbody>'
